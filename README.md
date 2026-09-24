@@ -21,7 +21,7 @@ EousGate is a local Windows 11 utility that lets you drag files to a screen edge
 
 ## 下载与使用
 
-1. 打开 [最新 Release](https://github.com/Eous-the-Bangboo/EousGate/releases/latest)。
+1. 打开 [EousGate v0.1.0-beta.1 Release](https://github.com/Eous-the-Bangboo/EousGate/releases/tag/v0.1.0-beta.1)。
 2. 下载 `EousGate-v0.1.0-beta.1-win-x64.zip` 和对应的 `.sha256` 文件。
 3. 解压 ZIP 到任意文件夹，不要直接在压缩包里运行。
 4. 运行 `EousGate.exe`；程序会驻留在系统托盘。
