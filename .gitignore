@@ -1,0 +1,15 @@
+# .NET build output
+[Bb]in/
+[Oo]bj/
+
+# Local build and publish artifacts
+.tmp-build4/
+artifacts/
+
+# IDE and local user files
+.vs/
+*.user
+*.suo
+
+# Local application data and diagnostics
+*.log

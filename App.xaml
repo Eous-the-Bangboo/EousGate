@@ -1,0 +1,200 @@
+<Application x:Class="EousGate.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown">
+  <Application.Resources>
+    <SolidColorBrush x:Key="PanelBackground" Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}"/>
+    <SolidColorBrush x:Key="PanelForeground" Color="{DynamicResource {x:Static SystemColors.WindowTextColorKey}}"/>
+    <SolidColorBrush x:Key="PanelMutedForeground" Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
+    <SolidColorBrush x:Key="PanelBorder" Color="{DynamicResource {x:Static SystemColors.ControlLightColorKey}}"/>
+    <SolidColorBrush x:Key="PanelAccent" Color="#2563EB"/>
+    <SolidColorBrush x:Key="PanelAccentHover" Color="#1D4ED8"/>
+    <SolidColorBrush x:Key="PanelAccentSoft" Color="#EAF2FF"/>
+    <SolidColorBrush x:Key="PanelDanger" Color="#C2413D"/>
+    <SolidColorBrush x:Key="PanelDangerSoft" Color="#FFF1F0"/>
+    <SolidColorBrush x:Key="PanelFocusRing" Color="#1D4ED8"/>
+    <SolidColorBrush x:Key="PanelSelection" Color="#332563EB"/>
+    <SolidColorBrush x:Key="PanelElevatedSurface" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="PanelSuccess" Color="#0F766E"/>
+    <SolidColorBrush x:Key="PanelSuccessSoft" Color="#1A0F766E"/>
+    <SolidColorBrush x:Key="PanelSurfaceSoft" Color="#F6F8FB"/>
+    <SolidColorBrush x:Key="EdgeBandBackground" Color="#2563EB"/>
+    <SolidColorBrush x:Key="EdgeBandActive" Color="#1D4ED8"/>
+    <DropShadowEffect x:Key="PanelShadow" BlurRadius="22" ShadowDepth="6" Direction="270" Opacity="0.18" Color="#334155"/>
+
+    <Style x:Key="PanelFocusVisualStyle">
+      <Setter Property="Control.Template">
+        <Setter.Value>
+          <ControlTemplate>
+            <Border BorderBrush="{DynamicResource PanelFocusRing}" BorderThickness="2" CornerRadius="6" Margin="-2">
+              <AdornedElementPlaceholder/>
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style TargetType="Button">
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/>
+      <Setter Property="Background" Value="{DynamicResource PanelSurfaceSoft}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="10,6"/>
+      <Setter Property="Margin" Value="4"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="MinHeight" Value="32"/>
+      <Setter Property="FocusVisualStyle" Value="{StaticResource PanelFocusVisualStyle}"/>
+      <Setter Property="SnapsToDevicePixels" Value="True"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Background" Value="{DynamicResource PanelAccentSoft}"/>
+          <Setter Property="BorderBrush" Value="{DynamicResource PanelAccent}"/>
+        </Trigger>
+        <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.78"/></Trigger>
+        <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter Property="BorderBrush" Value="{DynamicResource PanelFocusRing}"/></Trigger>
+        <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.45"/><Setter Property="Cursor" Value="Arrow"/></Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="TextBox">
+      <Setter Property="Background" Value="{DynamicResource PanelSurfaceSoft}"/>
+      <Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}"/>
+      <Setter Property="Padding" Value="6,4"/>
+      <Setter Property="MinHeight" Value="32"/>
+      <Setter Property="FocusVisualStyle" Value="{StaticResource PanelFocusVisualStyle}"/>
+      <Setter Property="SnapsToDevicePixels" Value="True"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True"><Setter Property="BorderBrush" Value="{DynamicResource PanelAccent}"/></Trigger>
+        <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter Property="BorderBrush" Value="{DynamicResource PanelFocusRing}"/><Setter Property="BorderThickness" Value="2"/></Trigger>
+        <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.48"/></Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="ComboBox">
+      <Setter Property="Background" Value="{DynamicResource PanelSurfaceSoft}"/>
+      <Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}"/>
+      <Setter Property="MinHeight" Value="32"/>
+      <Setter Property="FocusVisualStyle" Value="{StaticResource PanelFocusVisualStyle}"/>
+      <Setter Property="SnapsToDevicePixels" Value="True"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True"><Setter Property="BorderBrush" Value="{DynamicResource PanelAccent}"/></Trigger>
+        <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter Property="BorderBrush" Value="{DynamicResource PanelFocusRing}"/><Setter Property="BorderThickness" Value="2"/></Trigger>
+        <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.48"/></Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="ListBox">
+      <Setter Property="Background" Value="{DynamicResource PanelSurfaceSoft}"/>
+      <Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}"/>
+      <Setter Property="FocusVisualStyle" Value="{StaticResource PanelFocusVisualStyle}"/>
+      <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <Style TargetType="CheckBox">
+      <Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/>
+      <Setter Property="FocusVisualStyle" Value="{StaticResource PanelFocusVisualStyle}"/>
+      <Setter Property="MinHeight" Value="32"/>
+      <Setter Property="Padding" Value="4,2"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="{DynamicResource PanelAccent}"/></Trigger>
+        <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.48"/></Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style x:Key="CandidateButtonStyle" TargetType="Button">
+      <Setter Property="Height" Value="60"/>
+      <Setter Property="Margin" Value="0,0,0,5"/>
+      <Setter Property="Padding" Value="10,7"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="FocusVisualStyle" Value="{StaticResource PanelFocusVisualStyle}"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Tile" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+              <Border.RenderTransform><TranslateTransform x:Name="TileShift" X="0"/></Border.RenderTransform>
+              <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Tile" Property="Background" Value="{DynamicResource PanelAccentSoft}"/>
+                <Setter TargetName="Tile" Property="BorderBrush" Value="{DynamicResource PanelAccent}"/>
+                <Trigger.EnterActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="TileShift" Storyboard.TargetProperty="X" To="4" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                <Trigger.ExitActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="TileShift" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.11"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="Tile" Property="Opacity" Value="0.76"/>
+                <Setter TargetName="Tile" Property="BorderBrush" Value="{DynamicResource PanelAccent}"/>
+              </Trigger>
+              <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                <Setter TargetName="Tile" Property="BorderBrush" Value="{DynamicResource PanelAccent}"/>
+                <Setter TargetName="Tile" Property="BorderThickness" Value="2"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Tile" Property="Opacity" Value="0.45"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="ActionButtonBaseStyle" TargetType="Button">
+      <Setter Property="Height" Value="34"/>
+      <Setter Property="MinWidth" Value="78"/>
+      <Setter Property="Margin" Value="4,0,0,0"/>
+      <Setter Property="Padding" Value="14,6"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="ActionSurface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}" RenderTransformOrigin="0.5,0.5">
+              <Border.RenderTransform><ScaleTransform x:Name="ActionScale" ScaleX="1" ScaleY="1"/></Border.RenderTransform>
+              <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ActionSurface" Property="Opacity" Value="0.88"/><Trigger.EnterActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="ActionScale" Storyboard.TargetProperty="ScaleX" To="1.03" Duration="0:0:0.14"/><DoubleAnimation Storyboard.TargetName="ActionScale" Storyboard.TargetProperty="ScaleY" To="1.03" Duration="0:0:0.14"/></Storyboard></BeginStoryboard></Trigger.EnterActions><Trigger.ExitActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="ActionScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.1"/><DoubleAnimation Storyboard.TargetName="ActionScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.1"/></Storyboard></BeginStoryboard></Trigger.ExitActions></Trigger>
+              <Trigger Property="IsPressed" Value="True"><Setter TargetName="ActionSurface" Property="Opacity" Value="0.72"/></Trigger>
+              <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="ActionSurface" Property="BorderBrush" Value="{DynamicResource PanelAccent}"/></Trigger>
+              <Trigger Property="IsEnabled" Value="False"><Setter TargetName="ActionSurface" Property="Opacity" Value="0.45"/></Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="PrimaryActionButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonBaseStyle}">
+      <Setter Property="Background" Value="{DynamicResource PanelAccent}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource PanelAccent}"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Style.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource PanelAccentHover}"/></Trigger></Style.Triggers>
+    </Style>
+
+    <Style x:Key="SecondaryActionButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonBaseStyle}">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+      <Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/>
+      <Style.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource PanelAccentSoft}"/></Trigger></Style.Triggers>
+    </Style>
+
+    <Style x:Key="StatusTextStyle" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource PanelMutedForeground}"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="ErrorStatusTextStyle" TargetType="TextBlock" BasedOn="{StaticResource StatusTextStyle}">
+      <Setter Property="Foreground" Value="{DynamicResource PanelDanger}"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+  </Application.Resources>
+</Application>

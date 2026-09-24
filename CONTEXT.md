@@ -1,0 +1,76 @@
+# EousGate 领域上下文
+
+EousGate 帮助用户在拖动文件时快速选择一个可用软件打开它。本文件统一项目语言，避免“区域”“方式”等词在产品、设计和开发讨论中产生歧义。
+
+## 语言
+
+**文件**：用户当前拖动、准备交给软件处理的普通文件；一次拖拽可以包含一个或多个文件。
+_避免_：项目、对象、资源（除非讨论的是其他领域）。
+
+**文件集合**：一次拖拽会话中按资源管理器顺序保存的一个或多个文件。
+_避免_：批次（容易暗示拆分、排队或部分成功）。
+
+**边缘唤出**：文件被拖到主屏幕左边缘时触发打开面板出现的行为。
+_避免_：贴靠、吸附（这些词容易与窗口布局功能混淆）。
+
+**打开面板**：在屏幕左侧暂时出现、用于选择软件的悬浮区域。
+_避免_：侧栏、工具条、菜单（它不是长期固定的导航区域）。
+
+**软件选项**：打开面板中代表一个可用软件的图标和名称。
+_避免_：方式、程序按钮（“方式”描述的是动作，不是选项本身）。
+
+**打开动作**：将文件交给用户选中的软件处理的结果。
+_避免_：启动（启动软件不一定代表文件已经交给它）。
+
+**拖拽会话**：从文件开始被拖动，到打开、取消或失败结束的一次完整操作。
+_避免_：任务、请求（这些词无法说明它与一次拖拽的边界）。
+
+## 关系
+
+- 一个**拖拽会话**包含一个非空**文件集合**；文件夹不属于文件集合。
+- 一个**拖拽会话**最多选择一个**软件选项**。
+- 一个**打开面板**展示零个或多个**软件选项**。
+- 一个成功的**软件选项**选择会产生一个**打开动作**。
+- 多文件打开动作只启动一次所选软件，并按原顺序交付整个文件集合。
+- 一个**拖拽会话**最终以“打开”“取消”或“失败”之一结束。
+
+## 示例对话
+
+> **开发者：**“用户把文件拖到左边缘后，是否已经完成打开动作？”
+> **产品负责人：**“还没有。那只是发生了边缘唤出，拖拽会话仍在继续；用户松开在某个软件选项上，才会产生打开动作。”
+
+> **开发者：**“如果没有软件选项呢？”
+> **产品负责人：**“打开面板仍然出现，并明确显示没有可用软件，同时给出 Windows 的系统打开方式入口。”
+
+## 已解决的歧义
+
+- “区域”“面板”“侧栏”曾混用，统一称为**打开面板**。
+- “打开方式”“软件”“图标”曾混用，统一称为**软件选项**（软件名称和图标是它的展示内容）。
+- “常驻并开机启动”与“绿色免安装版不改系统设置”存在冲突，最终采用：运行期间显示托盘图标，但不自动写入开机启动项。
+- “屏幕左侧”在首版限定为**主屏幕左边缘**；多显示器行为留待后续设计。
+
+## 开发资料导航与工作规则
+
+开发资料的唯一入口是 [`docs/DEVELOPMENT-INDEX.md`](docs/DEVELOPMENT-INDEX.md)。开始任何开发任务前，先阅读本文件和开发索引，再按任务类型阅读对应标准文件。
+
+### 标准文件路径
+
+- 首版需求：[`docs/standards/requirements/v1-requirements.md`](docs/standards/requirements/v1-requirements.md)
+- 技术与架构：[`docs/standards/architecture/technical-standards.md`](docs/standards/architecture/technical-standards.md)
+- 界面与交互：[`docs/standards/design/ui-design-standards.md`](docs/standards/design/ui-design-standards.md)
+- 开发执行：[`docs/standards/development/execution-standards.md`](docs/standards/development/execution-standards.md)
+- 测试验收：[`docs/standards/testing/test-standards.md`](docs/standards/testing/test-standards.md)
+- 发布与诊断：[`docs/standards/operations/release-and-diagnostics.md`](docs/standards/operations/release-and-diagnostics.md)
+
+### 工作规则
+
+1. 开发开始时，在 [`docs/dev-status/`](docs/dev-status/) 的当日日志中登记目标、范围和验证方式。
+2. 开发过程中只推进一个阶段，发现的风险和新增事项同步写入 [`docs/dev-status/TODO.md`](docs/dev-status/TODO.md)。
+3. 开发结束时记录实际改动、验证命令、结果、阻塞和下一步；日志模板见 [`docs/dev-status/TEMPLATE.md`](docs/dev-status/TEMPLATE.md)。
+4. 当前阶段未通过验收前，不开始下一阶段；需求或架构变化必须同步更新标准文件或新增 ADR。
+5. `bin/`、`obj/` 和临时构建目录是生成物，不作为源码或文档修改目标。
+
+### 交付规则
+
+- 每次开发回复都附上最新可运行构建的 `EousGate.exe`；同时附上包含同目录依赖文件的 `EousGate-win-x64.zip`，避免只下载 exe 时缺少运行时组件。
+- 回复前必须确认构建产物来自当前源码，并在涉及源码改动时重新执行 Release 测试和发布脚本。
