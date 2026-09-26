@@ -4,7 +4,7 @@
 
 EousGate is a local Windows 11 utility that lets you drag files to a screen edge and choose an installed app to open them.
 
-当前版本：`v0.1.0-beta.2`（公开测试版）
+当前版本：`v0.1.0-beta.3`（公开测试版）
 
 ![EousGate 打开面板](docs/images/overlay.png)
 
@@ -12,6 +12,8 @@ EousGate is a local Windows 11 utility that lets you drag files to a screen edge
 
 - 支持主屏幕左侧、右侧和上侧接收条，可任意组合
 - 支持单文件和多文件；混合类型只显示能处理全部文件的软件
+- 复制包含 HTTP/HTTPS 或 www 网页链接的文本时显示侧边提示；重复复制也会再次提示
+- 剪贴板提示默认停留 5 秒，可设置 2–60 秒和左/右侧；悬停暂停，点击用默认浏览器打开
 - 发现 Windows 桌面软件和打包应用，并支持按扩展名添加自定义 `.exe`
 - 支持候选数量、顺序、隐藏、主题、材质、动效和面板参数
 - 完全本地运行，不上传文件，不修改 Windows 默认文件关联
@@ -21,14 +23,14 @@ EousGate is a local Windows 11 utility that lets you drag files to a screen edge
 
 ## 下载与使用
 
-1. 打开 [EousGate v0.1.0-beta.2 Release](https://github.com/Eous-the-Bangboo/EousGate/releases/tag/v0.1.0-beta.2)。
-2. 下载 `EousGate-v0.1.0-beta.2-win-x64.zip` 和对应的 `.sha256` 文件。
+1. 打开 [EousGate v0.1.0-beta.3 Release](https://github.com/Eous-the-Bangboo/EousGate/releases/tag/v0.1.0-beta.3)。
+2. 下载 `EousGate-v0.1.0-beta.3-win-x64.zip` 和对应的 `.sha256` 文件。
 3. 解压 ZIP 到任意文件夹，不要直接在压缩包里运行。
 4. 运行 `EousGate.exe`；程序会驻留在系统托盘。
 5. 从资源管理器拖动一个或多个文件到启用的屏幕边缘。
 6. 将文件继续拖到软件选项上松开，或使用键盘选择软件。
 
-右键托盘图标可以暂停/恢复边缘唤出、打开设置或退出。EousGate 是绿色免安装软件，不需要预先安装 .NET 8 Desktop Runtime，也不会自动加入开机启动。
+右键托盘图标可以暂停/恢复提示与边缘唤出、打开设置或退出。在“设置 → 剪贴板链接”中可调整提示时长、位置或关闭检测。EousGate 是绿色免安装软件，不需要预先安装 .NET 8 Desktop Runtime，也不会自动加入开机启动。
 
 ### Windows 安全提示
 
@@ -37,8 +39,8 @@ EousGate is a local Windows 11 utility that lets you drag files to a screen edge
 校验示例：
 
 ```powershell
-Get-FileHash .\EousGate-v0.1.0-beta.2-win-x64.zip -Algorithm SHA256
-Get-Content .\EousGate-v0.1.0-beta.2-win-x64.zip.sha256
+Get-FileHash .\EousGate-v0.1.0-beta.3-win-x64.zip -Algorithm SHA256
+Get-Content .\EousGate-v0.1.0-beta.3-win-x64.zip.sha256
 ```
 
 ## 系统要求与已知限制
@@ -46,11 +48,12 @@ Get-Content .\EousGate-v0.1.0-beta.2-win-x64.zip.sha256
 - 支持环境：Windows 11 x64、主显示器
 - 当前不支持：文件夹、多显示器边缘、自动更新、自动启动和 Windows 默认关联修改
 - 已修复“照片”误打开资源管理器；本机已验证单 JPG 和 JPG+PNG，其他 Windows/Photos 版本、完整鼠标拖拽、干净 Windows 11、DPI 和高对比度仍需更多测试
+- 剪贴板提示已通过消息/UI 联动测试；真实复制到默认浏览器的完整链路仍需手工复测
 - 这是 Beta 版本；重要工作前请先用非敏感文件验证目标软件的打开行为
 
 ## 隐私
 
-EousGate 不联网、不上传文件，也不读取文件内容。软件只把用户拖入的本地文件路径交给用户选择的软件。可选诊断日志仅记录固定事件名和时间戳，默认关闭。
+EousGate 不联网、不上传文件，也不读取文件内容。软件把用户拖入的本地文件路径交给用户选择的软件。启用剪贴板检测时，仅在本机读取新复制的文本并提取网页链接，不保存剪贴板历史；点击链接后由默认浏览器访问网页。可选诊断日志仅记录固定事件名和时间戳，默认关闭。
 
 ## 反馈问题
 

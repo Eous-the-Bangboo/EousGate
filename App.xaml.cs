@@ -13,14 +13,24 @@ public partial class App : System.Windows.Application
     private EdgeDropWindow? _edgeRight;
     private EdgeDropWindow? _edgeTop;
     private OverlayWindow? _overlay;
+    private ClipboardMonitor? _clipboardMonitor;
+    private ClipboardLinkWindow? _clipboardWindow;
     private UserSettings _settings = new();
     private readonly DiagnosticsLogger _diagnostics;
+    private readonly bool _initializeServices;
 
-    public App() => _diagnostics = new DiagnosticsLogger(() => _settings.DiagnosticsEnabled);
+    public App() : this(true) { }
+
+    internal App(bool initializeServices)
+    {
+        _initializeServices = initializeServices;
+        _diagnostics = new DiagnosticsLogger(() => _settings.DiagnosticsEnabled);
+    }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        if (!_initializeServices) return;
         _singleInstanceMutex = new Mutex(true, "Local\\EousGate.SingleInstance", out _ownsSingleInstance);
         if (!_ownsSingleInstance)
         {
@@ -52,14 +62,22 @@ public partial class App : System.Windows.Application
         _edgeTop = new EdgeDropWindow(_overlay, discovery, () => _settings.Paused, () => _settings, EdgeDropWindow.EdgeSide.Top);
         ApplyEdgeBands(_settings);
         ApplyTheme(_settings);
+        _clipboardWindow = new ClipboardLinkWindow(() => _settings, new WebLinkOpener(logger: _diagnostics));
+        _clipboardMonitor = new ClipboardMonitor(text =>
+        {
+            if (_settings.ClipboardLinksEnabled && !_settings.Paused)
+                _clipboardWindow.ShowLinks(ClipboardLinks.Extract(text));
+        }, _diagnostics);
+        ApplyClipboardSettings();
         if (_edgeLeft.IsEnabled) _edgeLeft.Show();
         if (_edgeRight.IsEnabled) _edgeRight.Show();
         if (_edgeTop.IsEnabled) _edgeTop.Show();
         _tray = new TrayService(
             () => SetPaused(true, settingsStore),
             () => SetPaused(false, settingsStore),
-            () => new SettingsWindow(_settings, settingsStore, discovery, updated => { _settings = updated; ApplyEdgeBands(updated); ApplyTheme(updated); }).Show(),
+            () => new SettingsWindow(_settings, settingsStore, discovery, updated => { _settings = updated; ApplyEdgeBands(updated); ApplyTheme(updated); ApplyClipboardSettings(); }).Show(),
             Shutdown);
+        _tray.SetPaused(_settings.Paused);
     }
 
 #if DEBUG
@@ -205,7 +223,17 @@ public partial class App : System.Windows.Application
         _settings.Paused = paused;
         store.Save(_settings);
         ApplyEdgeBands(_settings);
+        ApplyClipboardSettings();
         _tray?.SetPaused(paused);
+    }
+
+    private void ApplyClipboardSettings()
+    {
+        var enabled = _settings.ClipboardLinksEnabled && !_settings.Paused;
+        if (_clipboardMonitor?.SetEnabled(enabled) == false && enabled)
+            System.Windows.MessageBox.Show("暂时无法监听剪贴板，请重启 EousGate 后重试。", "EousGate");
+        if (enabled) _clipboardWindow?.RefreshSettings();
+        else _clipboardWindow?.Dismiss();
     }
 
     private void ApplyEdgeBands(UserSettings settings)
@@ -217,6 +245,8 @@ public partial class App : System.Windows.Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _clipboardMonitor?.Dispose();
+        _clipboardWindow?.Shutdown();
         _tray?.Dispose();
         _edgeLeft?.Close();
         _edgeRight?.Close();

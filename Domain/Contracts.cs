@@ -73,6 +73,9 @@ public sealed class UserSettings
     public EdgeBandLayout? TopEdgeBand { get; set; } = new();
     public int TriggerDelayMs { get; set; } = 120;
     public int AutoDismissDelayMs { get; set; } = 500;
+    public bool ClipboardLinksEnabled { get; set; } = true;
+    public int ClipboardPopupDurationSeconds { get; set; } = 5;
+    public string ClipboardPopupSide { get; set; } = "Right";
     public double PanelWidth { get; set; } = 404;
     public double PanelMaxHeight { get; set; } = 640;
     public double CandidateGap { get; set; } = 5;
@@ -100,6 +103,9 @@ public sealed class UserSettings
             TopEdgeBand = TopEdgeBand?.Clone(),
             TriggerDelayMs = TriggerDelayMs,
             AutoDismissDelayMs = AutoDismissDelayMs,
+            ClipboardLinksEnabled = ClipboardLinksEnabled,
+            ClipboardPopupDurationSeconds = ClipboardPopupDurationSeconds,
+            ClipboardPopupSide = ClipboardPopupSide,
             PanelWidth = PanelWidth,
             PanelMaxHeight = PanelMaxHeight,
             CandidateGap = CandidateGap,

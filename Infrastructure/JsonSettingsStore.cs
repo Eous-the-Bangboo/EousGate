@@ -32,6 +32,7 @@ public sealed class JsonSettingsStore : ISettingsStore
             settings.SkinId = SkinCatalog.Normalize(settings.SkinId);
             settings.EdgeBandPosition = NormalizeEdgeBandPosition(settings.EdgeBandPosition);
             settings.AutoDismissDelayMs = Math.Clamp(settings.AutoDismissDelayMs, 0, 10_000);
+            NormalizeClipboardSettings(settings);
             settings.LeftEdgeBand = NormalizeEdgeBandLayout(settings.LeftEdgeBand);
             settings.RightEdgeBand = NormalizeEdgeBandLayout(settings.RightEdgeBand);
             settings.TopEdgeBand = NormalizeEdgeBandLayout(settings.TopEdgeBand);
@@ -52,6 +53,7 @@ public sealed class JsonSettingsStore : ISettingsStore
             NormalizeCustomApps(settings);
             settings.EdgeBandPosition = NormalizeEdgeBandPosition(settings.EdgeBandPosition);
             settings.AutoDismissDelayMs = Math.Clamp(settings.AutoDismissDelayMs, 0, 10_000);
+            NormalizeClipboardSettings(settings);
             settings.LeftEdgeBand = NormalizeEdgeBandLayout(settings.LeftEdgeBand);
             settings.RightEdgeBand = NormalizeEdgeBandLayout(settings.RightEdgeBand);
             settings.TopEdgeBand = NormalizeEdgeBandLayout(settings.TopEdgeBand);
@@ -59,6 +61,12 @@ public sealed class JsonSettingsStore : ISettingsStore
             File.WriteAllText(_path, JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true }));
         }
         catch { _logger.Log("settingssavefailed"); }
+    }
+
+    private static void NormalizeClipboardSettings(UserSettings settings)
+    {
+        settings.ClipboardPopupDurationSeconds = NotificationLifetime.NormalizeDuration(settings.ClipboardPopupDurationSeconds);
+        settings.ClipboardPopupSide = string.Equals(settings.ClipboardPopupSide, "Left", StringComparison.OrdinalIgnoreCase) ? "Left" : "Right";
     }
 
     private static void NormalizeCustomApps(UserSettings settings)

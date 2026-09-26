@@ -35,6 +35,9 @@ public partial class SettingsWindow : Window
         CandidateCount.Text = settings.CandidateCount.ToString(CultureInfo.InvariantCulture);
         TriggerDelay.Text = settings.TriggerDelayMs.ToString(CultureInfo.InvariantCulture);
         AutoDismissDelay.Text = settings.AutoDismissDelayMs.ToString(CultureInfo.InvariantCulture);
+        ClipboardEnabled.IsChecked = settings.ClipboardLinksEnabled;
+        ClipboardDuration.Text = settings.ClipboardPopupDurationSeconds.ToString(CultureInfo.InvariantCulture);
+        ClipboardSide.SelectedIndex = settings.ClipboardPopupSide == "Left" ? 1 : 0;
         PanelWidth.Text = settings.PanelWidth.ToString(CultureInfo.InvariantCulture);
         PanelMaxHeight.Text = settings.PanelMaxHeight.ToString(CultureInfo.InvariantCulture);
         CandidateGap.Text = settings.CandidateGap.ToString(CultureInfo.InvariantCulture);
@@ -217,6 +220,7 @@ public partial class SettingsWindow : Window
         if (!int.TryParse(CandidateCount.Text, out var count) || count < 1 || count > 12) { MessageBox.Show("默认显示数量请输入 1 到 12。", "设置"); return; }
         if (!int.TryParse(TriggerDelay.Text, out var delay) || delay < 0 || delay > 1000) { MessageBox.Show("触发延迟请输入 0 到 1000。", "设置"); return; }
         if (!int.TryParse(AutoDismissDelay.Text, out var autoDismissDelay) || autoDismissDelay < 0 || autoDismissDelay > 10000) { MessageBox.Show("自动收起延迟请输入 0 到 10000。", "设置"); return; }
+        if (!int.TryParse(ClipboardDuration.Text, out var clipboardDuration) || clipboardDuration < 2 || clipboardDuration > 60) { MessageBox.Show("剪贴板提示停留时间请输入 2 到 60 秒。", "设置"); ClipboardDuration.Focus(); return; }
         if (!double.TryParse(PanelWidth.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var panelWidth) || panelWidth < 240 || panelWidth > 560) { MessageBox.Show("面板宽度请输入 240 到 560。", "设置"); return; }
         if (!double.TryParse(PanelMaxHeight.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var panelHeight) || panelHeight < 300 || panelHeight > 900) { MessageBox.Show("面板最大高度请输入 300 到 900。", "设置"); return; }
         if (!double.TryParse(CandidateGap.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var gap) || gap < 0 || gap > 16) { MessageBox.Show("候选间距请输入 0 到 16。", "设置"); return; }
@@ -237,6 +241,9 @@ public partial class SettingsWindow : Window
 
         CaptureCurrentExtensionPreference(perTypeCount);
         _settings.EdgeBandOpacity = opacity; _settings.EdgeBandColor = _selectedColor; _settings.CandidateCount = count; _settings.TriggerDelayMs = delay; _settings.AutoDismissDelayMs = autoDismissDelay;
+        _settings.ClipboardLinksEnabled = ClipboardEnabled.IsChecked == true;
+        _settings.ClipboardPopupDurationSeconds = clipboardDuration;
+        _settings.ClipboardPopupSide = ClipboardSide.SelectedIndex == 1 ? "Left" : "Right";
         _settings.LeftEdgeBand = leftBand; _settings.RightEdgeBand = rightBand; _settings.TopEdgeBand = topBand;
         _settings.PanelWidth = panelWidth; _settings.PanelMaxHeight = panelHeight; _settings.CandidateGap = gap; _settings.AnimationDurationMs = animationDuration;
         var edgeBandPosition = ReadEdgeBandPosition();
@@ -296,6 +303,12 @@ public partial class SettingsWindow : Window
     {
         if (System.Windows.MessageBox.Show("恢复全部设置？", "EousGate", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
         var defaults = new UserSettings();
+        _settings.ClipboardLinksEnabled = defaults.ClipboardLinksEnabled;
+        _settings.ClipboardPopupDurationSeconds = defaults.ClipboardPopupDurationSeconds;
+        _settings.ClipboardPopupSide = defaults.ClipboardPopupSide;
+        ClipboardEnabled.IsChecked = defaults.ClipboardLinksEnabled;
+        ClipboardDuration.Text = defaults.ClipboardPopupDurationSeconds.ToString(CultureInfo.InvariantCulture);
+        ClipboardSide.SelectedIndex = 0;
         _settings.DesignSchemeId = defaults.DesignSchemeId; _settings.SkinId = defaults.SkinId; _settings.Paused = defaults.Paused; _settings.CandidateCount = defaults.CandidateCount; _settings.EdgeBandWidth = defaults.EdgeBandWidth; _settings.EdgeBandOpacity = defaults.EdgeBandOpacity; _settings.EdgeBandColor = defaults.EdgeBandColor; _settings.EdgeBandPosition = defaults.EdgeBandPosition; _settings.LeftEdgeBand = defaults.LeftEdgeBand?.Clone(); _settings.RightEdgeBand = defaults.RightEdgeBand?.Clone(); _settings.TopEdgeBand = defaults.TopEdgeBand?.Clone(); _settings.TriggerDelayMs = defaults.TriggerDelayMs; _settings.AutoDismissDelayMs = defaults.AutoDismissDelayMs; _settings.Theme = defaults.Theme; _settings.LargeText = defaults.LargeText; _settings.DiagnosticsEnabled = defaults.DiagnosticsEnabled; _settings.FileTypes.Clear();
         DesignSchemes.SelectedValue = defaults.DesignSchemeId;
         Skins.SelectedValue = defaults.SkinId;

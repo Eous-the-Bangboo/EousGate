@@ -4,9 +4,19 @@ using System.Diagnostics;
 
 if (args.FirstOrDefault() == "--photos-smoke")
     return PackagedAppSmoke.Run(args.Skip(1).ToArray());
+if (args.FirstOrDefault() == "--clipboard-smoke")
+    return ClipboardSmoke.Run(args.Skip(1).ToArray());
 
 var tests = new (string Name, Action Run)[]
 {
+    ("Clipboard links extract web URLs from prose", ClipboardLinkTests.ExtractsLinks),
+    ("Clipboard links reject other protocols and bound input", ClipboardLinkTests.RejectsInvalidInput),
+    ("Clipboard links preserve distinct paths and remove duplicates", ClipboardLinkTests.DeduplicatesWithinCopy),
+    ("Clipboard popup lifetime resets for repeated copies", ClipboardLinkTests.RepeatedCopiesResetLifetime),
+    ("Clipboard popup lifetime pauses during interaction", ClipboardLinkTests.InteractionPausesLifetime),
+    ("Clipboard settings clone and round-trip with bounds", ClipboardLinkTests.SettingsRoundTrip),
+    ("Clipboard settings preserve legacy defaults", ClipboardLinkTests.LegacySettings),
+    ("Web link opener uses the browser only after an open request", ClipboardLinkTests.OpensOnlyWebLinks),
     ("DragSession stores an immutable ordered file snapshot", DragSessionStoresImmutableFiles),
     ("FileDropPolicy accepts one or more files", FileDropAcceptsFiles),
     ("FileDropPolicy rejects an empty input", FileDropRejectsEmptyInput),

@@ -19,6 +19,9 @@ public sealed class DiagnosticsLogger
         "packagedprocessstartfailed",
         "appdiscoveryfailed",
         "shellhandlerdiscoveryfailed"
+        ,"clipboardlistenfailed"
+        ,"clipboardreadfailed"
+        ,"webopenfailed"
     };
     private readonly Func<bool> _isEnabled;
     private readonly string _path;

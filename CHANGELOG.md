@@ -2,6 +2,15 @@
 
 All notable changes to EousGate are documented here.
 
+## [0.1.0-beta.3] - 2026-09-27
+
+### Added
+
+- Clipboard web links appear in a side popup and open in the default browser when clicked. Copying identical text triggers the popup again.
+- Clipboard settings include an enable switch, left/right placement, and a 2–60 second lifetime (5 seconds by default). Hover and keyboard interaction pause the timer.
+- Text detection stays local with no clipboard history, URL logging, or automatic network requests.
+- Regression tests cover URL extraction, repeated copies, timing, preferences, and browser dispatch. The opt-in UI smoke test verifies Windows notification handling using a synthetic reader.
+
 ## [0.1.0-beta.2] - 2026-09-27
 
 ### Fixed

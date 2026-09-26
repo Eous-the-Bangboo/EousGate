@@ -58,6 +58,31 @@
         </WrapPanel></StackPanel></Border>
       </StackPanel></ScrollViewer></TabItem>
 
+      <TabItem Header="剪贴板链接"><ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel Margin="6,12,12,24">
+        <TextBlock Text="剪贴板链接" Style="{StaticResource PageTitle}"/>
+        <TextBlock Text="复制含网页链接的文本，在屏幕侧边一键打开。" Style="{StaticResource Caption}" Margin="0,5,0,18"/>
+        <Border Background="{DynamicResource PanelSurfaceSoft}" BorderBrush="{DynamicResource PanelBorder}" BorderThickness="1" CornerRadius="8" Padding="16"><StackPanel>
+          <CheckBox x:Name="ClipboardEnabled" Content="检测剪贴板中的网页链接" Margin="0,0,0,8"/>
+          <TextBlock Text="支持 http://、https:// 和 www. 开头的链接。重复复制相同内容，也会重新弹出并开始计时。" Style="{StaticResource Caption}" TextWrapping="Wrap"/>
+          <WrapPanel Margin="0,18,0,0">
+            <StackPanel Width="190" Margin="0,0,18,12">
+              <Label Content="停留时间（秒）" Target="{Binding ElementName=ClipboardDuration}" Padding="0,0,0,5"/>
+              <TextBox x:Name="ClipboardDuration" ToolTip="2 到 60 秒，默认 5 秒" AutomationProperties.Name="剪贴板提示停留时间（秒）"/>
+              <TextBlock Text="2–60 秒，默认 5 秒" Style="{StaticResource Caption}" Margin="0,6,0,0"/>
+            </StackPanel>
+            <StackPanel Width="190" Margin="0,0,0,12">
+              <Label Content="弹出位置" Target="{Binding ElementName=ClipboardSide}" Padding="0,0,0,5"/>
+              <ComboBox x:Name="ClipboardSide" AutomationProperties.Name="剪贴板提示弹出位置"><ComboBoxItem Content="右侧" Tag="Right"/><ComboBoxItem Content="左侧" Tag="Left"/></ComboBox>
+            </StackPanel>
+          </WrapPanel>
+          <TextBlock Text="鼠标移入或使用键盘操作时暂停计时。点击链接后收起；也可点击关闭或按 Esc。" Style="{StaticResource Caption}" TextWrapping="Wrap"/>
+        </StackPanel></Border>
+        <Border Background="{DynamicResource PanelSurfaceSoft}" BorderBrush="{DynamicResource PanelBorder}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,14,0,0"><StackPanel>
+          <TextBlock Text="仅在本机检测" Style="{StaticResource GroupTitle}"/>
+          <TextBlock Text="不保存剪贴板历史，不记录文本或网址。只有点击链接时才交给默认浏览器打开。" Style="{StaticResource Caption}" TextWrapping="Wrap" Margin="0,6,0,0"/>
+        </StackPanel></Border>
+      </StackPanel></ScrollViewer></TabItem>
+
       <TabItem Header="软件选项"><ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel Margin="6,12,12,24">
         <TextBlock Text="软件选项" Style="{StaticResource PageTitle}"/><TextBlock Text="按文件类型维护候选软件的显示、隐藏和顺序。" Style="{StaticResource Caption}" Margin="0,5,0,18"/>
         <Border Background="{DynamicResource PanelSurfaceSoft}" BorderBrush="{DynamicResource PanelBorder}" BorderThickness="1" CornerRadius="8" Padding="16"><StackPanel><TextBlock Text="载入文件类型" Style="{StaticResource GroupTitle}"/><TextBlock Text="输入扩展名后载入对应的软件选项。" Style="{StaticResource Caption}" Margin="0,4,0,10"/><WrapPanel><TextBox x:Name="Extension" Width="150" Margin="0,0,8,8" ToolTip="例如 .txt"/><Button Content="加载" Click="LoadClick" Width="76" Margin="0,0,8,8"/><Button x:Name="AddAppButton" Content="添加应用" Click="AddAppClick" Width="96" Margin="0,0,0,8" IsEnabled="False"/></WrapPanel></StackPanel></Border>

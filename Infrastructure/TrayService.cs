@@ -30,7 +30,7 @@ public sealed class TrayService : IDisposable
     public void SetPaused(bool paused)
     {
         _paused = paused;
-        _pause.Text = paused ? "恢复边缘唤出" : "暂停边缘唤出";
+        _pause.Text = paused ? "恢复提示与边缘唤出" : "暂停提示与边缘唤出";
         _pause.Click -= OnPauseClick;
         _pause.Click += OnPauseClick;
     }
