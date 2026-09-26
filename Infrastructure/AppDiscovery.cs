@@ -158,15 +158,8 @@ public sealed class AppDiscovery : IAppDiscovery
                     handler.GetName(out var name);
                     handler.GetUIName(out var uiName);
                     handler.GetIconLocation(out var iconLocation, out _);
-                    if (LooksLikePackagedHandler(name) || iconLocation.StartsWith("@{", StringComparison.Ordinal))
-                    {
-                        result.Add(CreatePackagedCandidate(name, uiName, iconLocation));
-                    }
-                    else
-                    {
-                        var executable = ResolveExecutable(name) ?? ExtractIconExecutable(iconLocation);
-                        if (executable is not null) result.Add(CreateCandidate(executable, uiName));
-                    }
+                    var candidate = CreateShellCandidate(name, uiName, iconLocation, GetAppUserModelId(handler));
+                    if (candidate is not null) result.Add(candidate);
                 }
                 catch { }
                 finally
@@ -186,15 +179,40 @@ public sealed class AppDiscovery : IAppDiscovery
         return NormalizePath(comma > 0 ? iconLocation[..comma] : iconLocation);
     }
 
-    private static bool LooksLikePackagedHandler(string name)
-        => name.Contains('!', StringComparison.Ordinal)
-            || name.StartsWith("AppX", StringComparison.OrdinalIgnoreCase);
+    internal static string? GetAppUserModelId(IAssocHandler handler)
+    {
+        try
+        {
+            if (handler is IObjectWithAppUserModelID identity)
+            {
+                identity.GetAppID(out var appId);
+                return appId;
+            }
+        }
+        catch (COMException) { } // Desktop handlers may not have an explicit AppID.
+        return null;
+    }
 
-    private static AppCandidate CreatePackagedCandidate(string handlerName, string? displayName, string? iconPath)
+    internal static AppCandidate? CreateShellCandidate(string name, string? displayName, string? iconLocation, string? appId)
+    {
+        // GetName may be a localized label ("照片") or an executable path.
+        // An indirect icon is only a resource reference, never an app identity.
+        var resolvedAppId = PackagedAppIdentity.Resolve(appId) ?? PackagedAppIdentity.Resolve(name);
+        if (resolvedAppId is not null)
+            return CreatePackagedCandidate(name, displayName, iconLocation, resolvedAppId);
+
+        var executable = File.Exists(name) ? name : ResolveExecutable(name);
+        executable ??= ExtractIconExecutable(iconLocation);
+        return executable is not null && File.Exists(executable)
+            ? CreateCandidate(executable, displayName)
+            : null;
+    }
+
+    private static AppCandidate CreatePackagedCandidate(string handlerName, string? displayName, string? iconPath, string appId)
     {
         var normalizedName = handlerName.Trim();
         var label = string.IsNullOrWhiteSpace(displayName) ? normalizedName : displayName.Trim();
-        var shellTarget = $"shell:AppsFolder\\{normalizedName}";
+        var shellTarget = $"shell:AppsFolder\\{appId}";
         return new AppCandidate(
             $"packaged:{normalizedName}",
             label,
@@ -202,7 +220,7 @@ public sealed class AppDiscovery : IAppDiscovery
             null,
             true,
             iconPath,
-            normalizedName);
+            appId);
     }
 
     private static string? QueryDefaultExecutable(string extension)
@@ -216,15 +234,15 @@ public sealed class AppDiscovery : IAppDiscovery
 
     private enum AssocF { Executable = 2 }
     private enum AssocStr { Executable = 2 }
-    private enum AssocFilter { None = 0, Recommended = 1 }
+    internal enum AssocFilter { None = 0, Recommended = 1 }
     [DllImport("Shlwapi.dll", CharSet = CharSet.Unicode)]
     private static extern int AssocQueryString(AssocF flags, AssocStr str, string pszAssoc, string? pszExtra, System.Text.StringBuilder? pszOut, ref uint pcchOut);
 
     [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
-    private static extern int SHAssocEnumHandlers(string pszExtra, AssocFilter filter, out IEnumAssocHandlers handlers);
+    internal static extern int SHAssocEnumHandlers(string pszExtra, AssocFilter filter, out IEnumAssocHandlers handlers);
 
     [ComImport, Guid("973810AE-9599-4B88-9E4D-6EE98C9552DA"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    private interface IEnumAssocHandlers
+    internal interface IEnumAssocHandlers
     {
         [PreserveSig] int Next(uint count, [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0, ArraySubType = UnmanagedType.Interface)] IAssocHandler[] handlers, out uint fetched);
         [PreserveSig] int Skip(uint count);
@@ -233,15 +251,29 @@ public sealed class AppDiscovery : IAppDiscovery
     }
 
     [ComImport, Guid("F04061AC-1659-4A3F-A954-775AA57FC083"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    private interface IAssocHandler
+    internal interface IAssocHandler
     {
         void GetName([MarshalAs(UnmanagedType.LPWStr)] out string name);
         void GetUIName([MarshalAs(UnmanagedType.LPWStr)] out string uiName);
         void GetIconLocation([MarshalAs(UnmanagedType.LPWStr)] out string iconLocation, out int index);
-        void IsRecommended([MarshalAs(UnmanagedType.Bool)] out bool recommended);
-        void MakeDefault([MarshalAs(UnmanagedType.LPWStr)] string association, [MarshalAs(UnmanagedType.LPWStr)] string extra);
-        void Invoke([MarshalAs(UnmanagedType.Interface)] object dataObject);
-        void CreateInvoker([MarshalAs(UnmanagedType.Interface)] object dataObject, [MarshalAs(UnmanagedType.Interface)] out object invoker);
+        [PreserveSig] int IsRecommended();
+        void MakeDefault([MarshalAs(UnmanagedType.LPWStr)] string description);
+        [PreserveSig] int Invoke(IntPtr dataObject);
+        void CreateInvoker(IntPtr dataObject, out IAssocHandlerInvoker invoker);
+    }
+
+    [ComImport, Guid("92218CAB-ECAA-4335-8133-807FD234C2EE"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal interface IAssocHandlerInvoker
+    {
+        [PreserveSig] int SupportsSelection();
+        [PreserveSig] int Invoke();
+    }
+
+    [ComImport, Guid("36DB0196-9665-46D1-9BA7-D3709EECF9ED"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    private interface IObjectWithAppUserModelID
+    {
+        void SetAppID([MarshalAs(UnmanagedType.LPWStr)] string appId);
+        void GetAppID([MarshalAs(UnmanagedType.LPWStr)] out string appId);
     }
 
     private static string? ResolveExecutable(string name)

@@ -23,3 +23,4 @@
 | TODO-017 | P1 | 已完成 | 接收条远离后的自动收起 | 面板在接收条和面板外超过配置时长自动收起；拖拽会话不误打开，返回接收条可重新触发 | [`ui-design-standards.md`](../standards/design/ui-design-standards.md) |
 | TODO-018 | P1 | 已完成 | 接收条尺寸配置与边缘覆盖收敛 | 左/右/上侧接收条可独立设置长度、宽度和偏移；未覆盖边缘区域不被接收条窗口屏蔽；旧配置兼容回退 | [`ui-design-standards.md`](../standards/design/ui-design-standards.md) |
 | TODO-019 | P1 | 已完成 | 多文件同时拖动打开 | 同类型与混合类型文件只显示共同软件；选择后单次交付全部文件；文件夹整批拒绝 | [`v1-requirements.md`](../standards/requirements/v1-requirements.md) |
+| TODO-020 | P1 | 已完成 | 修复“照片”误打开资源管理器 | 解析真实 AUMID，经 Shell 原生文件对象调用所选处理器；本机单图及多图已实测，49/49 回归通过；完整鼠标拖拽和其他系统版本仍待手工覆盖 | [`2026-09-27.md`](2026-09-27.md) |

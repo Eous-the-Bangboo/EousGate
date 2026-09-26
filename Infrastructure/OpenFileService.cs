@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using static EousGate.Infrastructure.AppDiscovery;
 
 namespace EousGate.Infrastructure;
 
@@ -8,11 +9,24 @@ public sealed class OpenFileService : IOpenFileService
 {
     private readonly Func<ProcessStartInfo, Process?> _startProcess;
     private readonly DiagnosticsLogger _logger;
+    private readonly Func<string, string?> _resolveAppId;
+    private readonly Func<string, IReadOnlyList<string>, int> _invokePackagedFiles;
 
     public OpenFileService(Func<ProcessStartInfo, Process?>? startProcess = null, DiagnosticsLogger? logger = null)
+        : this(startProcess, logger, name => PackagedAppIdentity.Resolve(name), InvokePackagedFiles)
+    {
+    }
+
+    internal OpenFileService(
+        Func<ProcessStartInfo, Process?>? startProcess,
+        DiagnosticsLogger? logger,
+        Func<string, string?> resolveAppId,
+        Func<string, IReadOnlyList<string>, int> invokePackagedFiles)
     {
         _startProcess = startProcess ?? (info => Process.Start(info));
         _logger = logger ?? new DiagnosticsLogger();
+        _resolveAppId = resolveAppId;
+        _invokePackagedFiles = invokePackagedFiles;
     }
 
     public OpenResult Open(IReadOnlyList<string> filePaths, AppCandidate candidate)
@@ -56,56 +70,83 @@ public sealed class OpenFileService : IOpenFileService
 
         try
         {
-            // AUMIDs (the normal MSIX handler form) have a stable activation
-            // API. This avoids passing a managed/COM IDataObject into the
-            // Shell handler, which can terminate the host process on some
-            // Windows builds.
-            if (handlerName.Contains('!', StringComparison.Ordinal))
+            var appId = _resolveAppId(handlerName);
+            if (appId is not null && _invokePackagedFiles(appId, filePaths) == 0)
+                return new OpenResult(true);
+        }
+        catch { } // Resolve/COM failures become a failed open action below.
+
+        _logger.Log("packagedfileactivationfailed");
+        return new OpenResult(false, "无法使用所选系统应用打开文件，请检查应用是否仍然可用。");
+    }
+
+    private static int InvokePackagedFiles(string appId, IReadOnlyList<string> filePaths)
+    {
+        var hr = SHAssocEnumHandlers(Path.GetExtension(filePaths[0]), AssocFilter.None, out var handlers);
+        Marshal.ThrowExceptionForHR(hr);
+        try
+        {
+            var item = new IAssocHandler[1];
+            while (handlers.Next(1, item, out var fetched) == 0 && fetched == 1)
             {
+                var handler = item[0];
                 try
                 {
-                    var manager = (IApplicationActivationManager)(object)new ApplicationActivationManager();
-                    try
+                    var handlerAppId = PackagedAppIdentity.Resolve(GetAppUserModelId(handler));
+                    if (handlerAppId is null)
                     {
-                        var itemArray = CreateShellItemArray(filePaths);
                         try
                         {
-                            var hr = manager.ActivateForFile(handlerName, itemArray, "open", out _);
-                            if (hr >= 0) return new OpenResult(true);
+                            handler.GetName(out var name);
+                            handlerAppId = PackagedAppIdentity.Resolve(name);
                         }
-                        finally
-                        {
-                            Marshal.ReleaseComObject(itemArray);
-                        }
+                        catch (COMException) { continue; }
                     }
-                    finally
-                    {
-                        Marshal.ReleaseComObject(manager);
-                    }
+                    if (!string.Equals(appId, handlerAppId, StringComparison.OrdinalIgnoreCase)) continue;
+                    return InvokeShellHandler(handler, filePaths);
                 }
-                catch
+                finally
                 {
-                    _logger.Log("packagedfileactivationfailed");
+                    Marshal.ReleaseComObject(handler);
                 }
             }
-
-            // AppX ProgID names do not contain an AUMID. Explorer still knows
-            // how to activate these Shell entries, and keeps the failure
-            // contained in a separate process if the package disappeared.
-            var process = _startProcess(new ProcessStartInfo("explorer.exe")
-            {
-                Arguments = $"{QuoteArgument($"shell:AppsFolder\\{handlerName}")} {BuildFileArguments(filePaths)}",
-                UseShellExecute = true
-            });
-            return process is null
-                ? new OpenResult(false, "无法启动所选系统应用。")
-                : new OpenResult(true);
+            return unchecked((int)0x80070490); // Selected handler no longer registered.
         }
-        catch
+        finally
         {
-            _logger.Log("packagedprocessstartfailed");
+            Marshal.ReleaseComObject(handlers);
         }
-        return new OpenResult(false, "无法启动所选系统应用，请检查应用是否仍然可用。");
+    }
+
+    private static int InvokeShellHandler(IAssocHandler handler, IReadOnlyList<string> filePaths)
+    {
+        var itemArray = CreateShellItemArray(filePaths);
+        var dataObject = IntPtr.Zero;
+        try
+        {
+            var dataHandler = new Guid("B8C0BD9F-ED24-455C-83E6-D5390C4FE8C4"); // BHID_DataObject
+            var dataInterface = new Guid("0000010E-0000-0000-C000-000000000046"); // IID_IDataObject
+            itemArray.BindToHandler(IntPtr.Zero, ref dataHandler, ref dataInterface, out dataObject);
+            // Pass the Shell-owned native IDataObject pointer. A managed WPF
+            // DataObject/CCW is not interchangeable with this Shell payload.
+            if (filePaths.Count == 1) return handler.Invoke(dataObject);
+
+            handler.CreateInvoker(dataObject, out var invoker);
+            try
+            {
+                var support = invoker.SupportsSelection();
+                return support == 0 ? invoker.Invoke() : support;
+            }
+            finally
+            {
+                Marshal.ReleaseComObject(invoker);
+            }
+        }
+        finally
+        {
+            if (dataObject != IntPtr.Zero) Marshal.Release(dataObject);
+            Marshal.ReleaseComObject(itemArray);
+        }
     }
 
     private static string QuoteArgument(string value)
@@ -136,20 +177,11 @@ public sealed class OpenFileService : IOpenFileService
         }
     }
 
-    private enum ActivateOptions { None = 0 }
-
-    [ComImport, Guid("45BA127D-10A8-46EA-8AB7-56EA9078943C"), ClassInterface(ClassInterfaceType.None)]
-    private sealed class ApplicationActivationManager { }
-
-    [ComImport, Guid("2e941141-7f97-4756-ba1d-9decde894a3d"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    private interface IApplicationActivationManager
-    {
-        [PreserveSig] int ActivateApplication([MarshalAs(UnmanagedType.LPWStr)] string appUserModelId, [MarshalAs(UnmanagedType.LPWStr)] string arguments, ActivateOptions options, out uint processId);
-        [PreserveSig] int ActivateForFile([MarshalAs(UnmanagedType.LPWStr)] string appUserModelId, [MarshalAs(UnmanagedType.Interface)] IShellItemArray itemArray, [MarshalAs(UnmanagedType.LPWStr)] string verb, out uint processId);
-    }
-
     [ComImport, Guid("b63ea76d-1f85-456f-a19c-48159efa858b"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    private interface IShellItemArray { }
+    private interface IShellItemArray
+    {
+        void BindToHandler(IntPtr bindContext, ref Guid handlerId, ref Guid interfaceId, out IntPtr result);
+    }
 
     [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
     private static extern int SHParseDisplayName(

@@ -2,6 +2,9 @@ using EousGate;
 using EousGate.Infrastructure;
 using System.Diagnostics;
 
+if (args.FirstOrDefault() == "--photos-smoke")
+    return PackagedAppSmoke.Run(args.Skip(1).ToArray());
+
 var tests = new (string Name, Action Run)[]
 {
     ("DragSession stores an immutable ordered file snapshot", DragSessionStoresImmutableFiles),
@@ -15,6 +18,11 @@ var tests = new (string Name, Action Run)[]
     ("AppCandidateFilter removes unavailable and duplicate candidates", CandidateFilterRemovesUnavailableAndDuplicates),
     ("AppCandidateFilter keeps packaged Shell handlers", CandidateFilterKeepsPackagedHandlers),
     ("Packaged open failures stay inside the host", PackagedOpenFailureDoesNotCrashHost),
+    ("Localized Shell names use the explicit packaged identity", LocalizedShellNamesUseExplicitIdentity),
+    ("Indirect icons do not turn executable paths into app IDs", IndirectIconsDoNotDefineIdentity),
+    ("AppX ProgIDs resolve to registered app IDs", AppXProgIdsResolveIdentity),
+    ("Packaged activation receives the selected app and all files once", PackagedActivationReceivesAllFiles),
+    ("Packaged activation errors never start Explorer", PackagedActivationErrorsNeverStartExplorer),
     ("AppDiscovery rejects blank extensions", DiscoveryRejectsBlankExtension),
     ("OpenFileService rejects an unavailable candidate", OpenUnavailableCandidateReturnsFailure),
     ("OpenFileService converts process errors into a failure", OpenProcessFailureReturnsFailure),
@@ -186,8 +194,78 @@ static void PackagedOpenFailureDoesNotCrashHost()
         null,
         "Contoso.Package_123!App");
     var result = service.Open(["C:\\sample.jpg", "C:\\sample-2.jpg"], candidate);
-    Assert(result.Success && captured?.FileName.Equals("explorer.exe", StringComparison.OrdinalIgnoreCase) == true, "packaged activation failure must fall back to an isolated Explorer process");
-    Assert(captured!.Arguments.Contains("\"C:\\sample.jpg\"") && captured.Arguments.Contains("\"C:\\sample-2.jpg\""), "packaged fallback must receive every file path");
+    Assert(!result.Success && !string.IsNullOrWhiteSpace(result.Error), "missing files/package must report failure");
+    Assert(captured is null, "failed packaged activation must never start Explorer or another process");
+}
+
+static void LocalizedShellNamesUseExplicitIdentity()
+{
+    const string appId = "Microsoft.Windows.Photos_8wekyb3d8bbwe!App";
+    var candidate = AppDiscovery.CreateShellCandidate("照片", "照片", "@{Photos?icon}", appId);
+    Assert(candidate is { IsPackaged: true } && candidate.AssociationHandlerName == appId, "localized handler names must resolve using IObjectWithAppUserModelID");
+    Assert(candidate!.Id == "packaged:照片", "existing per-type order and hidden IDs must stay valid");
+    Assert(candidate.ExecutablePath == $"shell:AppsFolder\\{appId}", "AppsFolder metadata must contain the app identity, not its label");
+    Assert(AppDiscovery.CreateShellCandidate("照片", "照片", "@{Photos?icon}", null) is null, "unresolved labels must not become launchable applications");
+}
+
+static void IndirectIconsDoNotDefineIdentity()
+{
+    var executable = Environment.ProcessPath!;
+    var candidate = AppDiscovery.CreateShellCandidate(executable, "Desktop app", "@{Package?icon}", "Desktop.AppId");
+    Assert(candidate is { IsPackaged: false } && candidate.ExecutablePath == executable, "desktop paths must remain executable even with indirect icons and desktop AppIDs");
+    var packaged = AppDiscovery.CreateShellCandidate(executable, "Packaged app", "@{Package?icon}", "Contoso.Package_123!App");
+    Assert(packaged is { IsPackaged: true } && packaged.AssociationHandlerName == "Contoso.Package_123!App", "explicit packaged identity takes priority over an executable handler name");
+}
+
+static void AppXProgIdsResolveIdentity()
+{
+    const string appId = "Microsoft.Windows.Photos_8wekyb3d8bbwe!App";
+    Assert(PackagedAppIdentity.Resolve("AppXphotos", id => id == "AppXphotos" ? appId : null) == appId, "AppX ProgIDs must use their registered AppUserModelID");
+    Assert(PackagedAppIdentity.Resolve(appId, _ => throw new Exception("unexpected lookup")) == appId, "AUMIDs must pass through directly");
+    Assert(PackagedAppIdentity.Resolve("AppXmissing", _ => null) is null, "missing registration must fail to resolve");
+    Assert(PackagedAppIdentity.Resolve("AppXinvalid", _ => "照片") is null, "registered labels must not be accepted as AUMIDs");
+    foreach (var invalid in new[] { "照片", @"C:\Apps\App!one.exe", "!App", "Package!", "Package!App!Other", "Desktop.AppId" })
+        Assert(PackagedAppIdentity.Resolve(invalid, _ => throw new Exception("unexpected lookup")) is null, "invalid identities must not trigger activation or registry lookup");
+}
+
+static void PackagedActivationReceivesAllFiles()
+{
+    var files = new[] { @"C:\图片 空格\第一张.jpg", @"C:\图片 空格\second.png" };
+    const string appId = "Microsoft.Windows.Photos_8wekyb3d8bbwe!App";
+    var activations = 0;
+    var starts = 0;
+    var service = new OpenFileService(_ => { starts++; return null; }, null,
+        id => PackagedAppIdentity.Resolve(id, _ => appId),
+        (id, received) =>
+        {
+            activations++;
+            Assert(id == appId && received.SequenceEqual(files), "activation must preserve target app, file order, spaces, Unicode, and mixed types");
+            return 0;
+        });
+    var candidate = new AppCandidate("photos", "照片", "shell:AppsFolder\\AppXphotos", null, true, null, "AppXphotos");
+    Assert(service.Open(files, candidate).Success && activations == 1 && starts == 0, "all files must be delivered through exactly one activation");
+}
+
+static void PackagedActivationErrorsNeverStartExplorer()
+{
+    var candidate = new AppCandidate("photos", "照片", "shell:AppsFolder\\Photos", null, true, null, "Photos");
+    var starts = 0;
+    foreach (var mode in new[] { "unresolved", "resolve-throws", "hresult", "unsupported", "throws" })
+    {
+        var activations = 0;
+        var service = new OpenFileService(_ => { starts++; return new Process(); }, null,
+            _ => mode == "resolve-throws" ? throw new InvalidOperationException() : mode == "unresolved" ? null : "Photos_123!App",
+            (_, _) =>
+            {
+                activations++;
+                if (mode == "throws") throw new System.Runtime.InteropServices.COMException();
+                return mode == "unsupported" ? 1 : unchecked((int)0x80070005);
+            });
+        var result = service.Open([@"C:\sample.jpg"], candidate);
+        Assert(!result.Success && !string.IsNullOrWhiteSpace(result.Error), "resolution, HRESULT, and COM errors must all be visible failures");
+        Assert(activations == (mode is "unresolved" or "resolve-throws" ? 0 : 1), "unresolved identities must not activate");
+    }
+    Assert(starts == 0, "no failure path may invoke Explorer or a default application");
 }
 
 static void DiscoveryRejectsBlankExtension()

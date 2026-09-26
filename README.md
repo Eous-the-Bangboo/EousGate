@@ -4,7 +4,7 @@
 
 EousGate is a local Windows 11 utility that lets you drag files to a screen edge and choose an installed app to open them.
 
-当前版本：`v0.1.0-beta.1`（公开测试版）
+当前版本：`v0.1.0-beta.2`（公开测试版）
 
 ![EousGate 打开面板](docs/images/overlay.png)
 
@@ -21,8 +21,8 @@ EousGate is a local Windows 11 utility that lets you drag files to a screen edge
 
 ## 下载与使用
 
-1. 打开 [EousGate v0.1.0-beta.1 Release](https://github.com/Eous-the-Bangboo/EousGate/releases/tag/v0.1.0-beta.1)。
-2. 下载 `EousGate-v0.1.0-beta.1-win-x64.zip` 和对应的 `.sha256` 文件。
+1. 打开 [EousGate v0.1.0-beta.2 Release](https://github.com/Eous-the-Bangboo/EousGate/releases/tag/v0.1.0-beta.2)。
+2. 下载 `EousGate-v0.1.0-beta.2-win-x64.zip` 和对应的 `.sha256` 文件。
 3. 解压 ZIP 到任意文件夹，不要直接在压缩包里运行。
 4. 运行 `EousGate.exe`；程序会驻留在系统托盘。
 5. 从资源管理器拖动一个或多个文件到启用的屏幕边缘。
@@ -37,15 +37,15 @@ EousGate is a local Windows 11 utility that lets you drag files to a screen edge
 校验示例：
 
 ```powershell
-Get-FileHash .\EousGate-v0.1.0-beta.1-win-x64.zip -Algorithm SHA256
-Get-Content .\EousGate-v0.1.0-beta.1-win-x64.zip.sha256
+Get-FileHash .\EousGate-v0.1.0-beta.2-win-x64.zip -Algorithm SHA256
+Get-Content .\EousGate-v0.1.0-beta.2-win-x64.zip.sha256
 ```
 
 ## 系统要求与已知限制
 
 - 支持环境：Windows 11 x64、主显示器
 - 当前不支持：文件夹、多显示器边缘、自动更新、自动启动和 Windows 默认关联修改
-- Microsoft Photos 多文件激活、干净 Windows 11、100%/125%/150% DPI 和高对比度仍需要更多公开测试
+- 已修复“照片”误打开资源管理器；本机已验证单 JPG 和 JPG+PNG，其他 Windows/Photos 版本、完整鼠标拖拽、干净 Windows 11、DPI 和高对比度仍需更多测试
 - 这是 Beta 版本；重要工作前请先用非敏感文件验证目标软件的打开行为
 
 ## 隐私

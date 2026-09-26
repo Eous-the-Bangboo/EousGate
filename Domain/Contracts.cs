@@ -10,7 +10,7 @@ public sealed record AppCandidate(
     bool IsAvailable,
     string? IconPath = null,
     // Packaged Windows apps do not expose a launchable .exe. Keep the Shell
-    // association name so the app can be invoked through IAssocHandler.
+    // resolved AppUserModelID so Shell invocation targets the selected app.
     string? AssociationHandlerName = null)
 {
     public bool IsPackaged => !string.IsNullOrWhiteSpace(AssociationHandlerName);
