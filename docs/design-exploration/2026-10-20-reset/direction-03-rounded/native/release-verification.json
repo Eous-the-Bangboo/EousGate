@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0-beta.15+631c7652ad5dbc7a67cdd02a398b8f6bd9177bf9",
+  "fileVersion": "0.2.0.15",
+  "releaseDirectory": "D:\\EousGate\\artifacts\\EousAssistant-v0.2.0-beta.15-win-x64",
+  "archive": "D:\\EousGate\\artifacts\\EousAssistant-v0.2.0-beta.15-win-x64.zip",
+  "archiveSha256": "64284541DF42D7A3E5B47A93A4FEEC44407834D17F6606D79A11218188258D8D",
+  "stableArchiveMatches": true,
+  "selfContained": true,
+  "archiveEntries": 465,
+  "publishedExeBytes": 309248,
+  "releaseTestExitCode": 0,
+  "basicTests": "76/76",
+  "integrationGroups": [
+    "file-hop",
+    "clipboard",
+    "window-switching",
+    "assistant",
+    "workbench",
+    "custom-program",
+    "external-monitor-lifecycle",
+    "external-process"
+  ],
+  "visualReview": "8/10 initial; remediation recheck passed; not rescored",
+  "limitations": [
+    "Actual monitor DPI / high contrast and desktop drag / Edge dialog remain tracked",
+    "No complete motion video independently reviewed"
+  ]
+}

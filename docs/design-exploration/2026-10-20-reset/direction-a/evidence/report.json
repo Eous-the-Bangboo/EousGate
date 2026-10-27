@@ -1,0 +1,250 @@
+[
+  {
+    "file": "page.png",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 110,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "page-@2x.png",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 2,
+    "animationWaitMs": 111,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "motion-probe-configure",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "configure",
+    "motion": {
+      "load": {
+        "elements": 6,
+        "loops": 0,
+        "maxMove": 6,
+        "maxSize": 0,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.failed",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          }
+        ]
+      },
+      "steps": {
+        "elements": 3,
+        "loops": 0,
+        "maxMove": 1004,
+        "maxSize": 106,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "div.toast",
+            "move": 1004,
+            "size": 106,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "transition:opacity"
+            ]
+          },
+          {
+            "el": "section.drawer",
+            "move": 36,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "transition:transform",
+              "transition:opacity"
+            ]
+          },
+          {
+            "el": "div.drawer-shade",
+            "move": 0,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "transition:opacity"
+            ]
+          }
+        ]
+      },
+      "hero": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "layers": 0
+      },
+      "scroll": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "scrollable": false
+      }
+    },
+    "issues": []
+  },
+  {
+    "file": "motion-entry-end.jpg",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "entry",
+    "issues": [
+      "录屏：没装 ffmpeg，只留了 motion-entry-start/mid/end.jpg 三帧"
+    ],
+    "frames": {
+      "start": {
+        "file": "motion-entry-start.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 150
+      },
+      "mid": {
+        "file": "motion-entry-mid.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 402
+      },
+      "end": {
+        "file": "motion-entry-end.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 1859
+      }
+    },
+    "sampling": {
+      "mode": "entry"
+    },
+    "durationMs": 1859,
+    "consistency": {
+      "status": "matched",
+      "reference": "motion-entry-end.jpg",
+      "different": false,
+      "changedPixels": 0,
+      "maxTilePixels": 0,
+      "pixelRatio": 0
+    },
+    "failed": true
+  },
+  {
+    "file": "motion-configure-end.jpg",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "configure",
+    "issues": [
+      "第 3 步「click [data-testid='apply-settings']」：目标处于禁用状态（disabled），动作仍照常执行",
+      "录屏：没装 ffmpeg，只留了 motion-configure-start/mid/end.jpg 三帧"
+    ],
+    "frames": {
+      "start": {
+        "file": "motion-configure-start.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 816
+      },
+      "mid": {
+        "file": "motion-configure-mid.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 831
+      },
+      "end": {
+        "file": "motion-configure-end.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 2153
+      }
+    },
+    "sampling": {
+      "mode": "action",
+      "step": 3,
+      "action": "click",
+      "raw": "click [data-testid='apply-settings']"
+    },
+    "durationMs": 2153,
+    "consistency": {
+      "status": "matched",
+      "reference": "motion-configure-end.jpg",
+      "different": false,
+      "changedPixels": 0,
+      "maxTilePixels": 0,
+      "pixelRatio": 0
+    },
+    "failed": true
+  }
+]

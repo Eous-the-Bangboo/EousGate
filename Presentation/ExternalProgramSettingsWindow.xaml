@@ -1,0 +1,14 @@
+<Window x:Class="EousGate.ExternalProgramSettingsWindow"
+        Icon="pack://application:,,,/EousAssistant;component/Assets/EousGate.ico"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="外部程序设置" Width="640" Height="390" MinWidth="540" MinHeight="360" WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource PanelBackground}" Foreground="{DynamicResource PanelForeground}" FontFamily="Microsoft YaHei UI">
+  <Window.Resources><Style TargetType="Button" BasedOn="{StaticResource ActionButtonBaseStyle}"><Setter Property="Height" Value="36"/><Setter Property="MinWidth" Value="80"/><Setter Property="Margin" Value="0,0,10,0"/><Setter Property="Background" Value="{DynamicResource PanelSurfaceSoft}"/><Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/><Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}"/></Style></Window.Resources>
+  <Grid Margin="26"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel><TextBlock x:Name="ProgramTitle" FontSize="23" FontWeight="SemiBold"/><TextBlock Text="监控当前用户的程序进程，启动与停止使用此程序路径。" Foreground="{DynamicResource PanelMutedForeground}" TextWrapping="Wrap" Margin="0,8,0,20"/></StackPanel>
+    <StackPanel Grid.Row="1"><TextBlock Text="程序文件" Margin="0,0,0,6"/><TextBox x:Name="ExecutablePath" Height="36" Padding="8,0" VerticalContentAlignment="Center" Background="{DynamicResource PanelSurfaceSoft}" Foreground="{DynamicResource PanelForeground}" BorderBrush="{DynamicResource PanelBorder}" AutomationProperties.Name="程序文件路径"/></StackPanel>
+    <WrapPanel Grid.Row="2" Margin="0,12,0,14"><Button x:Name="BrowseButton" Content="选择程序…" Click="BrowseClick"/><Button x:Name="DetectButton" Content="自动定位" Click="DetectClick"/></WrapPanel>
+    <TextBlock Grid.Row="3" x:Name="Status" TextWrapping="Wrap" Foreground="{DynamicResource PanelMutedForeground}"/>
+    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right"><Button Content="取消" Click="CancelClick"/><Button x:Name="SaveButton" Content="保存" Click="SaveClick"/></StackPanel>
+  </Grid>
+</Window>

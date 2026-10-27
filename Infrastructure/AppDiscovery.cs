@@ -10,6 +10,8 @@ public sealed class AppDiscovery : IAppDiscovery
 {
     private readonly Func<UserSettings>? _settings;
     private readonly DiagnosticsLogger _logger;
+    private readonly Dictionary<string, string> _defaults = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, HashSet<string>> _shellRecommended = new(StringComparer.OrdinalIgnoreCase);
 
     public AppDiscovery(Func<UserSettings>? settings = null, DiagnosticsLogger? logger = null)
     {
@@ -37,26 +39,37 @@ public sealed class AppDiscovery : IAppDiscovery
     public IReadOnlyList<AppCandidate> GetCandidatesForExtension(string extension, bool applyPreferences)
     {
         var result = new List<AppCandidate>();
-        var normalizedExtension = extension?.Trim();
-        if (string.IsNullOrWhiteSpace(normalizedExtension)) return result;
-        var ext = normalizedExtension.StartsWith('.') ? normalizedExtension : "." + normalizedExtension;
+        var ext = FileTypeCatalog.NormalizeExtension(extension);
+        if (ext.Length == 0) return result;
+        _defaults.Remove(ext);
+        _shellRecommended[ext] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var customCandidates = GetCustomCandidates(ext);
         result.AddRange(customCandidates);
         try
         {
             var defaultExecutable = QueryDefaultExecutable(ext);
             if (!string.IsNullOrWhiteSpace(defaultExecutable) && File.Exists(defaultExecutable))
-                result.Add(CreateCandidate(defaultExecutable));
+            {
+                var candidate = CreateCandidate(defaultExecutable);
+                result.Add(candidate);
+                _defaults[ext] = candidate.Id;
+            }
 
             // Some applications (notably Microsoft Office) register the file
             // type's default ProgID but do not add themselves to OpenWithProgids.
             // Resolve that ProgID as well so an installed handler is discoverable.
             using var extensionKey = Registry.ClassesRoot.OpenSubKey(ext);
-            var defaultProgId = extensionKey?.GetValue(null)?.ToString();
+            using var userChoice = Registry.CurrentUser.OpenSubKey($@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\{ext}\UserChoice");
+            var defaultProgId = userChoice?.GetValue("ProgId")?.ToString() ?? extensionKey?.GetValue(null)?.ToString();
             if (!string.IsNullOrWhiteSpace(defaultProgId))
             {
                 var executable = ResolveExecutable(defaultProgId);
-                if (executable is not null) result.Add(CreateCandidate(executable));
+                if (executable is not null)
+                {
+                    var candidate = CreateCandidate(executable);
+                    result.Add(candidate);
+                    _defaults.TryAdd(ext, candidate.Id);
+                }
             }
 
             var keyPath = $@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\{ext}\OpenWithList";
@@ -74,21 +87,37 @@ public sealed class AppDiscovery : IAppDiscovery
             // Packaged apps (such as the current Windows Notepad) are exposed
             // by Shell association handlers rather than OpenWithProgids.
             AddShellHandlers(ext, result);
+            var defaultAppId = PackagedAppIdentity.Resolve(defaultProgId);
+            var packagedDefault = defaultAppId is null ? null : result.FirstOrDefault(c =>
+                string.Equals(c.AssociationHandlerName, defaultAppId, StringComparison.OrdinalIgnoreCase));
+            if (packagedDefault is not null) _defaults[ext] = packagedDefault.Id;
         }
         catch { _logger.Log("appdiscoveryfailed"); }
         result = AppCandidateFilter.Filter(result, File.Exists, NormalizePath).ToList();
         if (!applyPreferences)
             result.AddRange(customCandidates.Where(candidate => !candidate.IsAvailable));
-        if (applyPreferences && _settings is not null)
-        {
-            var pref = _settings().FileTypes.FirstOrDefault(p => string.Equals(p.Key, ext, StringComparison.OrdinalIgnoreCase)).Value;
-            if (pref is not null)
-            {
-                var hidden = pref.HiddenCandidateIds.ToHashSet(StringComparer.OrdinalIgnoreCase);
-                result = result.Where(c => !hidden.Contains(c.Id)).OrderBy(c => pref.CandidateOrder.FindIndex(id => string.Equals(id, c.Id, StringComparison.OrdinalIgnoreCase)) is var i && i >= 0 ? i : int.MaxValue).ThenBy(c => c.DisplayName).ToList();
-            }
-        }
-        return new ReadOnlyCollection<AppCandidate>(result);
+        var preference = GetPreference(ext);
+        var defaultId = _defaults.GetValueOrDefault(ext);
+        var recommended = _shellRecommended.GetValueOrDefault(ext);
+        var ordered = AppRecommendationPolicy.Order(ext, result, preference, defaultId, recommended);
+        return applyPreferences
+            ? ordered.Where(c => AppRecommendationPolicy.IsVisible(ext, c, preference, defaultId, recommended)).ToArray()
+            : ordered;
+    }
+
+    private FileTypePreference? GetPreference(string extension)
+        => _settings?.Invoke().FileTypes.FirstOrDefault(p => string.Equals(p.Key, extension, StringComparison.OrdinalIgnoreCase)).Value;
+
+    public bool IsSuggestedForExtension(string extension, AppCandidate candidate)
+        => AppRecommendationPolicy.IsSuggested(extension, candidate, GetPreference(extension),
+            _defaults.GetValueOrDefault(extension), _shellRecommended.GetValueOrDefault(extension));
+
+    public string GetRecommendationLabel(string extension, AppCandidate candidate)
+    {
+        if (string.Equals(_defaults.GetValueOrDefault(extension), candidate.Id, StringComparison.OrdinalIgnoreCase)) return "系统默认";
+        var score = AppRecommendationPolicy.Score(extension, candidate, GetPreference(extension),
+            _defaults.GetValueOrDefault(extension), _shellRecommended.GetValueOrDefault(extension));
+        return score switch { >= 900 => "自定义", >= 80 => "类型匹配", < 0 => "按需启用", _ => "系统关联" };
     }
 
     private static AppCandidate CreateCandidate(string executable, string? preferredDisplayName = null)
@@ -159,7 +188,11 @@ public sealed class AppDiscovery : IAppDiscovery
                     handler.GetUIName(out var uiName);
                     handler.GetIconLocation(out var iconLocation, out _);
                     var candidate = CreateShellCandidate(name, uiName, iconLocation, GetAppUserModelId(handler));
-                    if (candidate is not null) result.Add(candidate);
+                    if (candidate is not null)
+                    {
+                        result.Add(candidate);
+                        if (handler.IsRecommended() == 0) _shellRecommended[extension].Add(candidate.Id);
+                    }
                 }
                 catch { }
                 finally

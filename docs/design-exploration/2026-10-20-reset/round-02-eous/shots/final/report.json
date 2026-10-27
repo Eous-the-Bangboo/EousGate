@@ -1,0 +1,44 @@
+[
+  {
+    "file": "stitch.png",
+    "width": 2000,
+    "height": 537,
+    "columns": 3,
+    "items": [
+      {
+        "naturalWidth": 980,
+        "naturalHeight": 700,
+        "width": 640,
+        "height": 457,
+        "labelHeight": 32,
+        "x": 24,
+        "y": 24,
+        "label": "01 · 抽象构成 / 全直角",
+        "labelY": 489
+      },
+      {
+        "naturalWidth": 980,
+        "naturalHeight": 700,
+        "width": 640,
+        "height": 457,
+        "labelHeight": 32,
+        "x": 680,
+        "y": 24,
+        "label": "02 · 哥特墨绘 / 全直角",
+        "labelY": 489
+      },
+      {
+        "naturalWidth": 980,
+        "naturalHeight": 700,
+        "width": 640,
+        "height": 457,
+        "labelHeight": 32,
+        "x": 1336,
+        "y": 24,
+        "label": "03 · 软胶玩具 / 统一圆角",
+        "labelY": 489
+      }
+    ],
+    "issues": []
+  }
+]

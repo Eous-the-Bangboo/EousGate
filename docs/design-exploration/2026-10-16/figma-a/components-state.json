@@ -1,0 +1,245 @@
+{
+  "createdNodeIds": [
+    "4:2",
+    "4:3",
+    "4:4",
+    "4:5",
+    "4:6",
+    "4:7",
+    "4:8",
+    "4:9",
+    "4:10",
+    "4:11",
+    "4:12",
+    "4:13",
+    "4:14",
+    "4:15",
+    "4:16",
+    "4:17",
+    "4:18",
+    "4:19",
+    "4:20",
+    "4:21",
+    "4:22",
+    "4:23",
+    "4:24",
+    "4:25",
+    "4:26",
+    "4:27",
+    "4:28",
+    "4:29",
+    "4:30",
+    "4:31",
+    "4:32",
+    "4:33",
+    "4:34",
+    "4:35",
+    "4:36",
+    "4:37",
+    "4:38",
+    "4:39",
+    "4:40",
+    "4:41",
+    "4:42",
+    "4:43",
+    "4:44",
+    "4:45",
+    "4:46",
+    "4:47",
+    "4:48",
+    "4:49",
+    "4:50",
+    "4:51",
+    "4:52",
+    "4:53",
+    "4:54",
+    "4:55",
+    "4:56",
+    "4:57",
+    "4:58",
+    "4:59",
+    "4:60",
+    "4:61",
+    "4:62",
+    "4:63",
+    "4:64",
+    "4:65",
+    "4:66",
+    "4:67",
+    "4:68",
+    "4:69",
+    "4:70",
+    "4:71",
+    "4:72",
+    "4:73",
+    "4:74",
+    "4:75",
+    "4:76",
+    "4:77",
+    "4:78",
+    "4:79",
+    "4:80",
+    "4:81",
+    "4:82",
+    "4:83",
+    "4:84",
+    "4:85",
+    "4:86",
+    "4:87",
+    "4:88",
+    "4:89",
+    "4:90",
+    "4:91",
+    "4:92",
+    "4:95",
+    "4:96",
+    "4:97",
+    "4:100",
+    "4:101",
+    "4:102",
+    "4:103",
+    "4:106",
+    "4:107",
+    "4:110",
+    "4:111",
+    "4:114",
+    "4:115",
+    "4:118",
+    "4:119",
+    "4:122",
+    "4:123",
+    "4:126",
+    "4:127",
+    "4:130",
+    "4:131",
+    "4:134",
+    "4:135",
+    "4:136",
+    "4:137",
+    "4:140",
+    "4:141",
+    "4:142",
+    "4:145"
+  ],
+  "components": {
+    "icons": {
+      "code": "4:2",
+      "link": "4:5",
+      "apps": "4:8",
+      "down": "4:11",
+      "trigger": "4:14",
+      "overview": "4:17",
+      "chevron": "4:20",
+      "open": "4:23",
+      "notepad": "4:26",
+      "web": "4:29",
+      "file": "4:32",
+      "brand": "4:35",
+      "appearance": "4:42",
+      "check": "4:45",
+      "minus": "4:48",
+      "close": "4:51",
+      "folder": "4:54",
+      "list": "4:57",
+      "shield": "4:60",
+      "maximize": "4:63"
+    },
+    "buttons": "4:90",
+    "nav": "4:101",
+    "appRows": "4:134",
+    "field": "4:145"
+  },
+  "properties": {
+    "buttonLabel": "Label#4:0",
+    "navLabel": "Label#4:13",
+    "navIcon": "Icon#4:16",
+    "rowLabel": "Label#4:19",
+    "rowIcon": "Icon#4:24",
+    "fieldLabel": "Value#4:29"
+  },
+  "variantCounts": {
+    "buttons": 12,
+    "nav": 2,
+    "softwareOptions": 4,
+    "select": 2
+  },
+  "font": "Noto Sans SC (preview fallback)",
+  "bindingEvidence": {
+    "button": {
+      "height": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:39"
+      },
+      "topLeftRadius": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:37"
+      },
+      "topRightRadius": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:37"
+      },
+      "bottomLeftRadius": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:37"
+      },
+      "bottomRightRadius": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:37"
+      },
+      "fills": [
+        {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:3:21"
+        }
+      ],
+      "strokes": [
+        {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:3:21"
+        }
+      ]
+    },
+    "row": {
+      "itemSpacing": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:33"
+      },
+      "paddingLeft": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:33"
+      },
+      "paddingTop": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:33"
+      },
+      "paddingRight": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:33"
+      },
+      "paddingBottom": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:33"
+      },
+      "height": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:40"
+      },
+      "topLeftRadius": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:38"
+      },
+      "topRightRadius": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:38"
+      },
+      "bottomLeftRadius": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:38"
+      },
+      "bottomRightRadius": {
+        "type": "VARIABLE_ALIAS",
+        "id": "VariableID:3:38"
+      }
+    }
+  }
+}

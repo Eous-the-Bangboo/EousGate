@@ -1,0 +1,43 @@
+[
+  {
+    "file": "motion-settings-end.jpg",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "settings",
+    "issues": [],
+    "frames": {
+      "start": {
+        "file": "motion-settings-start.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 541
+      },
+      "mid": {
+        "file": "motion-settings-mid.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 698
+      },
+      "end": {
+        "file": "motion-settings-end.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 2688
+      }
+    },
+    "sampling": {
+      "mode": "action",
+      "step": 1,
+      "action": "click",
+      "raw": "click [aria-label=文件快开设置]"
+    },
+    "durationMs": 2688,
+    "consistency": {
+      "status": "matched",
+      "reference": "motion-settings-end.jpg",
+      "different": false,
+      "changedPixels": 0,
+      "maxTilePixels": 0,
+      "pixelRatio": 0
+    },
+    "failed": true
+  }
+]

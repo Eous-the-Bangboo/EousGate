@@ -1,5 +1,12 @@
 # 技术与架构标准
 
+v0.2 助手扩展遵循 [ADR 0004](../../adr/0004-assistant-host.md)。工具生命周期、模块隔离和新数据目录以该决策为准。
+外部工具监控与进程控制遵循 [ADR 0005](../../adr/0005-external-program-control.md)，仅管理匹配路径、会话和当前用户的应用进程。
+自定义普通 EXE 的配置、动态注册和停止策略遵循 [ADR 0006](../../adr/0006-custom-program-monitoring.md)。
+米哈游启动器接力识别与访问拒绝后的单次授权关闭遵循[ADR 0007](../../adr/0007-launcher-handoff-and-elevated-stop.md)，不改变默认强制策略、不提升主助手或递归控制游戏进程。
+
+文件夹快跳接收按钮使用独立STA消息循环，避免被宿主WPF标准文件选择框的同线程模态激活循环抢占；点击后通过宿主Picker.BeginInvoke派发，停止时关闭并等待按钮线程释放。文件夹历史、Picker和后台采样仍归原有宿主生命周期，不把按钮线程扩大为另一套历史写入者。
+
 ## 分层
 
 - `Domain/` 只表达拖拽会话、候选软件、打开结果、用户设置和接口契约。
@@ -8,6 +15,8 @@
 - Windows API、注册表和 COM 调用不得进入领域层。
 
 ## 行为约束
+
+- 接收条新范围用可空 `StartPercent`/`EndPercent` 保存，UserSettings新建各侧显式0/100；双空识别旧LengthPercent/OffsetPixels配置。运行时统一由EdgeBandLayoutMath计算物理边界，编辑旧配置时按实际夹取后的位置迁移，不能以默认0/100覆盖旧局部范围。新端点不合法时加载回退整条，界面提交则拒绝并保留草稿。
 
 - `DragSession` 状态必须有明确的开始、取消、失败和完成转移。
 - `DragSession` 保存不可变、有序且非空的文件集合；打开动作不得拆批或逐文件启动。
@@ -21,3 +30,7 @@
 ## 隐私与依赖
 
 默认不记录文件路径、文件名和内容；首版不引入网络服务或远程资源。
+
+## 文件类型推荐（beta.12）
+- Domain/FileTypeCatalog 提供本地常见类型目录；AppRecommendationPolicy 为无平台依赖的保守推荐策略。Infrastructure/AppDiscovery 读取真实默认／Shell 关联，再应用推荐和用户覆盖；不凭空增加未注册软件、不修改系统默认关联。
+- 复用 FileTypePreference 的排序／隐藏／CustomApps，无新增持久化字段。显式排序保留旧配置行为，默认空排序持续自动推荐。

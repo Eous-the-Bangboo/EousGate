@@ -28,12 +28,14 @@ public partial class EdgeDropWindow : Window
     public EdgeDropWindow(OverlayWindow overlay, IAppDiscovery discovery, Func<bool> isPaused, Func<UserSettings> settings, EdgeSide side = EdgeSide.Left)
     {
         InitializeComponent();
+        WindowSwitchingHelper.ExcludeFromWindowSwitching(this);
         _overlay = overlay;
         _discovery = discovery;
         _isPaused = isPaused;
         _settings = settings;
         _side = side;
         _triggerTimer = new DispatcherTimer();
+        Closed += (_, _) => { CancelPendingTrigger(); StopBandPulse(); };
         _triggerTimer.Tick += (_, _) =>
         {
             // 拖拽进入接收条后延时触发，使用触发时的屏幕坐标作为面板锚点。

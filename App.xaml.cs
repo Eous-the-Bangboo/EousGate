@@ -15,6 +15,7 @@ public partial class App : System.Windows.Application
     private OverlayWindow? _overlay;
     private ClipboardMonitor? _clipboardMonitor;
     private ClipboardLinkWindow? _clipboardWindow;
+    private ClipboardLinkActions? _clipboardActions;
     private UserSettings _settings = new();
     private readonly DiagnosticsLogger _diagnostics;
     private readonly bool _initializeServices;
@@ -31,9 +32,15 @@ public partial class App : System.Windows.Application
     {
         base.OnStartup(e);
         if (!_initializeServices) return;
-        _singleInstanceMutex = new Mutex(true, "Local\\EousGate.SingleInstance", out _ownsSingleInstance);
+        if (e.Args.Length == 1 && e.Args[0].StartsWith(ElevatedExternalStop.ArgumentPrefix, StringComparison.Ordinal))
+        {
+            Shutdown(ElevatedExternalStop.ExecuteWorker(e.Args[0][ElevatedExternalStop.ArgumentPrefix.Length..]));
+            return;
+        }
+        _singleInstanceMutex = new Mutex(true, "Local\\EousAssistant.SingleInstance", out _ownsSingleInstance);
         if (!_ownsSingleInstance)
         {
+            try { using var signal = EventWaitHandle.OpenExisting("Local\\EousAssistant.ShowPanel"); signal.Set(); } catch (WaitHandleCannotBeOpenedException) { }
             Shutdown();
             return;
         }
@@ -53,31 +60,7 @@ public partial class App : System.Windows.Application
             return;
         }
 #endif
-        var settingsStore = new JsonSettingsStore(logger: _diagnostics);
-        _settings = settingsStore.Load();
-        var discovery = new AppDiscovery(() => _settings, _diagnostics);
-        _overlay = new OverlayWindow(discovery, new OpenFileService(logger: _diagnostics), () => _settings);
-        _edgeLeft = new EdgeDropWindow(_overlay, discovery, () => _settings.Paused, () => _settings, EdgeDropWindow.EdgeSide.Left);
-        _edgeRight = new EdgeDropWindow(_overlay, discovery, () => _settings.Paused, () => _settings, EdgeDropWindow.EdgeSide.Right);
-        _edgeTop = new EdgeDropWindow(_overlay, discovery, () => _settings.Paused, () => _settings, EdgeDropWindow.EdgeSide.Top);
-        ApplyEdgeBands(_settings);
-        ApplyTheme(_settings);
-        _clipboardWindow = new ClipboardLinkWindow(() => _settings, new WebLinkOpener(logger: _diagnostics));
-        _clipboardMonitor = new ClipboardMonitor(text =>
-        {
-            if (_settings.ClipboardLinksEnabled && !_settings.Paused)
-                _clipboardWindow.ShowLinks(ClipboardLinks.Extract(text));
-        }, _diagnostics);
-        ApplyClipboardSettings();
-        if (_edgeLeft.IsEnabled) _edgeLeft.Show();
-        if (_edgeRight.IsEnabled) _edgeRight.Show();
-        if (_edgeTop.IsEnabled) _edgeTop.Show();
-        _tray = new TrayService(
-            () => SetPaused(true, settingsStore),
-            () => SetPaused(false, settingsStore),
-            () => new SettingsWindow(_settings, settingsStore, discovery, updated => { _settings = updated; ApplyEdgeBands(updated); ApplyTheme(updated); ApplyClipboardSettings(); }).Show(),
-            Shutdown);
-        _tray.SetPaused(_settings.Paused);
+        InitializeAssistant();
     }
 
 #if DEBUG
@@ -122,9 +105,9 @@ public partial class App : System.Windows.Application
             PreviewCandidate("paint", "画图", Path.Combine(system, "mspaint.exe"))
         };
 
-        _overlay = new OverlayWindow(new AppDiscovery(), new PreviewOpenFileService(), () => _settings, monitorMouseButton: false)
+        _overlay = new OverlayWindow(new AppDiscovery(), new PreviewOpenFileService(), () => _settings,
+            monitorMouseButton: false, showInWindowSwitcher: true)
         {
-            ShowInTaskbar = true,
             Topmost = false
         };
         _overlay.IsVisibleChanged += (_, _) =>
@@ -177,63 +160,19 @@ public partial class App : System.Windows.Application
     }
 #endif
 
-    private void ApplyTheme(UserSettings settings)
+    internal void ApplyTheme(UserSettings settings)
     {
         var systemIsDark = System.Windows.SystemColors.WindowColor.R < 128;
-        var effectiveSkin = MicaWindowHelper.IsBackdropSupported ? settings.SkinId : SkinCatalog.DefaultId;
+        // A/B use opaque fallback surfaces, so their identity is independent of DWM support.
+        var effectiveSkin = MicaWindowHelper.IsBackdropSupported || settings.SkinId == SkinCatalog.FocusDarkId ? settings.SkinId : SkinCatalog.DefaultId;
         var palette = ThemePalette.Create(settings.Theme, systemIsDark, SystemParameters.HighContrast, effectiveSkin);
-        SetBrush("PanelBackground", palette.Background);
-        SetBrush("PanelForeground", palette.Foreground);
-        SetBrush("PanelMutedForeground", palette.MutedForeground);
-        SetBrush("PanelBorder", palette.Border);
-        SetBrush("PanelAccent", palette.Accent);
-        SetBrush("PanelAccentHover", palette.AccentHover);
-        SetBrush("PanelAccentSoft", palette.AccentSoft);
-        SetBrush("PanelSurfaceSoft", palette.SurfaceSoft);
-        SetBrush("PanelDanger", palette.Danger);
-        SetBrush("PanelDangerSoft", palette.DangerSoft);
-        SetBrush("PanelFocusRing", palette.FocusRing);
-        SetBrush("PanelSelection", palette.Selection);
-        SetBrush("PanelElevatedSurface", palette.ElevatedSurface);
-        SetBrush("PanelSuccess", palette.Success);
-        SetBrush("PanelSuccessSoft", palette.SuccessSoft);
+        ThemeResources.Apply(Resources, palette, settings.SkinId);
         foreach (Window window in Windows)
         {
-            if (window is SettingsWindow or CustomAppWindow)
+            if (window is AssistantWindow assistant) assistant.ApplyAppearance(settings.SkinId, settings.AnimationDurationMs, settings.LargeText, settings.Theme);
+            if (window is SettingsWindow or CustomAppWindow or AssistantWindow or FolderSettingsWindow or ExternalProgramSettingsWindow or CustomProgramWindow)
                 MicaWindowHelper.Apply(window, settings.SkinId);
         }
-    }
-
-    private void SetBrush(string key, string value)
-    {
-        var color = value switch
-        {
-            "SystemWindow" => System.Windows.SystemColors.WindowColor,
-            "SystemWindowText" => System.Windows.SystemColors.WindowTextColor,
-            "SystemGrayText" => System.Windows.SystemColors.GrayTextColor,
-            "SystemHighlight" => System.Windows.SystemColors.HighlightColor,
-            "SystemHighlightText" => System.Windows.SystemColors.HighlightTextColor,
-            _ => (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(value)
-        };
-        Resources[key] = new System.Windows.Media.SolidColorBrush(color);
-    }
-
-    private void SetPaused(bool paused, JsonSettingsStore store)
-    {
-        _settings.Paused = paused;
-        store.Save(_settings);
-        ApplyEdgeBands(_settings);
-        ApplyClipboardSettings();
-        _tray?.SetPaused(paused);
-    }
-
-    private void ApplyClipboardSettings()
-    {
-        var enabled = _settings.ClipboardLinksEnabled && !_settings.Paused;
-        if (_clipboardMonitor?.SetEnabled(enabled) == false && enabled)
-            System.Windows.MessageBox.Show("暂时无法监听剪贴板，请重启 EousGate 后重试。", "EousGate");
-        if (enabled) _clipboardWindow?.RefreshSettings();
-        else _clipboardWindow?.Dismiss();
     }
 
     private void ApplyEdgeBands(UserSettings settings)
@@ -245,6 +184,7 @@ public partial class App : System.Windows.Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        ReleaseAssistantHost();
         _clipboardMonitor?.Dispose();
         _clipboardWindow?.Shutdown();
         _tray?.Dispose();

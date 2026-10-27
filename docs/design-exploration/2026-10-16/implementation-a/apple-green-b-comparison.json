@@ -1,0 +1,27 @@
+{
+  "skin-b-assistant.png": {
+    "before": "f8b11f9d3519a8d4b3ee747ce059cf83dae163a4816c909375b9be7f39f82afe",
+    "after": "f8b11f9d3519a8d4b3ee747ce059cf83dae163a4816c909375b9be7f39f82afe",
+    "identical": true
+  },
+  "skin-b-settings-1.25.png": {
+    "before": "b6fce17a18adab41a6db5928b3fac2a59996ce817ec63cc0b02fa223f9fc92ba",
+    "after": "b6fce17a18adab41a6db5928b3fac2a59996ce817ec63cc0b02fa223f9fc92ba",
+    "identical": true
+  },
+  "skin-b-settings-1.5.png": {
+    "before": "6820244d4a61b1842cd21eee77634061b579f72249f3013e0fc6ab4b1bb0a248",
+    "after": "6820244d4a61b1842cd21eee77634061b579f72249f3013e0fc6ab4b1bb0a248",
+    "identical": true
+  },
+  "skin-b-settings-1.png": {
+    "before": "a16b03049e28c20c55d517b1b537741df7c9d015fc96130ce557eaf0f2684037",
+    "after": "a16b03049e28c20c55d517b1b537741df7c9d015fc96130ce557eaf0f2684037",
+    "identical": true
+  },
+  "skin-b-settings-min.png": {
+    "before": "86fcc43df42d461a8f2e74dcf39ec587107a49eee66240fee1a0e87afdcfded5",
+    "after": "86fcc43df42d461a8f2e74dcf39ec587107a49eee66240fee1a0e87afdcfded5",
+    "identical": true
+  }
+}

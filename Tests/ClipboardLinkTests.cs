@@ -54,18 +54,22 @@ internal static class ClipboardLinkTests
         var path = Path.Combine(Path.GetTempPath(), "EousGate-clipboard-tests", Guid.NewGuid() + ".json");
         try
         {
-            var settings = new UserSettings { ClipboardLinksEnabled = false, ClipboardPopupDurationSeconds = 12, ClipboardPopupSide = "Left" };
+            var settings = new UserSettings { ClipboardLinksEnabled = false, ClipboardPopupDurationSeconds = 12, ClipboardPopupSide = "Left", ClipboardAutoOpenEnabled = true, ClipboardAutoOpenCopyCount = 2 };
             var clone = settings.Clone();
             Assert(!clone.ClipboardLinksEnabled && clone.ClipboardPopupDurationSeconds == 12 && clone.ClipboardPopupSide == "Left", "settings draft must preserve clipboard fields");
+            Assert(clone.ClipboardAutoOpenEnabled && clone.ClipboardAutoOpenCopyCount == 2, "settings drafts must preserve the optional repeated-copy gesture");
             var store = new JsonSettingsStore(path);
             store.Save(clone);
             var loaded = store.Load();
             Assert(!loaded.ClipboardLinksEnabled && loaded.ClipboardPopupDurationSeconds == 12 && loaded.ClipboardPopupSide == "Left", "saved clipboard preferences must survive restart");
+            Assert(loaded.ClipboardAutoOpenEnabled && loaded.ClipboardAutoOpenCopyCount == 2, "repeated-copy preferences must survive restart");
             clone.ClipboardPopupDurationSeconds = 999;
             clone.ClipboardPopupSide = "bad-side";
+            clone.ClipboardAutoOpenCopyCount = 999;
             store.Save(clone);
             Assert(store.Load().ClipboardPopupDurationSeconds == 60 && store.Load().ClipboardPopupSide == "Right", "invalid stored preferences must normalize");
             Assert(NotificationLifetime.NormalizeDuration(-1) == 2, "minimum lifetime must be bounded");
+            Assert(store.Load().ClipboardAutoOpenCopyCount == 10 && RepeatedCopyGesture.NormalizeCount(-1) == 2, "copy counts must be bounded");
         }
         finally { if (File.Exists(path)) File.Delete(path); }
     }
@@ -78,6 +82,7 @@ internal static class ClipboardLinkTests
             File.WriteAllText(path, "{\"CandidateCount\":4}");
             var loaded = new JsonSettingsStore(path).Load();
             Assert(loaded.ClipboardLinksEnabled && loaded.ClipboardPopupDurationSeconds == 5 && loaded.ClipboardPopupSide == "Right", "old settings must enable the requested feature with usable defaults");
+            Assert(!loaded.ClipboardAutoOpenEnabled && loaded.ClipboardAutoOpenCopyCount == 3, "legacy settings must not silently opt into opening browsers");
         }
         finally { File.Delete(path); }
     }

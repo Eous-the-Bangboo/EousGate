@@ -1,0 +1,42 @@
+<div class="stack">
+  <div>
+    <h3 class="section-title">程序信息</h3>
+
+  </div>
+  <div class="notice" x-show="editingProgramRunning">程序正在运行。停止后可修改名称、路径与启动参数。</div>
+  <div class="field">
+    <label class="field-label" for="program-name">显示名称</label>
+    <input class="input" id="program-name" type="text" x-model="draft.name" :disabled="editingProgramRunning" placeholder="例如：Everything" autocomplete="off">
+  </div>
+  <div class="field">
+    <label class="field-label" for="program-path">程序路径</label>
+    <div class="inline">
+      <input class="input" id="program-path" type="text" aria-describedby="program-path-help" x-model="draft.path" :disabled="editingProgramRunning" placeholder="C:\Program Files\应用名称\应用.exe" autocomplete="off" spellcheck="false">
+      <button class="btn" type="button" @click="chooseExe()" :disabled="editingProgramRunning">选择 EXE</button>
+    </div>
+    <p id="program-path-help" class="help" :class="{error:selectedTool?.state==='failed'}" x-text="selectedTool?.state==='failed'?'未找到原程序，请重新选择 EXE 文件。保存后可回到清单重试启动。':'填写 .exe 文件的完整路径。程序移动后，可在这里更新路径。'"></p>
+  </div>
+  <div class="field">
+    <label class="field-label" for="program-args">启动参数 <span class="tag">可选</span></label>
+    <input class="input" id="program-args" type="text" x-model="draft.args" :disabled="editingProgramRunning" placeholder="例如：--minimized" autocomplete="off" spellcheck="false">
+    <p class="help">参数会在启动程序时传入；留空则按默认方式启动。</p>
+  </div>
+  <div>
+    <h3 class="section-title">停止方式</h3>
+    <label class="check" for="program-force">
+      <input id="program-force" type="checkbox" aria-label="允许超时后强制结束" aria-describedby="program-force-help" x-model="draft.force">
+      <span><span class="field-label">允许超时后强制结束</span><span id="program-force-help" class="help">正常关闭无响应时尝试结束进程，可能丢失未保存内容。权限不足时无法结束。</span></span>
+    </label>
+  </div>
+  <div x-show="isCustomProgram">
+    <div class="divider"></div>
+    <div class="form-row">
+      <div>
+        <div class="field-label">从工具清单移除</div>
+        <p class="help">移除只取消管理，程序继续运行，也不会卸载程序。</p>
+      </div>
+      <button class="btn danger" type="button" @click="removeProgram()">移除程序</button>
+    </div>
+  </div>
+</div>
+

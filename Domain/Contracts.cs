@@ -26,12 +26,17 @@ public sealed class CustomAppDefinition
 
 public sealed class EdgeBandLayout
 {
+    // Null endpoints identify an older length/offset configuration until its screen bounds are known.
+    public double? StartPercent { get; set; }
+    public double? EndPercent { get; set; }
     public double LengthPercent { get; set; } = 100;
     public double WidthPercent { get; set; } = 0.5;
     public int OffsetPixels { get; set; }
 
     public EdgeBandLayout Clone() => new()
     {
+        StartPercent = StartPercent,
+        EndPercent = EndPercent,
         LengthPercent = LengthPercent,
         WidthPercent = WidthPercent,
         OffsetPixels = OffsetPixels
@@ -59,6 +64,8 @@ public sealed record OpenResult(bool Success, string? Error = null);
 
 public sealed class UserSettings
 {
+    public Dictionary<string, bool> ToolSelections { get; set; } = new();
+    public Dictionary<string, ExternalProgramOptions> ExternalPrograms { get; set; } = new();
     public string DesignSchemeId { get; set; } = PanelDesignCatalog.DefaultId;
     public bool Paused { get; set; }
     public int CandidateCount { get; set; } = 4;
@@ -68,14 +75,16 @@ public sealed class UserSettings
     // Comma-separated, persisted for compatibility with the earlier single-position setting.
     public string EdgeBandPosition { get; set; } = "Left,Right";
     // Legacy global pixel width. New settings use the per-side layouts below.
-    public EdgeBandLayout? LeftEdgeBand { get; set; } = new();
-    public EdgeBandLayout? RightEdgeBand { get; set; } = new();
-    public EdgeBandLayout? TopEdgeBand { get; set; } = new();
+    public EdgeBandLayout? LeftEdgeBand { get; set; } = new() { StartPercent = 0, EndPercent = 100 };
+    public EdgeBandLayout? RightEdgeBand { get; set; } = new() { StartPercent = 0, EndPercent = 100 };
+    public EdgeBandLayout? TopEdgeBand { get; set; } = new() { StartPercent = 0, EndPercent = 100 };
     public int TriggerDelayMs { get; set; } = 120;
     public int AutoDismissDelayMs { get; set; } = 500;
     public bool ClipboardLinksEnabled { get; set; } = true;
     public int ClipboardPopupDurationSeconds { get; set; } = 5;
     public string ClipboardPopupSide { get; set; } = "Right";
+    public bool ClipboardAutoOpenEnabled { get; set; }
+    public int ClipboardAutoOpenCopyCount { get; set; } = 3;
     public double PanelWidth { get; set; } = 404;
     public double PanelMaxHeight { get; set; } = 640;
     public double CandidateGap { get; set; } = 5;
@@ -86,11 +95,15 @@ public sealed class UserSettings
     public bool LargeText { get; set; }
     public bool DiagnosticsEnabled { get; set; }
     public Dictionary<string, FileTypePreference> FileTypes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    public List<CustomMonitoredProgram> CustomPrograms { get; set; } = [];
 
     public UserSettings Clone()
     {
         var clone = new UserSettings
         {
+            ToolSelections = new(ToolSelections),
+            ExternalPrograms = ExternalPrograms.ToDictionary(p => p.Key, p => p.Value.Clone()),
+            CustomPrograms = CustomPrograms.Select(p => p.Clone()).ToList(),
             DesignSchemeId = DesignSchemeId,
             Paused = Paused,
             CandidateCount = CandidateCount,
@@ -106,6 +119,8 @@ public sealed class UserSettings
             ClipboardLinksEnabled = ClipboardLinksEnabled,
             ClipboardPopupDurationSeconds = ClipboardPopupDurationSeconds,
             ClipboardPopupSide = ClipboardPopupSide,
+            ClipboardAutoOpenEnabled = ClipboardAutoOpenEnabled,
+            ClipboardAutoOpenCopyCount = ClipboardAutoOpenCopyCount,
             PanelWidth = PanelWidth,
             PanelMaxHeight = PanelMaxHeight,
             CandidateGap = CandidateGap,

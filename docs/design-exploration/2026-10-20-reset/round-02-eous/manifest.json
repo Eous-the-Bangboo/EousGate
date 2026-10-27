@@ -1,0 +1,13 @@
+{
+  "schemaVersion":1,
+  "project":"Eous 助手 · 角色与控件语言",
+  "lang":"zh",
+  "round":"02 · Eous角色与控件",
+  "brief":"沿用 A 工具清单，同一角色、同一组工具与状态，比较角色画风、色彩和统一边角。三个方向的独立启停均改为滑动开关。",
+  "nativeViewport":"980x700",
+  "candidates":[
+    {"id":"abstract","name":"抽象构成 · 全直角","concept":"从 Eous 的橙色围巾与荧绿双眼提取识别，用几何角色和直角清单强调效率。","typography":"Microsoft YaHei 正文 / Bahnschrift 拉丁与数字；标题24px、工具名16px、正文14px、辅助13px","palette":["#F4F1E8","#20231F","#C45325","#CBF000"],"traits":["原角色的几何抽象变体","全界面边角0px","方轨道与方滑块","沿用A清单骨架"],"source":"abstract.html"},
+    {"id":"gothic","name":"哥特墨绘 · 全直角","concept":"把 Eous 的缝线与机械细节转为墨绘刻线，以旧银和酒红呈现有秩序的哥特气质。","typography":"SimSun / Georgia 标题，Microsoft YaHei 正文；标题22px、工具名16px、正文14px、辅助13px","palette":["#18151C","#211D24","#EEE8DC","#8D384F"],"traits":["Eous哥特蚀刻变体","全界面边角0px","酒红滑轨与银色滑块","正文保持高对比"],"source":"gothic.html"},
+    {"id":"soft","name":"软胶玩具 · 统一圆角","concept":"保留 Eous 的卡通亲和力，以软胶质感和统一圆角让控制面板更轻松。","typography":"Microsoft YaHei / Segoe UI Variable；标题24px、工具名16px、正文14px、辅助13px","palette":["#F6F2EA","#FFFDF8","#344C43","#AE4C25"],"traits":["Eous软胶潮玩变体","全界面边角12px","圆角滑轨与圆滑块","开放清单，减少卡片嵌套"],"source":"soft.html"}
+  ]
+}

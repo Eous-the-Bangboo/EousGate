@@ -1,0 +1,44 @@
+[
+  {
+    "file": "stitch.png",
+    "width": 2000,
+    "height": 720,
+    "columns": 3,
+    "items": [
+      {
+        "naturalWidth": 1254,
+        "naturalHeight": 1254,
+        "width": 640,
+        "height": 640,
+        "labelHeight": 32,
+        "x": 24,
+        "y": 24,
+        "label": "抽象构成",
+        "labelY": 672
+      },
+      {
+        "naturalWidth": 1254,
+        "naturalHeight": 1254,
+        "width": 640,
+        "height": 640,
+        "labelHeight": 32,
+        "x": 680,
+        "y": 24,
+        "label": "哥特墨绘",
+        "labelY": 672
+      },
+      {
+        "naturalWidth": 1254,
+        "naturalHeight": 1254,
+        "width": 640,
+        "height": 640,
+        "labelHeight": 32,
+        "x": 1336,
+        "y": 24,
+        "label": "软胶玩具",
+        "labelY": 672
+      }
+    ],
+    "issues": []
+  }
+]

@@ -1,0 +1,110 @@
+[
+  {
+    "file": "home.png",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 196,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "file-apps.png",
+    "state": "file-apps",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 109,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "web.png",
+    "state": "web",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 111,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "folder.png",
+    "state": "folder",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 116,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "program.png",
+    "state": "program",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 108,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "general.png",
+    "state": "general",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 125,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "open.png",
+    "state": "open",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 129,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "links.png",
+    "state": "links",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 110,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "folders.png",
+    "state": "folders",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 113,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "unsaved.png",
+    "state": "unsaved",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 118,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "save-error.png",
+    "state": "save-error",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 124,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "open-empty.png",
+    "state": "open-empty",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 123,
+    "issues": [],
+    "lint": []
+  }
+]

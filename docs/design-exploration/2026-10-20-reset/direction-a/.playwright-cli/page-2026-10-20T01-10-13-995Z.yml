@@ -1,0 +1,80 @@
+- region "Eous 助手" [ref=e4]:
+  - generic [ref=e5]:
+    - generic [ref=e6]: Eous 助手
+    - generic [ref=e12]:
+      - button "最小化" [ref=e13] [cursor=pointer]
+      - button "最大化或还原" [ref=e14] [cursor=pointer]
+      - button "关闭控制面板" [ref=e15] [cursor=pointer]
+  - generic [ref=e16]:
+    - complementary "主导航" [ref=e17]:
+      - button "工具总览" [ref=e18] [cursor=pointer]
+      - generic [ref=e20]: 工具设置
+      - button "文件快开" [ref=e21] [cursor=pointer]
+      - button "网页快开" [ref=e23] [cursor=pointer]
+      - button "文件夹快跳" [ref=e25] [cursor=pointer]
+      - generic [ref=e27]:
+        - button "通用设置" [ref=e28] [cursor=pointer]
+        - button "关于 Eous" [ref=e30] [cursor=pointer]
+    - main [ref=e32]:
+      - generic [ref=e33]:
+        - heading "工具总览" [level=1] [ref=e34]
+        - generic [ref=e35]:
+          - button "全部启动" [disabled] [ref=e36]
+          - button "全部关闭" [disabled] [ref=e37]
+      - generic [ref=e38]:
+        - heading "Eous原生工具3" [level=2] [ref=e40]
+        - article [ref=e41]:
+          - generic [ref=e44]:
+            - generic [ref=e45]: 文件快开EousFileHop
+            - generic [ref=e46]: 拖到屏幕边缘，选择软件打开
+          - generic [ref=e47]: 运行中
+          - generic [ref=e50]:
+            - button "停止 文件快开" [ref=e51] [cursor=pointer]: 停止
+            - button "文件快开设置" [ref=e52] [cursor=pointer]: 设置
+        - article [ref=e53]:
+          - generic [ref=e56]:
+            - generic [ref=e57]: 网页快开EousWebHop
+            - generic [ref=e58]: 复制网页链接，点击提示打开
+          - generic [ref=e59]: 启动中
+          - generic [ref=e62]:
+            - button "启动中 网页快开" [disabled] [ref=e123]: 启动中
+            - button "网页快开设置" [ref=e64] [cursor=pointer]: 设置
+        - article [ref=e65]:
+          - generic [ref=e68]:
+            - generic [ref=e69]: 文件夹快跳EousFolderHop
+            - generic [ref=e70]: 在打开和保存对话框快速跳转
+          - generic [ref=e71]: 运行中
+          - generic [ref=e74]:
+            - button "停止 文件夹快跳" [ref=e75] [cursor=pointer]: 停止
+            - button "文件夹快跳设置" [ref=e76] [cursor=pointer]: 设置
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - heading "非Eous原生工具3" [level=2] [ref=e79]
+          - button "＋ 添加程序" [disabled] [ref=e80]
+        - article [ref=e81]:
+          - generic [ref=e84]:
+            - generic [ref=e85]: Ditto
+            - generic [ref=e86]: 剪贴板管理
+          - generic [ref=e87]: 运行中
+          - generic [ref=e90]:
+            - button "停止 Ditto" [ref=e91] [cursor=pointer]: 停止
+            - button "Ditto设置" [ref=e92] [cursor=pointer]: 设置
+        - article [ref=e93]:
+          - generic [ref=e96]:
+            - generic [ref=e97]: Everything
+            - generic [ref=e98]: 未找到程序，请设置路径
+          - generic [ref=e99]: 启动失败
+          - generic [ref=e102]:
+            - button "设置路径 Everything" [ref=e103] [cursor=pointer]: 设置路径
+            - button "Everything设置" [ref=e104] [cursor=pointer]: 设置
+        - article [ref=e105]:
+          - generic [ref=e108]:
+            - generic [ref=e109]: 无线麦 Sayall
+            - generic [ref=e110]: 语音输入
+          - generic [ref=e111]: 未运行
+          - generic [ref=e114]:
+            - button "启动 无线麦 Sayall" [ref=e115] [cursor=pointer]: 启动
+            - button "无线麦 Sayall设置" [ref=e116] [cursor=pointer]: 设置
+  - generic [ref=e117]:
+    - generic [ref=e118]: 关闭面板后，已启动的工具继续运行
+    - generic [ref=e122]: 外部状态每 2 秒更新

@@ -1,0 +1,24 @@
+<div class="stack">
+  <div>
+    <h3 class="section-title">外观</h3>
+    <p class="section-help">选择工具窗口与设置界面的显示方式。</p>
+  </div>
+  <div class="field">
+    <label class="field-label" for="general-theme">主题</label>
+    <select class="select" id="general-theme" x-model="draft.theme">
+      <option value="light">浅色</option>
+      <option value="dark">深色</option>
+      <option value="system">跟随系统</option>
+    </select>
+    <p class="help">跟随系统会使用 Windows 当前的浅色或深色设置。</p>
+  </div>
+  <div class="divider"></div>
+  <div>
+    <h3 class="section-title">问题诊断</h3>
+    <label class="check" for="general-diagnostics">
+      <input id="general-diagnostics" type="checkbox" x-model="draft.diagnostics">
+      <span><span class="field-label">记录诊断信息</span><span class="help">记录运行状态与错误，帮助排查异常。不记录路径、文件名或剪贴板内容。</span></span>
+    </label>
+  </div>
+</div>
+

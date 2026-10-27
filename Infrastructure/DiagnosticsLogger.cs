@@ -32,7 +32,7 @@ public sealed class DiagnosticsLogger
         _isEnabled = isEnabled ?? (() => false);
         _path = path ?? Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "EousGate",
+            "EousAssistant",
             "diagnostics.log");
     }
 

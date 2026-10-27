@@ -1,0 +1,17 @@
+{
+  "appName": "Eous 助手",
+  "groups": ["Eous原生工具", "非Eous原生工具"],
+  "tools": [
+    {"id":"file","name":"文件快开","englishName":"EousFileHop","description":"拖到屏幕边缘，选择软件打开","state":"running","stateText":"运行中","action":"停止","glyph":"file"},
+    {"id":"web","name":"网页快开","englishName":"EousWebHop","description":"复制网页链接，点击提示打开","state":"stopped","stateText":"未运行","action":"启动","glyph":"link"},
+    {"id":"folder","name":"文件夹快跳","englishName":"EousFolderHop","description":"在打开和保存对话框快速跳转","state":"running","stateText":"运行中","action":"停止","glyph":"folder"},
+    {"id":"ditto","name":"Ditto","description":"剪贴板管理","state":"running","stateText":"运行中","action":"停止","glyph":"clipboard"},
+    {"id":"everything","name":"Everything","description":"文件搜索","state":"failed","stateText":"启动失败","action":"设置路径","error":"未找到程序，请设置路径","glyph":"search"},
+    {"id":"sayall","name":"无线麦 Sayall","description":"语音输入","state":"stopped","stateText":"未运行","action":"启动","glyph":"mic"}
+  ],
+  "globalActions":["全部启动","全部关闭"],
+  "externalAction":"添加程序",
+  "settings":"设置",
+  "footer":"关闭面板后，已启动的工具继续运行",
+  "note":"本文件是三方向唯一共用内容源。候选 HTML 为静态首屏，用生成脚本在制作时嵌入内容，不在运行时加载数据。状态为方向探索的模拟数据。"
+}

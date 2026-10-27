@@ -1,0 +1,431 @@
+[
+  {
+    "file": "home.png",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 144,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "home-@2x.png",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 2,
+    "animationWaitMs": 119,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "motion-probe-toggle",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "toggle",
+    "motion": {
+      "load": {
+        "elements": 6,
+        "loops": 0,
+        "maxMove": 6,
+        "maxSize": 0,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.failed",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          }
+        ]
+      },
+      "steps": {
+        "elements": 3,
+        "loops": 0,
+        "maxMove": 1004,
+        "maxSize": 134,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "div.toast",
+            "move": 1004,
+            "size": 134,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "transition:opacity"
+            ]
+          },
+          {
+            "el": "i.status-dot",
+            "move": 3,
+            "size": 0.483,
+            "opacity": 0,
+            "loop": false,
+            "sources": [
+              "css:spin"
+            ]
+          },
+          {
+            "el": "span.switch-thumb",
+            "move": 20,
+            "size": 0,
+            "opacity": 0,
+            "loop": false,
+            "sources": [
+              "transition:transform"
+            ]
+          }
+        ]
+      },
+      "hero": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "layers": 0
+      },
+      "scroll": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "scrollable": false
+      }
+    },
+    "issues": []
+  },
+  {
+    "file": "motion-probe-settings",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "settings",
+    "motion": {
+      "load": {
+        "elements": 6,
+        "loops": 0,
+        "maxMove": 6,
+        "maxSize": 0,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.failed",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          }
+        ]
+      },
+      "steps": {
+        "elements": 2,
+        "loops": 0,
+        "maxMove": 36,
+        "maxSize": 0,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "section.drawer",
+            "move": 36,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "transition:transform",
+              "transition:opacity"
+            ]
+          },
+          {
+            "el": "div.drawer-shade",
+            "move": 0,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "transition:opacity"
+            ]
+          }
+        ]
+      },
+      "hero": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "layers": 0
+      },
+      "scroll": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "scrollable": false
+      }
+    },
+    "issues": []
+  },
+  {
+    "file": "motion-entry-end.jpg",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "entry",
+    "issues": [
+      "录屏：没装 ffmpeg，只留了 motion-entry-start/mid/end.jpg 三帧"
+    ],
+    "frames": {
+      "start": {
+        "file": "motion-entry-start.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 149
+      },
+      "mid": {
+        "file": "motion-entry-mid.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 401
+      },
+      "end": {
+        "file": "motion-entry-end.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 1861
+      }
+    },
+    "sampling": {
+      "mode": "entry"
+    },
+    "durationMs": 1861,
+    "consistency": {
+      "status": "matched",
+      "reference": "motion-entry-end.jpg",
+      "different": false,
+      "changedPixels": 0,
+      "maxTilePixels": 0,
+      "pixelRatio": 0
+    },
+    "failed": true
+  },
+  {
+    "file": "motion-toggle-end.jpg",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "toggle",
+    "issues": [
+      "录屏：没装 ffmpeg，只留了 motion-toggle-start/mid/end.jpg 三帧"
+    ],
+    "frames": {
+      "start": {
+        "file": "motion-toggle-start.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 539
+      },
+      "mid": {
+        "file": "motion-toggle-mid.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 899
+      },
+      "end": {
+        "file": "motion-toggle-end.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 1866
+      }
+    },
+    "sampling": {
+      "mode": "action",
+      "step": 1,
+      "action": "click",
+      "raw": "click [role=switch][aria-label=网页快开启停]"
+    },
+    "durationMs": 1866,
+    "consistency": {
+      "status": "matched",
+      "reference": "motion-toggle-end.jpg",
+      "different": false,
+      "changedPixels": 0,
+      "maxTilePixels": 0,
+      "pixelRatio": 0
+    },
+    "failed": true
+  },
+  {
+    "file": "motion-settings-end.jpg",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "settings",
+    "issues": [
+      "录屏：没装 ffmpeg，只留了 motion-settings-start/mid/end.jpg 三帧"
+    ],
+    "frames": {
+      "start": {
+        "file": "motion-settings-start.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 540
+      },
+      "mid": {
+        "file": "motion-settings-mid.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 698
+      },
+      "end": {
+        "file": "motion-settings-end.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 1891
+      }
+    },
+    "sampling": {
+      "mode": "action",
+      "step": 1,
+      "action": "click",
+      "raw": "click [aria-label=文件快开设置]"
+    },
+    "durationMs": 1891,
+    "consistency": {
+      "status": "mismatch",
+      "reference": "motion-settings-end.jpg",
+      "different": true,
+      "dimensions": [
+        750,
+        451,
+        1440,
+        900
+      ],
+      "original": "record-settings-stream-end.jpg"
+    },
+    "warnings": [
+      "录屏末帧与静止截图差异明显，可能没拍全；静止终态以 motion-settings-end.jpg 为准，已补为录像最后一帧，原末帧保留在 record-settings-stream-end.jpg；过渡请单独重录：node 'C:\\Users\\Eous\\.codex\\skills\\oil-ui\\scripts\\shoot.mjs' 'http://127.0.0.1:8744/prototype.html' --timeout-scale 2 --out 'D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\direction-03-rounded\\evidence-final' --size '1440x900' --zoom 1 --states 'home' --param 'state' --steps 'settings: click [aria-label=文件快开设置]' --record --hold 2000"
+    ],
+    "failed": true
+  }
+]

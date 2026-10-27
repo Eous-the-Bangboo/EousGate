@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "project": "Eous 助手 · 从零设计",
+  "lang": "zh",
+  "round": "01 · 首屏方向",
+  "brief": "同一组工具、同一组运行状态，比较信息组织、操作落点和视觉语言。A 完整清单，B 三路操作台，C 紧凑命令面板。点击单张可按实际尺寸查看。",
+  "candidates": [
+    {
+      "id": "a",
+      "name": "A · 工具清单",
+      "concept": "打开就看清六个工具的状态，在同一行完成启停。",
+      "typography": "Segoe UI Variable / Microsoft YaHei UI；工具名 16px、正文 14px、辅助 13px",
+      "palette": ["#F5F6F7", "#FFFFFF", "#222529", "#B54135", "#F9E9E5"],
+      "traits": ["左导航与完整清单", "固定状态和动作列", "朱红仅强调关键动作", "推荐：兼顾扫描与扩展"],
+      "source": "a.html",
+      "nativeViewport": "980x700"
+    },
+    {
+      "id": "b",
+      "name": "B · 三路操作台",
+      "concept": "文件、链接、目录三条通道各自清楚，按需接通。",
+      "typography": "DengXian 中文 / Bahnschrift 拉丁；通道名 22px、正文 14px、辅助 13px",
+      "palette": ["#183AC7", "#F2F5FF", "#FFFFFF", "#FFD66A", "#C7D1ED"],
+      "traits": ["无侧栏", "三条横向操作带", "钴蓝色块与淡金动作", "原生工具辨识度突出"],
+      "source": "b.html",
+      "nativeViewport": "1000x720"
+    },
+    {
+      "id": "c",
+      "name": "C · 紧凑命令面板",
+      "concept": "短暂唤出、找到工具、完成一个动作，立即回到原工作。",
+      "typography": "Microsoft YaHei UI / Consolas 键位；工具名 15px、正文 14px、辅助 13px",
+      "palette": ["#F3F3F0", "#FFFFFF", "#202221", "#E4E6E1", "#CFD3CD"],
+      "traits": ["640px 紧凑窗口", "反白聚焦行", "底部固定当前动作", "黑白字重建立层级"],
+      "source": "c.html",
+      "nativeViewport": "640x620"
+    }
+  ]
+}

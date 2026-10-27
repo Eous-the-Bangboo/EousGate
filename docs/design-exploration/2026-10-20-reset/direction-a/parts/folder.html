@@ -1,0 +1,45 @@
+<section class="folder-settings" aria-label="目录记录设置">
+  <div class="form-row">
+    <div>
+      <label for="folder-record" class="field-label">记录目录访问</label>
+      <p id="folder-record-help" class="help">关闭后停止采集新目录，已有记录保留。</p>
+    </div>
+    <input id="folder-record" type="checkbox" x-model="draft.record" aria-describedby="folder-record-help">
+  </div>
+  <p class="notice" x-show="!draft.record">保存后暂停记录，仍可从已有记录与收藏中选择目录。</p>
+  <div class="form-row">
+    <div>
+      <label for="folder-button" class="field-label">显示辅助按钮</label>
+      <p id="folder-button-help" class="help">在文件对话框中显示目录选择入口。</p>
+    </div>
+    <input id="folder-button" type="checkbox" x-model="draft.button" aria-describedby="folder-button-help">
+  </div>
+  <div class="divider"></div>
+  <div class="field-head">
+    <div>
+      <h2 class="section-title">快速选择目录</h2>
+    </div>
+    <button type="button" class="btn" @click="openSurface('folders')">打开目录选择</button>
+  </div>
+  <div class="form-row">
+    <span class="field-label">唤出快捷键</span>
+    <span class="tag" aria-label="快捷键 Control 加 Alt 加 J">Ctrl + Alt + J</span>
+  </div>
+  <div class="divider"></div>
+  <h2 class="section-title">历史数据</h2>
+  <div class="form-row">
+    <div>
+      <p class="field-label">导入旧数据</p>
+      <p class="help">选择旧版数据文件，继续使用已有记录。</p>
+    </div>
+    <button type="button" class="btn" @click="importHistory()">选择数据文件</button>
+  </div>
+  <div class="form-row">
+    <div>
+      <p class="field-label">清空普通历史</p>
+      <p class="help">清除最近访问记录，保留收藏目录。</p>
+    </div>
+    <button type="button" class="btn danger" @click="askClearHistory()">清空普通历史</button>
+  </div>
+</section>
+

@@ -1,0 +1,104 @@
+<div class="segment" role="tablist" aria-label="文件快开设置">
+  <button type="button" class="btn" :class="{primary:tab==='trigger'}" role="tab" :aria-selected="tab==='trigger'" @click="setFileTab('trigger')">触发与面板</button>
+  <button type="button" class="btn" :class="{primary:tab==='apps'}" role="tab" :aria-selected="tab==='apps'" @click="setFileTab('apps')">打开方式</button>
+</div>
+
+<div x-show="tab==='trigger'" style="margin-top:28px">
+  <div class="field">
+    <div class="field-label" id="file-edge-label">触发边缘</div>
+    <p class="help" style="margin:6px 0 14px">拖动文件到已选边缘，展开打开面板。</p>
+    <div class="inline" role="group" aria-labelledby="file-edge-label" style="gap:28px">
+      <label class="check"><input type="checkbox" x-model="draft.left">左边缘</label>
+      <label class="check"><input type="checkbox" x-model="draft.right">右边缘</label>
+      <label class="check"><input type="checkbox" x-model="draft.top">上边缘</label>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="form-grid">
+    <div class="field">
+      <label class="field-label" for="file-candidate-count">首屏候选数量</label>
+      <input class="input" id="file-candidate-count" type="number" min="1" max="12" step="1" x-model.number="draft.count" style="margin-top:10px;width:100%">
+      <p class="help" style="margin:7px 0 0">显示前 1–12 个已启用的软件。</p>
+    </div>
+    <div class="field">
+      <label class="field-label" for="file-collapse-delay">自动收起延迟（秒）</label>
+      <input class="input" id="file-collapse-delay" type="number" min="0.5" max="10" step="0.5" x-model.number="draft.collapse" style="margin-top:10px;width:100%">
+      <p class="help" style="margin:7px 0 0">离开面板后等待 0.5–10 秒再收起。</p>
+    </div>
+  </div>
+  <div class="form-row">
+    <div>
+      <div class="field-label">打开面板</div>
+      <div class="help" style="margin-top:4px">查看文件拖入后的软件选择。</div>
+    </div>
+    <button type="button" class="btn" @click="openSurface('open')">查看打开面板</button>
+  </div>
+</div>
+
+<div x-show="tab==='apps'" style="margin-top:28px">
+  <div class="field">
+    <div class="field-head">
+      <div class="inline" style="gap:12px"><span class="field-label" style="margin:0">当前后缀</span><strong style="font-size:16px" x-text="draft.extension"></strong></div>
+      <button type="button" class="text-btn" :aria-expanded="draft.showCategories" aria-controls="file-extension-picker" @click="draft.showCategories=!draft.showCategories" x-text="draft.showCategories?'收起后缀列表':'切换后缀'"></button>
+    </div>
+    <div id="file-extension-picker" x-show="draft.showCategories" style="margin-top:16px">
+      <div class="form-grid">
+        <div>
+          <label class="help" for="file-extension-category">文件类别</label>
+          <select class="select" id="file-extension-category" x-model="draft.category" style="width:100%;margin-top:6px">
+            <option value="全部">全部类别</option>
+            <option value="文档">文档</option>
+            <option value="表格">表格</option>
+            <option value="演示">演示</option>
+            <option value="图片">图片</option>
+            <option value="音频">音频</option>
+            <option value="视频">视频</option>
+            <option value="代码">代码</option>
+            <option value="压缩包">压缩包</option>
+          </select>
+        </div>
+        <div>
+          <label class="help" for="file-extension-search">搜索后缀</label>
+          <input class="input" id="file-extension-search" type="search" placeholder="例如 pdf、jpg" x-model="draft.search" style="width:100%;margin-top:6px">
+        </div>
+      </div>
+      <label class="check" style="margin-top:14px"><input type="checkbox" x-model="draft.customizedOnly">只看已自定义</label>
+      <div class="inline" role="group" aria-label="可选文件后缀" style="flex-wrap:wrap;margin-top:14px">
+        <template x-for="item in filteredExtensions" :key="item.ext">
+          <button type="button" class="btn small" :class="{primary:draft.extension===item.ext}" :aria-pressed="draft.extension===item.ext" @click="selectExtension(item.ext)" x-text="item.ext"></button>
+        </template>
+      </div>
+      <div class="empty" x-show="filteredExtensions.length===0">
+        <p class="help" style="margin:0 0 12px">没有匹配的后缀。</p>
+        <button type="button" class="btn small" @click="addCustomExtension()" :disabled="!draft.search.trim()">添加此后缀</button>
+        <p class="help" style="margin:10px 0 0">添加到文件快开，不更改 Windows 文件关联。</p>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="field-head" style="margin-bottom:4px">
+    <div class="field-label">候选软件 <span class="tag" style="margin-left:6px" x-text="draft.apps.filter(app=>app.enabled).length+' 个已启用'"></span></div>
+    <button type="button" class="text-btn" @click="restoreRecommendations()">恢复当前后缀推荐</button>
+  </div>
+  <p class="help" style="margin:5px 0 12px">勾选决定是否显示，上下移动调整显示顺序。</p>
+  <div class="app-list">
+    <template x-for="(app,index) in draft.apps" :key="app.name">
+      <div class="app-row" style="gap:16px;padding:12px 0">
+        <label class="check" style="flex:1;min-width:0;align-items:center">
+          <input type="checkbox" x-model="app.enabled" :aria-label="'显示 '+app.name">
+          <span style="display:grid;gap:4px">
+            <span style="font-size:14px;font-weight:600" x-text="app.name"></span>
+            <span class="help" x-text="app.detail"></span>
+          </span>
+        </label>
+        <div class="inline" style="gap:6px">
+          <button type="button" class="btn small" :disabled="index===0" :aria-label="'上移 '+app.name" @click="moveApp(index,-1)">上移</button>
+          <button type="button" class="btn small" :disabled="index===draft.apps.length-1" :aria-label="'下移 '+app.name" @click="moveApp(index,1)">下移</button>
+        </div>
+      </div>
+    </template>
+  </div>
+  <div class="empty help" x-show="draft.apps.length===0">此后缀暂无候选软件，可恢复推荐列表。</div>
+  <div style="margin-top:20px"><button type="button" class="text-btn" style="font-size:13px" @click="restoreCategoryRecommendations()">恢复本类推荐</button></div>
+</div>
+

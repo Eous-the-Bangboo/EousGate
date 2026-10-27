@@ -1,0 +1,31 @@
+<Window x:Class="EousGate.CustomProgramWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Icon="pack://application:,,,/EousAssistant;component/Assets/EousGate.ico"
+        Title="添加程序" Width="660" Height="560" MinWidth="540" MinHeight="460" WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource PanelBackground}" Foreground="{DynamicResource PanelForeground}" FontFamily="Segoe UI Variable Text, Microsoft YaHei UI" FontSize="13">
+  <Window.Resources>
+    <Style TargetType="Label"><Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/></Style>
+    <Style TargetType="Button" BasedOn="{StaticResource WorkbenchButton}"><Setter Property="MinWidth" Value="84"/><Setter Property="Margin" Value="8,0,0,0"/></Style>
+    <Style TargetType="TextBox" BasedOn="{StaticResource WorkbenchTextBox}"/>
+  </Window.Resources>
+  <Grid Margin="24"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel x:Name="EditorHeading" Margin="0,0,0,20"><TextBlock x:Name="EditorTitle" Text="添加监控程序" FontSize="24" FontWeight="SemiBold"/><TextBlock Text="选择 EXE 后读取名称与图标。" Foreground="{DynamicResource PanelMutedForeground}" TextWrapping="Wrap" Margin="0,8,0,0"/></StackPanel>
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel x:Name="EditorFields" Margin="0,0,4,12">
+      <Label Content="程序名称" Target="{Binding ElementName=ProgramName}" Padding="0,0,0,6"/><TextBox x:Name="ProgramName" MaxLength="80" AutomationProperties.Name="程序名称"/>
+      <Label Content="程序文件" Target="{Binding ElementName=ProgramPath}" Padding="0,16,0,6"/>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox x:Name="ProgramPath" AutomationProperties.Name="程序文件"/><Button x:Name="BrowseButton" Grid.Column="1" Content="选择 EXE…" Click="BrowseClick"/></Grid>
+      <TextBlock Text="名称可自行修改。" FontSize="12" Foreground="{DynamicResource PanelMutedForeground}" Margin="0,6,0,16" TextWrapping="Wrap"/>
+      <TextBlock x:Name="LauncherHint" Visibility="Collapsed" Text="此启动器关闭窗口后可能只缩到托盘。彻底退出需在下方允许超时强制结束；需要权限时会单独请求 Windows 授权。" FontSize="13" Foreground="{DynamicResource PanelMutedForeground}" Margin="0,0,0,12" TextWrapping="Wrap"/>
+      <Expander x:Name="Advanced" Header="高级设置" Foreground="{DynamicResource PanelForeground}"><StackPanel Margin="0,12,0,0">
+        <Label Content="启动参数（可选）" Target="{Binding ElementName=StartArguments}" Padding="0,0,0,6"/><TextBox x:Name="StartArguments" MaxLength="8192" AutomationProperties.Name="启动参数"/>
+        <TextBlock Text="直接传给程序；包含空格的参数请使用双引号。" FontSize="12" TextWrapping="Wrap" Foreground="{DynamicResource PanelMutedForeground}" Margin="0,6,0,12"/>
+        <CheckBox x:Name="ForceStop" Content="正常关闭超时后，允许强制结束程序" MinHeight="32" Foreground="{DynamicResource PanelForeground}"/>
+        <TextBlock Text="默认只请求正常关闭；未退出时显示失败并保留运行状态。运行中可单独修改此选项；强制结束可能丢失未保存内容，且仍需具备关闭该程序的权限。" FontSize="12" Foreground="{DynamicResource PanelMutedForeground}" TextWrapping="Wrap" Margin="0,6,0,0"/>
+      </StackPanel></Expander>
+      <TextBlock x:Name="EditorStatus" Foreground="{DynamicResource PanelDanger}" TextWrapping="Wrap" Margin="0,16,0,0" AutomationProperties.LiveSetting="Polite"/>
+    </StackPanel></ScrollViewer>
+    <Grid Grid.Row="2" Margin="0,16,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <Button x:Name="RemoveButton" Content="移除程序" Click="RemoveClick" HorizontalAlignment="Left" Margin="0" Visibility="Collapsed" ToolTip="仅移除监控条目，不退出或卸载程序"/>
+      <StackPanel Grid.Column="1" Orientation="Horizontal"><Button x:Name="CancelButton" Content="取消" Click="CancelClick"/><Button x:Name="SaveButton" Content="添加" Click="SaveClick" Style="{StaticResource WorkbenchPrimary}" Width="92" Margin="8,0,0,0"/></StackPanel>
+    </Grid>
+  </Grid>
+</Window>

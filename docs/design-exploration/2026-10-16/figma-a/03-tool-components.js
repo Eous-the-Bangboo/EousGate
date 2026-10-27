@@ -1,0 +1,42 @@
+
+const state={"createdNodeIds":["3:2"],"mutatedNodeIds":["0:1"],"pages":{"review":"0:1","components":"3:2"},"collectionId":"VariableCollectionId:3:3","variables":{"PanelBackground":"VariableID:3:17","PanelForeground":"VariableID:3:18","PanelMutedForeground":"VariableID:3:19","PanelBorder":"VariableID:3:20","PanelAccent":"VariableID:3:21","PanelAccentHover":"VariableID:3:22","PanelAccentSoft":"VariableID:3:23","PanelSurfaceSoft":"VariableID:3:24","PanelElevatedSurface":"VariableID:3:25","PanelOnAccent":"VariableID:3:26","PanelSuccess":"VariableID:3:27","PanelSuccessSoft":"VariableID:3:28","PanelDanger":"VariableID:3:29","PanelDangerSoft":"VariableID:3:30","space4":"VariableID:3:31","space8":"VariableID:3:32","space12":"VariableID:3:33","space16":"VariableID:3:34","space24":"VariableID:3:35","space32":"VariableID:3:36","radius6":"VariableID:3:37","radius8":"VariableID:3:38","controlHeight":"VariableID:3:39","appRowHeight":"VariableID:3:40"},"primitiveVariableIds":["VariableID:3:4","VariableID:3:5","VariableID:3:6","VariableID:3:7","VariableID:3:8","VariableID:3:9","VariableID:3:10","VariableID:3:11","VariableID:3:12","VariableID:3:13","VariableID:3:14","VariableID:3:15","VariableID:3:16"],"styles":{"Title":"S:89d6b0c4b840e40164be0d5faa8d465b9cedbaa2,","Section":"S:70fd93365597c25b82d0bdf87e7c0f22c3928026,","Body":"S:8167cd978b3cda81b5d5da62889e55f277957d68,","BodyStrong":"S:ff706f085fbc57874a8f6b713a4047a871aee2cf,","Caption":"S:65eff99839168f36a33b8999c7373e0d9e6f56e7,","Micro":"S:4c7bcc8fbe261cc8ee2626f4ac3962592cf2bc76,"},"effect":"S:22f818b9815d0d5023bd0604c536cff940f11601,","counts":{"variables":37,"textStyles":6}}, compState={"components":{"icons":{"code":"4:2","link":"4:5","apps":"4:8","down":"4:11","trigger":"4:14","overview":"4:17","chevron":"4:20","open":"4:23","notepad":"4:26","web":"4:29","file":"4:32","brand":"4:35","appearance":"4:42","check":"4:45","minus":"4:48","close":"4:51","folder":"4:54","list":"4:57","shield":"4:60","maximize":"4:63"},"buttons":"4:90","nav":"4:101","appRows":"4:134","field":"4:145"},"properties":{"buttonLabel":"Label#4:0","navLabel":"Label#4:13","navIcon":"Icon#4:16","rowLabel":"Label#4:19","rowIcon":"Icon#4:24","fieldLabel":"Value#4:29"}};
+await Promise.all(['Regular','Medium','Bold'].map(style=>figma.loadFontAsync({family:'Noto Sans SC',style})));
+const vars={};for(const [k,id] of Object.entries(state.variables))vars[k]=await figma.variables.getVariableByIdAsync(id);
+const created=[];const keep=n=>{created.push(n.id);return n;};
+function paint(key){return figma.variables.setBoundVariableForPaint({type:'SOLID',color:{r:0,g:0,b:0}},'color',vars[key]);}
+function round(n,key='radius8'){for(const p of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius'])n.setBoundVariable(p,vars[key]);}
+function pad(n,key){for(const p of ['paddingLeft','paddingRight','paddingTop','paddingBottom'])n.setBoundVariable(p,vars[key]);}
+function text(label,role='Body',color='PanelForeground',width){const t=keep(figma.createText());t.textStyleId=state.styles[role];t.characters=label;t.fills=[paint(color)];if(width){t.textAutoResize='HEIGHT';t.resize(width,t.height);}return t;}
+function auto(name,dir,w,h,fill=null,gap='space8',padding){const f=keep(figma.createAutoLayout(dir));f.name=name;f.resize(w,h||1);f.primaryAxisSizingMode=h?'FIXED':'AUTO';f.counterAxisSizingMode='FIXED';f.fills=fill?[paint(fill)]:[];if(gap)f.setBoundVariable('itemSpacing',vars[gap]);if(padding)pad(f,padding);return f;}
+function add(p,n,fill=false){p.appendChild(n);if(fill)n.layoutSizingHorizontal='FILL';return n;}
+function component(name,w,h,fill=null){const c=keep(figma.createComponent());c.name=name;c.resize(w,h);c.layoutMode='HORIZONTAL';c.primaryAxisSizingMode='FIXED';c.counterAxisSizingMode='FIXED';c.counterAxisAlignItems='CENTER';c.fills=fill?[paint(fill)]:[];round(c);return c;}
+const sets={};for(const key of ['buttons','nav','appRows','field'])sets[key]=await figma.getNodeByIdAsync(compState.components[key]);
+const iconNodes={};for(const [key,id]of Object.entries(compState.components.icons))iconNodes[key]=await figma.getNodeByIdAsync(id);
+function icon(key,size=20){const n=keep(iconNodes[key].createInstance());n.resize(size,size);return n;}
+function button(label,kind='Secondary',status='Default',width=88){const v=sets.buttons.children.find(n=>n.name==='Kind='+kind+', State='+status);const i=keep(v.createInstance());i.setProperties({[compState.properties.buttonLabel]:label});i.resize(width,36);return i;}
+function field(value,width=160){const i=keep(sets.field.children[0].createInstance());i.setProperties({[compState.properties.fieldLabel]:value});i.resize(width,36);return i;}
+function border(n){n.strokes=[paint('PanelBorder')];n.strokeWeight=1;round(n);}
+
+const page=await figma.getNodeByIdAsync(state.pages.components);await figma.setCurrentPageAsync(page);
+const checks=[];
+for(const checked of [false,true]){
+ const c=component('Checked='+checked,18,18,checked?'PanelAccent':'PanelElevatedSurface');round(c,'radius6');c.strokes=[paint(checked?'PanelAccent':'PanelMutedForeground')];c.strokeWeight=1;c.primaryAxisAlignItems='CENTER';
+ if(checked){const mark=icon('check',12);c.appendChild(mark);for(const v of mark.findAllWithCriteria({types:['VECTOR']}))v.fills=[paint('PanelOnAccent')];}checks.push(c);
+}
+const checkbox=keep(figma.combineAsVariants(checks,page));checkbox.name='Eous/Checkbox';checkbox.children.forEach((n,i)=>{n.x=i*48;n.y=0;});checkbox.resize(96,36);checkbox.x=320;checkbox.y=600;
+const toolRows=[];
+for(const status of ['Stopped','Running','Failed','Busy']){
+ const c=component('State='+status,984,72,'PanelElevatedSurface');pad(c,'space12');c.setBoundVariable('itemSpacing',vars.space12);border(c);
+ const tick=keep(checks[1].createInstance());c.appendChild(tick);
+ const iconSurface=auto('Tool icon','HORIZONTAL',36,36,'PanelAccentSoft',null);round(iconSurface);iconSurface.counterAxisAlignItems='CENTER';iconSurface.primaryAxisAlignItems='CENTER';iconSurface.appendChild(icon('open',22));c.appendChild(iconSurface);
+ const labels=auto('Labels','VERTICAL',480,null,null,'space4');const first=auto('Title and identifier','HORIZONTAL',480,null,null,'space8');first.counterAxisAlignItems='CENTER';
+ const title=text('文件快开','BodyStrong');title.name='Title';first.appendChild(title);const english=text('EousFileHop','Caption','PanelMutedForeground');english.name='English';first.appendChild(english);add(labels,first,true);
+ const desc=text(status==='Failed'?'暂时无法启动，请重试。':'把文件拖到屏幕边缘，选择软件打开。','Caption',status==='Failed'?'PanelDanger':'PanelMutedForeground',440);desc.name='Description';add(labels,desc,true);add(c,labels,true);
+ const stateLabel=text({Stopped:'未运行',Running:'运行中',Failed:'失败',Busy:'启动中'}[status],'Caption',status==='Running'?'PanelSuccess':status==='Failed'?'PanelDanger':'PanelMutedForeground');c.appendChild(stateLabel);
+ const actions=auto('Actions','HORIZONTAL',208,36,null,'space8');actions.appendChild(button('启动','Secondary',status==='Running'||status==='Busy'?'Disabled':'Default',64));actions.appendChild(button('停止','Secondary',status==='Stopped'||status==='Busy'?'Disabled':'Default',64));actions.appendChild(button('设置','Ghost','Default',64));c.appendChild(actions);toolRows.push(c);
+}
+const tools=keep(figma.combineAsVariants(toolRows,page));tools.name='Eous/ToolRow';tools.description='Maps to ToolRowTemplate. Selection and running status stay independent; start/stop/settings preserve existing behavior.';
+const props={title:tools.addComponentProperty('Title','TEXT','文件快开'),english:tools.addComponentProperty('English','TEXT','EousFileHop'),description:tools.addComponentProperty('Description','TEXT','把文件拖到屏幕边缘，选择软件打开。'),icon:tools.addComponentProperty('Icon','INSTANCE_SWAP',iconNodes.open.id)};
+tools.children.forEach((n,i)=>{n.x=0;n.y=i*88;for(const t of n.findAllWithCriteria({types:['TEXT']})){if(t.name==='Title')t.componentPropertyReferences={characters:props.title};if(t.name==='English')t.componentPropertyReferences={characters:props.english};if(t.name==='Description')t.componentPropertyReferences={characters:props.description};}n.findOne(v=>v.name==='Tool icon').children[0].componentPropertyReferences={mainComponent:props.icon};});tools.resize(1008,352);tools.x=80;tools.y=800;
+return {createdNodeIds:created,components:{checkbox:checkbox.id,tools:tools.id},properties:props,counts:{checkbox:checkbox.children.length,toolStates:tools.children.length}};
+

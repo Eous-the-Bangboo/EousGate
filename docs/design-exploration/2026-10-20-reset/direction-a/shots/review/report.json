@@ -1,0 +1,20 @@
+[
+  {
+    "file": "file-apps.png",
+    "state": "file-apps",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 167,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "web.png",
+    "state": "web",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 123,
+    "issues": [],
+    "lint": []
+  }
+]

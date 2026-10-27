@@ -10,6 +10,7 @@ public partial class CustomAppWindow : Window
     public CustomAppWindow(string executablePath, string displayName, string? arguments = null, string? skinId = null)
     {
         InitializeComponent();
+        WindowSwitchingHelper.ExcludeFromWindowSwitching(this);
         MicaWindowHelper.Enable(this, skinId);
         ExecutablePath.Text = executablePath;
         DisplayName.Text = displayName;

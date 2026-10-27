@@ -1,0 +1,80 @@
+[
+  {
+    "file": "a.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-01\\a.html",
+    "name": "A · 工具清单",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "thumb": true,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "b.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-01\\b.html",
+    "name": "B · 三路操作台",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "thumb": true,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "c.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-01\\c.html",
+    "name": "C · 紧凑命令面板",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "thumb": true,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "sheet.png",
+    "width": 2000,
+    "height": 480,
+    "columns": 3,
+    "items": [
+      {
+        "naturalWidth": 720,
+        "naturalHeight": 450,
+        "width": 640,
+        "height": 400,
+        "labelHeight": 32,
+        "x": 24,
+        "y": 24,
+        "label": "A · 工具清单",
+        "labelY": 432
+      },
+      {
+        "naturalWidth": 720,
+        "naturalHeight": 450,
+        "width": 640,
+        "height": 400,
+        "labelHeight": 32,
+        "x": 680,
+        "y": 24,
+        "label": "B · 三路操作台",
+        "labelY": 432
+      },
+      {
+        "naturalWidth": 720,
+        "naturalHeight": 450,
+        "width": 640,
+        "height": 400,
+        "labelHeight": 32,
+        "x": 1336,
+        "y": 24,
+        "label": "C · 紧凑命令面板",
+        "labelY": 432
+      }
+    ],
+    "issues": []
+  }
+]

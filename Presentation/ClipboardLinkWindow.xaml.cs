@@ -17,12 +17,18 @@ public partial class ClipboardLinkWindow : Window
     private readonly DispatcherTimer _timer;
     private long _lastTick;
     private bool _allowClose;
+    private readonly Func<bool> _interactionProbe;
 
     public ClipboardLinkWindow(Func<UserSettings> settings, WebLinkOpener? opener = null)
+        : this(settings, opener, null) { }
+
+    internal ClipboardLinkWindow(Func<UserSettings> settings, WebLinkOpener? opener, Func<bool>? interactionProbe)
     {
         InitializeComponent();
+        WindowSwitchingHelper.ExcludeFromWindowSwitching(this);
         _settings = settings;
         _opener = opener ?? new WebLinkOpener();
+        _interactionProbe = interactionProbe ?? (() => IsMouseOver || IsKeyboardFocusWithin);
         _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
         _timer.Tick += Tick;
         Closed += (_, _) => { _timer.Stop(); _timer.Tick -= Tick; };
@@ -35,13 +41,14 @@ public partial class ClipboardLinkWindow : Window
         SizeChanged += (_, _) => { if (IsVisible) PositionAtEdge(); };
     }
 
-    public void ShowLinks(IReadOnlyList<Uri> links)
+    public void ShowLinks(IReadOnlyList<Uri> links, string? error = null)
     {
         if (links.Count == 0) { Dismiss(); return; }
         Links.ItemsSource = links;
         LinkScroller.ScrollToTop();
         Subtitle.Text = links.Count == 1 ? "点击链接，用默认浏览器打开" : $"检测到 {links.Count} 个链接，点击即可打开";
-        ErrorText.Visibility = Visibility.Collapsed;
+        ErrorText.Text = error ?? "";
+        ErrorText.Visibility = error is null ? Visibility.Collapsed : Visibility.Visible;
         RestartLifetime();
         PositionAtEdge();
         if (!IsVisible) Show(); // ShowActivated=false keeps typing focus in the source app.
@@ -76,7 +83,7 @@ public partial class ClipboardLinkWindow : Window
     private void Tick(object? sender, EventArgs e)
     {
         var now = Stopwatch.GetTimestamp();
-        var interacting = IsMouseOver || IsKeyboardFocusWithin;
+        var interacting = _interactionProbe();
         var expired = _lifetime.Advance(Stopwatch.GetElapsedTime(_lastTick, now), interacting);
         _lastTick = now;
         Countdown.Text = interacting ? "已暂停收起 · 移出后继续" : $"{Math.Ceiling(_lifetime.RemainingSeconds):0} 秒后收起 · 移入暂停";

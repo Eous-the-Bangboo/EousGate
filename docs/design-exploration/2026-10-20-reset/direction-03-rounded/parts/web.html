@@ -1,0 +1,57 @@
+<section aria-label="链接检测设置">
+  <div class="form-row">
+    <div>
+      <label for="web-enabled" class="field-label">检测复制的链接</label>
+      <p id="web-enabled-help" class="help">只检测新复制的文本，不保留剪贴板历史。</p>
+    </div>
+    <input id="web-enabled" type="checkbox" x-model="draft.enabled" aria-describedby="web-enabled-help" aria-controls="web-detection-options" :aria-expanded="draft.enabled">
+  </div>
+  <div id="web-detection-options" x-show="draft.enabled">
+    <div class="divider"></div>
+    <div class="form-grid">
+      <div class="field">
+        <label for="web-side" class="field-label">提示位置</label>
+        <select id="web-side" class="select" x-model="draft.side">
+          <option value="left">屏幕左侧</option>
+          <option value="right">屏幕右侧</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="web-seconds" class="field-label">提示停留时间</label>
+        <div class="inline">
+          <input id="web-seconds" class="input" type="number" min="2" max="60" step="1" x-model.number="draft.seconds" aria-describedby="web-seconds-help">
+          <span class="tag">秒</span>
+        </div>
+        <p id="web-seconds-help" class="help">可设置为 2–60 秒。</p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label for="web-auto-open" class="field-label">连续复制时自动打开</label>
+        <p id="web-auto-open-help" class="help">连续复制同一段文字达到指定次数后，打开其中全部不同链接。</p>
+      </div>
+      <input id="web-auto-open" type="checkbox" x-model="draft.autoOpen" aria-describedby="web-auto-open-help" aria-controls="web-repeat-options" :aria-expanded="draft.autoOpen">
+    </div>
+    <div id="web-repeat-options" x-show="draft.autoOpen">
+      <div class="form-row">
+        <div>
+          <label for="web-repeats" class="field-label">连续复制次数</label>
+          <p id="web-repeats-help" class="help">可设置为 2–10 次。</p>
+        </div>
+        <div class="inline">
+          <input id="web-repeats" class="input" type="number" min="2" max="10" step="1" x-model.number="draft.repeats" :disabled="!draft.autoOpen" aria-describedby="web-repeats-help web-repeat-timing">
+          <span class="tag">次</span>
+        </div>
+      </div>
+      <p id="web-repeat-timing" class="help">相邻两次复制间隔不超过 3 秒；同一轮连续复制只打开一次。</p>
+    </div>
+  </div>
+  <p class="notice" x-show="!draft.enabled">保存后暂停链接检测。重新开启即可继续使用。</p>
+  <div class="divider"></div>
+  <div class="field-head">
+    <div>
+      <h2 class="section-title">链接提示</h2>
+    </div>
+    <button type="button" class="btn" @click="openSurface('links')">查看链接提示</button>
+  </div>
+</section>

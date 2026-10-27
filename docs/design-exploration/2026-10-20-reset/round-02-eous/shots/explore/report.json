@@ -1,0 +1,80 @@
+[
+  {
+    "file": "abstract.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-02-eous\\abstract.html",
+    "name": "抽象构成 · 全直角",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "thumb": true,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "gothic.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-02-eous\\gothic.html",
+    "name": "哥特墨绘 · 全直角",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "thumb": true,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "soft.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-02-eous\\soft.html",
+    "name": "软胶玩具 · 统一圆角",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "thumb": true,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "sheet.png",
+    "width": 2000,
+    "height": 480,
+    "columns": 3,
+    "items": [
+      {
+        "naturalWidth": 720,
+        "naturalHeight": 450,
+        "width": 640,
+        "height": 400,
+        "labelHeight": 32,
+        "x": 24,
+        "y": 24,
+        "label": "抽象构成 · 全直角",
+        "labelY": 432
+      },
+      {
+        "naturalWidth": 720,
+        "naturalHeight": 450,
+        "width": 640,
+        "height": 400,
+        "labelHeight": 32,
+        "x": 680,
+        "y": 24,
+        "label": "哥特墨绘 · 全直角",
+        "labelY": 432
+      },
+      {
+        "naturalWidth": 720,
+        "naturalHeight": 450,
+        "width": 640,
+        "height": 400,
+        "labelHeight": 32,
+        "x": 1336,
+        "y": 24,
+        "label": "软胶玩具 · 统一圆角",
+        "labelY": 432
+      }
+    ],
+    "issues": []
+  }
+]

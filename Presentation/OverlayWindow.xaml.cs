@@ -26,17 +26,26 @@ public partial class OverlayWindow : Window
     private DragSession? _session;
     private readonly DispatcherTimer _sessionTimer;
     private readonly DispatcherTimer _autoDismissTimer;
+    private bool _closed;
     private DateTime? _outsideSafeAreaSince;
     private System.Drawing.Point? _anchorPoint;
     private bool _panelFromRight;
     private bool _panelBelowAnchor;
     private EdgeDropWindow.EdgeSide _sourceSide = EdgeDropWindow.EdgeSide.Left;
-    private string _activeDesignSchemeId = PanelDesignCatalog.DefaultId;
     private System.Windows.Controls.Panel _candidateSurface = new StackPanel();
+    private readonly FluentMotion _motion = new();
+    private int _presentationVersion;
+    private bool IsFluent => SkinCatalog.Normalize(_settings().SkinId) == SkinCatalog.DefaultId;
 
     public OverlayWindow(IAppDiscovery discovery, IOpenFileService open, Func<UserSettings> settings, bool monitorMouseButton = true)
+        : this(discovery, open, settings, monitorMouseButton, showInWindowSwitcher: false) { }
+
+    internal OverlayWindow(IAppDiscovery discovery, IOpenFileService open, Func<UserSettings> settings,
+        bool monitorMouseButton, bool showInWindowSwitcher)
     {
         InitializeComponent();
+        if (showInWindowSwitcher) ShowInTaskbar = true;
+        else WindowSwitchingHelper.ExcludeFromWindowSwitching(this);
         _discovery = discovery;
         _open = open;
         _settings = settings;
@@ -47,6 +56,8 @@ public partial class OverlayWindow : Window
             if (_session is not null && (GetAsyncKeyState(1) & 0x8000) == 0) CancelSession();
         };
         _autoDismissTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
+        Closed += (_, _) => { _closed = true; _presentationVersion++; _motion.Dispose(); _sessionTimer.Stop(); _autoDismissTimer.Stop(); _session = null; StopPanelMotion(); };
+        IsVisibleChanged += (_, _) => { if (!IsVisible) { _motion.StopAll(); StopPanelMotion(); } };
         _autoDismissTimer.Tick += (_, _) => CheckAutoDismiss();
         DragOver += (_, e) => e.Effects = WpfDragDropEffects.Copy;
         Drop += (_, _) => CancelSession();
@@ -60,7 +71,7 @@ public partial class OverlayWindow : Window
         _sourceSide = sourceSide;
         _outsideSafeAreaSince = null;
         var settings = _settings();
-        ApplyDesignScheme(settings.DesignSchemeId);
+        ApplyPanelLayout();
         Width = Math.Clamp(settings.PanelWidth, 240, 560);
         MaxHeight = Math.Clamp(settings.PanelMaxHeight, 300, 900);
         if (_monitorMouseButton) _sessionTimer.Start();
@@ -73,7 +84,7 @@ public partial class OverlayWindow : Window
             .ToArray();
         var extension = Path.GetExtension(session.PrimaryFilePath).TrimStart('.').ToUpperInvariant();
         var sameType = extensions.Length == 1;
-        Heading.Text = isMultiple ? "选择打开这些文件的软件" : "选择打开文件的软件";
+        Heading.Text = IsFluent ? "打开面板" : isMultiple ? "选择打开这些文件的软件" : "选择打开文件的软件";
         FileTypeMark.Text = isMultiple && !sameType
             ? "FILES"
             : extension is { Length: > 0 and <= 4 } ? extension : isMultiple ? "FILES" : "FILE";
@@ -83,8 +94,8 @@ public partial class OverlayWindow : Window
                 : $"{session.FileCount} 个文件 · {extensions.Length} 种类型 · 共同软件"
             : extension.Length > 0 ? $"{extension} 文件 · 本机应用" : "本机应用";
         CandidateCountLabel.Text = $"{candidates.Count} 个";
-        AccentSegments.Visibility = SystemParameters.HighContrast ? Visibility.Collapsed : Visibility.Visible;
-        if (SystemParameters.HighContrast) AccentRail.Background = (MediaBrush)FindResource("PanelAccent");
+        AccentSegments.Visibility = Visibility.Collapsed;
+        AccentRail.SetResourceReference(Border.BackgroundProperty, "PanelAccent");
         ResetCandidateSurface();
         Actions.Children.Clear();
         if (candidates.Count == 0)
@@ -104,35 +115,27 @@ public partial class OverlayWindow : Window
             if (plan.CanExpand) AddAction("更多应用", () => ShowCandidates(candidates));
         }
         AddAction("取消", CancelSession);
+        if (IsFluent && candidates.Count > 0 && Actions.Children.Count == 1)
+            Actions.Children.Add(new TextBlock { Text = "松开以打开", FontSize = 12, VerticalAlignment = VerticalAlignment.Center, Foreground = (MediaBrush)FindResource("PanelMutedForeground") });
         PositionAndShow();
     }
 
-    private void ApplyDesignScheme(string? designSchemeId)
+    private void ApplyPanelLayout()
     {
-        _activeDesignSchemeId = PanelDesignCatalog.Normalize(designSchemeId);
-        switch (_activeDesignSchemeId)
-        {
-            case PanelDesignCatalog.DefaultId:
-                PanelCard.CornerRadius = new CornerRadius(8);
-                AccentRail.Visibility = Visibility.Visible;
-                break;
-            case "compact-list":
-                PanelCard.CornerRadius = new CornerRadius(8);
-                AccentRail.Visibility = Visibility.Visible;
-                break;
-            case "icon-grid":
-                PanelCard.CornerRadius = new CornerRadius(8);
-                AccentRail.Visibility = Visibility.Visible;
-                break;
-        }
-        ResetCandidateSurface();
+        var fluent = IsFluent;
+        PanelHeader.Margin = fluent ? new Thickness(16, 0, 16, 0) : new Thickness(18, 16, 18, 14);
+        PanelHeader.Height = fluent ? 80 : double.NaN;
+        PanelHeader.ColumnDefinitions[0].Width = new GridLength(fluent ? 36 : 42);
+        FileBadge.Width = FileBadge.Height = fluent ? 36 : 42;
+        CandidateScroller.Padding = fluent ? new Thickness(12, 12, 12, 8) : new Thickness(12, 0, 12, 12);
+        PanelFooter.Padding = fluent ? new Thickness(12, 5, 12, 5) : new Thickness(14, 11, 14, 11);
+        PanelFooter.MinHeight = fluent ? 44 : 0;
     }
 
     private void ResetCandidateSurface()
     {
-        _candidateSurface = _activeDesignSchemeId == "icon-grid"
-            ? new System.Windows.Controls.Primitives.UniformGrid { Columns = 2 }
-            : new StackPanel();
+        _motion.StopAll();
+        _candidateSurface = new StackPanel();
         CandidatesHost.Children.Clear();
         CandidatesHost.Children.Add(_candidateSurface);
     }
@@ -141,52 +144,47 @@ public partial class OverlayWindow : Window
     {
         var settings = _settings();
         var large = settings.LargeText;
-        var compact = _activeDesignSchemeId == "compact-list";
-        var iconGrid = _activeDesignSchemeId == "icon-grid";
+        var compact = SkinCatalog.Normalize(settings.SkinId) == SkinCatalog.FocusDarkId;
         var button = new System.Windows.Controls.Button
         {
-            Style = (Style)FindResource("CandidateButtonStyle"),
-            Height = iconGrid ? 88 : compact ? 52 : large ? 68 : 60,
+            Style = (Style)FindResource(compact ? "CandidateButtonStyle" : "FluentACandidate"),
+            Height = large ? 68 : compact ? 52 : 60,
             HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-            HorizontalContentAlignment = iconGrid ? System.Windows.HorizontalAlignment.Center : System.Windows.HorizontalAlignment.Stretch,
-            Padding = iconGrid ? new Thickness(8) : compact ? new Thickness(8, 5, 8, 5) : new Thickness(10, 7, 10, 7),
+            HorizontalContentAlignment = System.Windows.HorizontalAlignment.Stretch,
+            Padding = compact ? new Thickness(8, 5, 8, 5) : new Thickness(12, 7, 12, 7),
             Tag = candidate,
             ToolTip = $"{candidate.DisplayName}\n{candidate.ExecutablePath}",
             AllowDrop = true
         };
         System.Windows.Automation.AutomationProperties.SetName(button, $"打开 {candidate.DisplayName}");
         var gap = Math.Clamp(settings.CandidateGap, 0, 16);
-        button.Margin = iconGrid
-            ? new Thickness(Math.Max(2, gap / 2), Math.Max(2, gap / 2), Math.Max(2, gap / 2), Math.Max(2, gap / 2))
-            : new Thickness(0, 0, 0, Math.Max(compact ? 2 : 3, gap));
+        button.Margin = new Thickness(0, 0, 0, Math.Max(compact ? 2 : 4, gap));
         var panel = new Grid();
-        if (!iconGrid)
-        {
-            panel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(compact ? 34 : 40) });
-            panel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(compact ? 9 : 11) });
-            panel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            panel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(24) });
-        }
+        panel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(compact ? 34 : 28) });
+        panel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(compact ? 9 : 11) });
+        panel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        panel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(24) });
         var icon = TryGetIcon(candidate.IconPath) ?? TryGetIcon(candidate.ExecutablePath);
         var iconSurface = new Border
         {
-            Width = iconGrid ? 48 : compact ? 32 : 38,
-            Height = iconGrid ? 48 : compact ? 32 : 38,
-            CornerRadius = new CornerRadius(8),
-            Background = (MediaBrush)FindResource("PanelSurfaceSoft"),
+            Width = compact ? 32 : 28,
+            Height = compact ? 32 : 28,
+            CornerRadius = new CornerRadius(12),
+            Background = compact ? (MediaBrush)FindResource("PanelSurfaceSoft") : System.Windows.Media.Brushes.Transparent,
             Child = icon is null
                 ? new TextBlock
                 {
-                    Text = string.IsNullOrWhiteSpace(candidate.DisplayName) ? "?" : candidate.DisplayName[..1].ToUpperInvariant(),
-                    FontSize = iconGrid ? 18 : compact ? 13 : 15,
+                    Text = compact ? string.IsNullOrWhiteSpace(candidate.DisplayName) ? "?" : candidate.DisplayName[..1].ToUpperInvariant() : "\uE8A5",
+                    FontFamily = compact ? FontFamily : new System.Windows.Media.FontFamily("Segoe Fluent Icons"),
+                    FontSize = compact ? 13 : 26,
                     FontWeight = FontWeights.SemiBold,
-                    Foreground = (MediaBrush)FindResource("PanelForeground"),
+                    Foreground = (MediaBrush)FindResource(compact ? "PanelForeground" : "PanelAccent"),
                     HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
                     VerticalAlignment = System.Windows.VerticalAlignment.Center
                 }
-                : new System.Windows.Controls.Image { Source = icon, Width = iconGrid ? 38 : compact ? 25 : 30, Height = iconGrid ? 38 : compact ? 25 : 30 }
+                : new System.Windows.Controls.Image { Source = icon, Width = compact ? 25 : 28, Height = compact ? 25 : 28 }
         };
-        if (!iconGrid) Grid.SetColumn(iconSurface, 0);
+        Grid.SetColumn(iconSurface, 0);
         panel.Children.Add(iconSurface);
 
         var labels = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
@@ -194,7 +192,7 @@ public partial class OverlayWindow : Window
         {
             Text = candidate.DisplayName,
             Foreground = (MediaBrush)FindResource("PanelForeground"),
-            FontSize = compact || iconGrid ? 13 : large ? 14 : 13,
+            FontSize = compact ? 13 : large ? 16 : 14,
             FontWeight = FontWeights.SemiBold,
             TextTrimming = TextTrimming.CharacterEllipsis
         };
@@ -206,30 +204,25 @@ public partial class OverlayWindow : Window
             Foreground = (MediaBrush)FindResource("PanelMutedForeground"),
             FontSize = 11
         };
-        labels.Children.Add(subtitle);
-        if (!iconGrid)
-        {
-            Grid.SetColumn(labels, 2);
-            panel.Children.Add(labels);
-        }
+        if (compact) labels.Children.Add(subtitle);
+        Grid.SetColumn(labels, 2);
+        panel.Children.Add(labels);
 
         var arrow = new TextBlock
         {
-            Text = "↗",
-            FontSize = 15,
+            Text = compact ? "↗" : "\uE76C",
+            FontFamily = compact ? FontFamily : new System.Windows.Media.FontFamily("Segoe Fluent Icons"),
+            FontSize = compact ? 15 : 12,
             Foreground = (MediaBrush)FindResource("PanelMutedForeground"),
             HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
-        if (!iconGrid)
-        {
-            Grid.SetColumn(arrow, 3);
-            panel.Children.Add(arrow);
-        }
+        Grid.SetColumn(arrow, 3);
+        panel.Children.Add(arrow);
         button.Content = panel;
         button.Opacity = 0;
         button.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5);
-        button.RenderTransform = new TranslateTransform(iconGrid ? 0 : -12, 0);
+        button.RenderTransform = new TranslateTransform(-12, 0);
         var pointerOver = false;
         var dropTarget = false;
 
@@ -246,8 +239,8 @@ public partial class OverlayWindow : Window
                 button.Background = System.Windows.Media.Brushes.Transparent;
                 button.BorderBrush = System.Windows.Media.Brushes.Transparent;
             }
-            iconSurface.SetResourceReference(Border.BackgroundProperty, active ? "PanelAccentSoft" : "PanelSurfaceSoft");
-            title.SetResourceReference(TextBlock.ForegroundProperty, active ? "PanelAccent" : "PanelForeground");
+            if (compact) iconSurface.SetResourceReference(Border.BackgroundProperty, active ? "PanelAccentSoft" : "PanelSurfaceSoft");
+            title.SetResourceReference(TextBlock.ForegroundProperty, compact && active ? "PanelAccent" : "PanelForeground");
             subtitle.SetResourceReference(TextBlock.ForegroundProperty, active ? "PanelAccentHover" : "PanelMutedForeground");
             arrow.SetResourceReference(TextBlock.ForegroundProperty, active ? "PanelAccent" : "PanelMutedForeground");
         }
@@ -266,6 +259,12 @@ public partial class OverlayWindow : Window
         button.LostKeyboardFocus += (_, _) => RefreshCandidateVisual();
         button.Loaded += (_, _) =>
         {
+            if (!compact)
+            {
+                button.Opacity = 1;
+                _motion.Enter(button, _settings().AnimationDurationMs, 80 + Math.Min(animationIndex, 8) * 30, 140, x: -4, y: 0);
+                return;
+            }
             if (!SystemParameters.ClientAreaAnimation)
             {
                 button.Opacity = 1;
@@ -275,8 +274,7 @@ public partial class OverlayWindow : Window
             var delay = TimeSpan.FromMilliseconds(Math.Min(animationIndex, 8) * 35);
             var duration = Math.Clamp(_settings().AnimationDurationMs, 80, 600);
             button.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(duration)) { BeginTime = delay, EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
-            if (!iconGrid)
-                ((TranslateTransform)button.RenderTransform).BeginAnimation(TranslateTransform.XProperty, new DoubleAnimation(-12, 0, TimeSpan.FromMilliseconds(duration + 40)) { BeginTime = delay, EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
+            ((TranslateTransform)button.RenderTransform).BeginAnimation(TranslateTransform.XProperty, new DoubleAnimation(-12, 0, TimeSpan.FromMilliseconds(duration + 40)) { BeginTime = delay, EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } });
         };
         button.Click += (_, _) => OpenCandidate(candidate);
         button.MouseEnter += (_, _) => button.ToolTip = $"打开 {candidate.DisplayName}";
@@ -306,6 +304,12 @@ public partial class OverlayWindow : Window
             Content = text,
             Style = (Style)FindResource(primary ? "PrimaryActionButtonStyle" : "SecondaryActionButtonStyle")
         };
+        if (IsFluent)
+        {
+            button.Style = (Style)FindResource(primary ? "FluentAPrimary" : "FluentAGhost");
+            button.Content = text == "取消" ? "Esc 取消" : text;
+            button.Height = 32; button.FontSize = 12; button.MinWidth = 0; button.Padding = new Thickness(6, 0, 6, 0);
+        }
         button.Tag = text;
         button.Click += (_, _) => action();
         Grid.SetColumn(button, text == "取消" ? 2 : 0);
@@ -325,7 +329,7 @@ public partial class OverlayWindow : Window
         {
             Width = 32,
             Height = 32,
-            CornerRadius = new CornerRadius(8),
+            CornerRadius = new CornerRadius(12),
             Background = (MediaBrush)FindResource("PanelAccentSoft"),
             Child = new TextBlock
             {
@@ -387,6 +391,7 @@ public partial class OverlayWindow : Window
 
     public void ShowUnsupported(EdgeDropWindow.EdgeSide sourceSide = EdgeDropWindow.EdgeSide.Left)
     {
+        ApplyPanelLayout(); _motion.StopAll();
         _session = null;
         _anchorPoint = Forms.Cursor.Position;
         _sourceSide = sourceSide;
@@ -434,6 +439,7 @@ public partial class OverlayWindow : Window
 
     private void PositionAndShow()
     {
+        _presentationVersion++;
         // WinForms 返回物理像素；WPF 的窗口位置使用 DIP，先按锚点所在显示器换算。
         var cursor = _anchorPoint ?? Forms.Cursor.Position;
         var screen = Forms.Screen.FromPoint(cursor);
@@ -471,6 +477,17 @@ public partial class OverlayWindow : Window
         NativeWindowPlacement.TrySetPosition(this, placement.Left, placement.Top);
         Activate();
         Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, new Action(FocusInitialControl));
+        if (IsFluent)
+        {
+            StopPanelMotion();
+            if (FluentMotion.IsEnabled)
+            {
+                var scaleA = FluentMotion.Scale(_settings().AnimationDurationMs);
+                PanelCard.BeginAnimation(UIElement.OpacityProperty, FluentMotion.Animation(0, 1, 180 * scaleA));
+                PanelTranslation.BeginAnimation(TranslateTransform.XProperty, FluentMotion.Animation(_panelFromRight ? 12 : -12, 0, 220 * scaleA));
+            }
+            return;
+        }
         if (!SystemParameters.ClientAreaAnimation)
         {
             PanelCard.Opacity = 1;
@@ -502,6 +519,7 @@ public partial class OverlayWindow : Window
 
     private void AnimateFailure()
     {
+        if (IsFluent) return; // Failure text and retry are sufficient; A has no shake track.
         if (!SystemParameters.ClientAreaAnimation) return;
         var shake = new DoubleAnimationUsingKeyFrames { Duration = TimeSpan.FromMilliseconds(260) };
         shake.KeyFrames.Add(new EasingDoubleKeyFrame(0, KeyTime.FromPercent(0)));
@@ -514,9 +532,21 @@ public partial class OverlayWindow : Window
 
     private void HideAnimated()
     {
+        if (_closed) return;
         _outsideSafeAreaSince = null;
         _autoDismissTimer.Stop();
         if (!IsVisible) return;
+        _motion.StopAll();
+        if (IsFluent)
+        {
+            var version = ++_presentationVersion;
+            PanelCard.IsHitTestVisible = false;
+            if (!FluentMotion.IsEnabled) { Hide(); PanelCard.IsHitTestVisible = true; return; }
+            var fadeA = new DoubleAnimation(PanelCard.Opacity, 0, TimeSpan.FromMilliseconds(100 * FluentMotion.Scale(_settings().AnimationDurationMs))) { FillBehavior = FillBehavior.Stop };
+            fadeA.Completed += (_, _) => { if (!_closed && version == _presentationVersion) { Hide(); PanelCard.IsHitTestVisible = true; } };
+            PanelCard.BeginAnimation(UIElement.OpacityProperty, fadeA);
+            return;
+        }
         if (!SystemParameters.ClientAreaAnimation)
         {
             Hide();
@@ -527,10 +557,22 @@ public partial class OverlayWindow : Window
         {
             EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
         };
-        fade.Completed += (_, _) => Hide();
+        fade.Completed += (_, _) => { if (!_closed) Hide(); };
         PanelCard.BeginAnimation(UIElement.OpacityProperty, fade);
         PanelTranslation.BeginAnimation(TranslateTransform.XProperty, new DoubleAnimation(0, _panelFromRight ? 12 : -12, TimeSpan.FromMilliseconds(130)));
         PanelTranslation.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(0, _panelBelowAnchor ? -10 : 0, TimeSpan.FromMilliseconds(130)));
+    }
+
+    private void StopPanelMotion()
+    {
+        PanelCard.BeginAnimation(UIElement.OpacityProperty, null);
+        PanelTranslation.BeginAnimation(TranslateTransform.XProperty, null);
+        PanelTranslation.BeginAnimation(TranslateTransform.YProperty, null);
+        PanelScale.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+        PanelScale.BeginAnimation(ScaleTransform.ScaleYProperty, null);
+        PanelCard.Opacity = 1; PanelCard.IsHitTestVisible = true;
+        PanelTranslation.X = PanelTranslation.Y = 0;
+        PanelScale.ScaleX = PanelScale.ScaleY = 1;
     }
 
     private void CheckAutoDismiss()

@@ -7,19 +7,23 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>EousGate</AssemblyName>
+    <AssemblyName>EousAssistant</AssemblyName>
     <RootNamespace>EousGate</RootNamespace>
-    <Version>0.1.0-beta.3</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.2</FileVersion>
-    <InformationalVersion>0.1.0-beta.3</InformationalVersion>
+    <Version>0.2.0-beta.15.4</Version>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <FileVersion>0.2.0.19</FileVersion>
+    <InformationalVersion>0.2.0-beta.15.4</InformationalVersion>
     <Authors>Eous-the-Bangboo</Authors>
-    <Product>EousGate</Product>
-    <Description>Drag files to a screen edge and choose an app to open them.</Description>
+    <Product>EousAssistant · Eous 助手</Product>
+    <Description>Windows desktop assistant with native tools and external program monitoring and control.</Description>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\EousGate.ico</ApplicationIcon>
+    <DefaultItemExcludes>$(DefaultItemExcludes);artifacts\**</DefaultItemExcludes>
   </PropertyGroup>
   <ItemGroup>
+    <Resource Include="Assets\EousGate.ico" />
+    <Resource Include="Assets\EousPortrait-*.png" />
+    <Resource Include="Assets\EousCharacter.png" />
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="Tests\**" />
     <None Remove="Tests\**" />

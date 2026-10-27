@@ -8,6 +8,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Fixtures\**" />
     <Using Include="System.IO" />
     <ProjectReference Include="..\EousGate.csproj" />
   </ItemGroup>

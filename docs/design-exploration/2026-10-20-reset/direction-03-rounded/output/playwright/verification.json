@@ -1,0 +1,189 @@
+{
+  "passed": 37,
+  "results": [
+    {
+      "run": 1,
+      "check": "单项启停与处理中状态",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "批量失败不阻断其他工具",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "保存刷新读回、未保存保护与放弃",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "保存失败保留输入、重试成功与读回",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "后缀切换保留草稿与保存",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "恢复当前后缀明确范围",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "自定义程序添加不启动、运行中编辑限制、移除范围",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "收藏刷新读回、清空普通历史保留收藏",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "目录搜索空状态与Esc返回",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "主题即时预览与保存读回",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "范围错误阻止保存且保留输入",
+      "pass": true
+    },
+    {
+      "run": 1,
+      "check": "无脚本异常",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "单项启停与处理中状态",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "批量失败不阻断其他工具",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "保存刷新读回、未保存保护与放弃",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "保存失败保留输入、重试成功与读回",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "后缀切换保留草稿与保存",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "恢复当前后缀明确范围",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "自定义程序添加不启动、运行中编辑限制、移除范围",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "收藏刷新读回、清空普通历史保留收藏",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "目录搜索空状态与Esc返回",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "主题即时预览与保存读回",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "范围错误阻止保存且保留输入",
+      "pass": true
+    },
+    {
+      "run": 2,
+      "check": "无脚本异常",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "单项启停与处理中状态",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "批量失败不阻断其他工具",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "保存刷新读回、未保存保护与放弃",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "保存失败保留输入、重试成功与读回",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "后缀切换保留草稿与保存",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "恢复当前后缀明确范围",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "自定义程序添加不启动、运行中编辑限制、移除范围",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "收藏刷新读回、清空普通历史保留收藏",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "目录搜索空状态与Esc返回",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "主题即时预览与保存读回",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "范围错误阻止保存且保留输入",
+      "pass": true
+    },
+    {
+      "run": 3,
+      "check": "无脚本异常",
+      "pass": true
+    },
+    {
+      "check": "200%等效工作区与减少动态效果",
+      "pass": true
+    }
+  ]
+}

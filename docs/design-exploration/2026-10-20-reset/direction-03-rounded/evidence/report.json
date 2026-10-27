@@ -1,0 +1,424 @@
+[
+  {
+    "file": "home.png",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 181,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "home-@2x.png",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 2,
+    "animationWaitMs": 115,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "motion-probe-toggle",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "toggle",
+    "motion": {
+      "load": {
+        "elements": 6,
+        "loops": 0,
+        "maxMove": 6,
+        "maxSize": 0,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.failed",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          }
+        ]
+      },
+      "steps": {
+        "elements": 3,
+        "loops": 0,
+        "maxMove": 1004,
+        "maxSize": 134,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "div.toast",
+            "move": 1004,
+            "size": 134,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "transition:opacity"
+            ]
+          },
+          {
+            "el": "i.status-dot",
+            "move": 3,
+            "size": 0.483,
+            "opacity": 0,
+            "loop": false,
+            "sources": [
+              "css:spin"
+            ]
+          },
+          {
+            "el": "span.switch-thumb",
+            "move": 20,
+            "size": 0,
+            "opacity": 0,
+            "loop": false,
+            "sources": [
+              "transition:transform"
+            ]
+          }
+        ]
+      },
+      "hero": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "layers": 0
+      },
+      "scroll": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "scrollable": false
+      }
+    },
+    "issues": []
+  },
+  {
+    "file": "motion-probe-settings",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "settings",
+    "motion": {
+      "load": {
+        "elements": 6,
+        "loops": 0,
+        "maxMove": 6,
+        "maxSize": 0,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.running",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row.failed",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          },
+          {
+            "el": "article.tool-row",
+            "move": 6,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "css:enter"
+            ]
+          }
+        ]
+      },
+      "steps": {
+        "elements": 2,
+        "loops": 0,
+        "maxMove": 36,
+        "maxSize": 0,
+        "maxOpacity": 1,
+        "top": [
+          {
+            "el": "section.drawer",
+            "move": 36,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "transition:transform",
+              "transition:opacity"
+            ]
+          },
+          {
+            "el": "div.drawer-shade",
+            "move": 0,
+            "size": 0,
+            "opacity": 1,
+            "loop": false,
+            "sources": [
+              "js:style",
+              "transition:opacity"
+            ]
+          }
+        ]
+      },
+      "hero": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "layers": 0
+      },
+      "scroll": {
+        "elements": 0,
+        "loops": 0,
+        "maxMove": 0,
+        "maxSize": 0,
+        "maxOpacity": 0,
+        "top": [],
+        "scrollable": false
+      }
+    },
+    "issues": []
+  },
+  {
+    "file": "motion-entry-end.jpg",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "entry",
+    "issues": [
+      "录屏：没装 ffmpeg，只留了 motion-entry-start/mid/end.jpg 三帧"
+    ],
+    "frames": {
+      "start": {
+        "file": "motion-entry-start.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 155
+      },
+      "mid": {
+        "file": "motion-entry-mid.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 409
+      },
+      "end": {
+        "file": "motion-entry-end.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 1880
+      }
+    },
+    "sampling": {
+      "mode": "entry"
+    },
+    "durationMs": 1880,
+    "consistency": {
+      "status": "matched",
+      "reference": "motion-entry-end.jpg",
+      "different": false,
+      "changedPixels": 0,
+      "maxTilePixels": 0,
+      "pixelRatio": 0
+    },
+    "failed": true
+  },
+  {
+    "file": "motion-toggle-end.jpg",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "toggle",
+    "issues": [
+      "录屏：没装 ffmpeg，只留了 motion-toggle-start/mid/end.jpg 三帧"
+    ],
+    "frames": {
+      "start": {
+        "file": "motion-toggle-start.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 546
+      },
+      "mid": {
+        "file": "motion-toggle-mid.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 909
+      },
+      "end": {
+        "file": "motion-toggle-end.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 1873
+      }
+    },
+    "sampling": {
+      "mode": "action",
+      "step": 1,
+      "action": "click",
+      "raw": "click [role=switch][aria-label=网页快开启停]"
+    },
+    "durationMs": 1873,
+    "consistency": {
+      "status": "matched",
+      "reference": "motion-toggle-end.jpg",
+      "different": false,
+      "changedPixels": 0,
+      "maxTilePixels": 0,
+      "pixelRatio": 0
+    },
+    "failed": true
+  },
+  {
+    "file": "motion-settings-end.jpg",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "group": "settings",
+    "issues": [
+      "录屏：没装 ffmpeg，只留了 motion-settings-start/mid/end.jpg 三帧"
+    ],
+    "frames": {
+      "start": {
+        "file": "motion-settings-start.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 540
+      },
+      "mid": {
+        "file": "motion-settings-mid.jpg",
+        "source": "Page.screencastFrame",
+        "timeMs": 698
+      },
+      "end": {
+        "file": "motion-settings-end.jpg",
+        "source": "Page.captureScreenshot",
+        "timeMs": 1883
+      }
+    },
+    "sampling": {
+      "mode": "action",
+      "step": 1,
+      "action": "click",
+      "raw": "click [aria-label=文件快开设置]"
+    },
+    "durationMs": 1883,
+    "consistency": {
+      "status": "matched",
+      "reference": "motion-settings-end.jpg",
+      "different": false,
+      "changedPixels": 0,
+      "maxTilePixels": 0,
+      "pixelRatio": 0
+    },
+    "failed": true
+  }
+]

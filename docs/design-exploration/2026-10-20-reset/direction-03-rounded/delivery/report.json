@@ -1,0 +1,55 @@
+[
+  {
+    "file": "stitch.png",
+    "width": 1344,
+    "height": 1042,
+    "columns": 2,
+    "items": [
+      {
+        "naturalWidth": 980,
+        "naturalHeight": 700,
+        "width": 640,
+        "height": 457,
+        "labelHeight": 32,
+        "x": 24,
+        "y": 24,
+        "label": "工具总览",
+        "labelY": 489
+      },
+      {
+        "naturalWidth": 980,
+        "naturalHeight": 700,
+        "width": 640,
+        "height": 457,
+        "labelHeight": 32,
+        "x": 680,
+        "y": 24,
+        "label": "文件快开设置",
+        "labelY": 489
+      },
+      {
+        "naturalWidth": 980,
+        "naturalHeight": 700,
+        "width": 640,
+        "height": 457,
+        "labelHeight": 32,
+        "x": 24,
+        "y": 529,
+        "label": "网页快开设置",
+        "labelY": 994
+      },
+      {
+        "naturalWidth": 980,
+        "naturalHeight": 700,
+        "width": 640,
+        "height": 457,
+        "labelHeight": 32,
+        "x": 680,
+        "y": 529,
+        "label": "目录选择",
+        "labelY": 994
+      }
+    ],
+    "issues": []
+  }
+]

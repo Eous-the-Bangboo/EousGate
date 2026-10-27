@@ -1,0 +1,44 @@
+[
+  {
+    "file": "stitch.png",
+    "width": 2000,
+    "height": 700,
+    "columns": 3,
+    "items": [
+      {
+        "naturalWidth": 980,
+        "naturalHeight": 700,
+        "width": 640,
+        "height": 457,
+        "labelHeight": 32,
+        "x": 24,
+        "y": 24,
+        "label": "A · 工具清单",
+        "labelY": 489
+      },
+      {
+        "naturalWidth": 1000,
+        "naturalHeight": 720,
+        "width": 640,
+        "height": 461,
+        "labelHeight": 32,
+        "x": 680,
+        "y": 24,
+        "label": "B · 三路操作台",
+        "labelY": 493
+      },
+      {
+        "naturalWidth": 640,
+        "naturalHeight": 620,
+        "width": 640,
+        "height": 620,
+        "labelHeight": 32,
+        "x": 1336,
+        "y": 24,
+        "label": "C · 紧凑命令面板",
+        "labelY": 652
+      }
+    ],
+    "issues": []
+  }
+]

@@ -1,0 +1,70 @@
+{
+  "fileKey": "TcXTuFPrFZUWRognzfx1Rf",
+  "scope": "A-only-three-screens",
+  "step": "complete-A-design-only",
+  "createdNodeIds": [
+    "3:2"
+  ],
+  "mutatedNodeIds": [
+    "0:1"
+  ],
+  "pages": {
+    "review": "0:1",
+    "components": "3:2"
+  },
+  "collectionId": "VariableCollectionId:3:3",
+  "variables": {
+    "PanelBackground": "VariableID:3:17",
+    "PanelForeground": "VariableID:3:18",
+    "PanelMutedForeground": "VariableID:3:19",
+    "PanelBorder": "VariableID:3:20",
+    "PanelAccent": "VariableID:3:21",
+    "PanelAccentHover": "VariableID:3:22",
+    "PanelAccentSoft": "VariableID:3:23",
+    "PanelSurfaceSoft": "VariableID:3:24",
+    "PanelElevatedSurface": "VariableID:3:25",
+    "PanelOnAccent": "VariableID:3:26",
+    "PanelSuccess": "VariableID:3:27",
+    "PanelSuccessSoft": "VariableID:3:28",
+    "PanelDanger": "VariableID:3:29",
+    "PanelDangerSoft": "VariableID:3:30",
+    "space4": "VariableID:3:31",
+    "space8": "VariableID:3:32",
+    "space12": "VariableID:3:33",
+    "space16": "VariableID:3:34",
+    "space24": "VariableID:3:35",
+    "space32": "VariableID:3:36",
+    "radius6": "VariableID:3:37",
+    "radius8": "VariableID:3:38",
+    "controlHeight": "VariableID:3:39",
+    "appRowHeight": "VariableID:3:40"
+  },
+  "primitiveVariableIds": [
+    "VariableID:3:4",
+    "VariableID:3:5",
+    "VariableID:3:6",
+    "VariableID:3:7",
+    "VariableID:3:8",
+    "VariableID:3:9",
+    "VariableID:3:10",
+    "VariableID:3:11",
+    "VariableID:3:12",
+    "VariableID:3:13",
+    "VariableID:3:14",
+    "VariableID:3:15",
+    "VariableID:3:16"
+  ],
+  "styles": {
+    "Title": "S:89d6b0c4b840e40164be0d5faa8d465b9cedbaa2,",
+    "Section": "S:70fd93365597c25b82d0bdf87e7c0f22c3928026,",
+    "Body": "S:8167cd978b3cda81b5d5da62889e55f277957d68,",
+    "BodyStrong": "S:ff706f085fbc57874a8f6b713a4047a871aee2cf,",
+    "Caption": "S:65eff99839168f36a33b8999c7373e0d9e6f56e7,",
+    "Micro": "S:4c7bcc8fbe261cc8ee2626f4ac3962592cf2bc76,"
+  },
+  "effect": "S:22f818b9815d0d5023bd0604c536cff940f11601,",
+  "counts": {
+    "variables": 37,
+    "textStyles": 6
+  }
+}

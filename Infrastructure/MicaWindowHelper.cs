@@ -7,9 +7,7 @@ namespace EousGate.Infrastructure;
 internal static class MicaWindowHelper
 {
     private const int DwmAttributeSystemBackdropType = 38;
-    private const int DwmSystemBackdropNone = 1;
     private const int DwmSystemBackdropMica = 2;
-    private const int DwmSystemBackdropAcrylic = 4;
 
     public static bool IsBackdropSupported
         => OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000) && !SystemParameters.HighContrast;
@@ -18,12 +16,7 @@ internal static class MicaWindowHelper
         => Apply(window, skinId);
 
     internal static int GetBackdropTypeForSkin(string? skinId)
-        => SkinCatalog.Normalize(skinId) switch
-        {
-            "acrylic-glass" => DwmSystemBackdropAcrylic,
-            "clear-surface" => DwmSystemBackdropNone,
-            _ => DwmSystemBackdropMica
-        };
+        => DwmSystemBackdropMica;
 
     public static void Apply(Window window, string? skinId = null)
     {
@@ -35,6 +28,8 @@ internal static class MicaWindowHelper
             if (handle == IntPtr.Zero) return;
             var backdrop = GetBackdropTypeForSkin(skinId);
             _ = DwmSetWindowAttribute(handle, DwmAttributeSystemBackdropType, ref backdrop, sizeof(int));
+            var dark = window.TryFindResource("PanelBackground") is System.Windows.Media.SolidColorBrush brush && brush.Color.R < 128 ? 1 : 0;
+            _ = DwmSetWindowAttribute(handle, 20, ref dark, sizeof(int));
         }
 
         if (new WindowInteropHelper(window).Handle != IntPtr.Zero) ApplyBackdrop(null, EventArgs.Empty);

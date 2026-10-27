@@ -1,0 +1,24 @@
+[
+  {
+    "file": "abstract.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-02-eous\\abstract.html",
+    "name": "abstract",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "soft.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-02-eous\\soft.html",
+    "name": "soft",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  }
+]

@@ -1,0 +1,79 @@
+
+const state={"createdNodeIds":["3:2"],"mutatedNodeIds":["0:1"],"pages":{"review":"0:1","components":"3:2"},"collectionId":"VariableCollectionId:3:3","variables":{"PanelBackground":"VariableID:3:17","PanelForeground":"VariableID:3:18","PanelMutedForeground":"VariableID:3:19","PanelBorder":"VariableID:3:20","PanelAccent":"VariableID:3:21","PanelAccentHover":"VariableID:3:22","PanelAccentSoft":"VariableID:3:23","PanelSurfaceSoft":"VariableID:3:24","PanelElevatedSurface":"VariableID:3:25","PanelOnAccent":"VariableID:3:26","PanelSuccess":"VariableID:3:27","PanelSuccessSoft":"VariableID:3:28","PanelDanger":"VariableID:3:29","PanelDangerSoft":"VariableID:3:30","space4":"VariableID:3:31","space8":"VariableID:3:32","space12":"VariableID:3:33","space16":"VariableID:3:34","space24":"VariableID:3:35","space32":"VariableID:3:36","radius6":"VariableID:3:37","radius8":"VariableID:3:38","controlHeight":"VariableID:3:39","appRowHeight":"VariableID:3:40"},"primitiveVariableIds":["VariableID:3:4","VariableID:3:5","VariableID:3:6","VariableID:3:7","VariableID:3:8","VariableID:3:9","VariableID:3:10","VariableID:3:11","VariableID:3:12","VariableID:3:13","VariableID:3:14","VariableID:3:15","VariableID:3:16"],"styles":{"Title":"S:89d6b0c4b840e40164be0d5faa8d465b9cedbaa2,","Section":"S:70fd93365597c25b82d0bdf87e7c0f22c3928026,","Body":"S:8167cd978b3cda81b5d5da62889e55f277957d68,","BodyStrong":"S:ff706f085fbc57874a8f6b713a4047a871aee2cf,","Caption":"S:65eff99839168f36a33b8999c7373e0d9e6f56e7,","Micro":"S:4c7bcc8fbe261cc8ee2626f4ac3962592cf2bc76,"},"effect":"S:22f818b9815d0d5023bd0604c536cff940f11601,","counts":{"variables":37,"textStyles":6}}, compState={"components":{"icons":{"code":"4:2","link":"4:5","apps":"4:8","down":"4:11","trigger":"4:14","overview":"4:17","chevron":"4:20","open":"4:23","notepad":"4:26","web":"4:29","file":"4:32","brand":"4:35","appearance":"4:42","check":"4:45","minus":"4:48","close":"4:51","folder":"4:54","list":"4:57","shield":"4:60","maximize":"4:63"},"buttons":"4:90","nav":"4:101","appRows":"4:134","field":"4:145"},"properties":{"buttonLabel":"Label#4:0","navLabel":"Label#4:13","navIcon":"Icon#4:16","rowLabel":"Label#4:19","rowIcon":"Icon#4:24","fieldLabel":"Value#4:29"}};
+await Promise.all(['Regular','Medium','Bold'].map(style=>figma.loadFontAsync({family:'Noto Sans SC',style})));
+const vars={};for(const [k,id] of Object.entries(state.variables))vars[k]=await figma.variables.getVariableByIdAsync(id);
+const created=[];const keep=n=>{created.push(n.id);return n;};
+function paint(key){return figma.variables.setBoundVariableForPaint({type:'SOLID',color:{r:0,g:0,b:0}},'color',vars[key]);}
+function round(n,key='radius8'){for(const p of ['topLeftRadius','topRightRadius','bottomLeftRadius','bottomRightRadius'])n.setBoundVariable(p,vars[key]);}
+function pad(n,key){for(const p of ['paddingLeft','paddingRight','paddingTop','paddingBottom'])n.setBoundVariable(p,vars[key]);}
+function text(label,role='Body',color='PanelForeground',width){const t=keep(figma.createText());t.textStyleId=state.styles[role];t.characters=label;t.fills=[paint(color)];if(width){t.textAutoResize='HEIGHT';t.resize(width,t.height);}return t;}
+function auto(name,dir,w,h,fill=null,gap='space8',padding){const f=keep(figma.createAutoLayout(dir));f.name=name;f.resize(w,h||1);f.primaryAxisSizingMode=dir==='VERTICAL'&&!h?'AUTO':'FIXED';f.counterAxisSizingMode=dir==='HORIZONTAL'&&!h?'AUTO':'FIXED';f.fills=fill?[paint(fill)]:[];if(gap)f.setBoundVariable('itemSpacing',vars[gap]);if(padding)pad(f,padding);return f;}
+function add(p,n,fill=false){p.appendChild(n);if(fill){if(n.type==='TEXT'){n.textAutoResize='HEIGHT';n.resize(Math.max(1,p.width-p.paddingLeft-p.paddingRight),n.height);}n.layoutSizingHorizontal='FILL';}return n;}
+function component(name,w,h,fill=null){const c=keep(figma.createComponent());c.name=name;c.resize(w,h);c.layoutMode='HORIZONTAL';c.primaryAxisSizingMode='FIXED';c.counterAxisSizingMode='FIXED';c.counterAxisAlignItems='CENTER';c.fills=fill?[paint(fill)]:[];round(c);return c;}
+const sets={};for(const key of ['buttons','nav','appRows','field'])sets[key]=await figma.getNodeByIdAsync(compState.components[key]);
+const iconNodes={};for(const [key,id]of Object.entries(compState.components.icons))iconNodes[key]=await figma.getNodeByIdAsync(id);
+function icon(key,size=20){const n=keep(iconNodes[key].createInstance());n.resize(size,size);return n;}
+function button(label,kind='Secondary',status='Default',width=88){const v=sets.buttons.children.find(n=>n.name==='Kind='+kind+', State='+status);const i=keep(v.createInstance());i.setProperties({[compState.properties.buttonLabel]:label});i.resize(width,36);return i;}
+function field(value,width=160){const i=keep(sets.field.children[0].createInstance());i.setProperties({[compState.properties.fieldLabel]:value});i.resize(width,36);return i;}
+function border(n){n.strokes=[paint('PanelBorder')];n.strokeWeight=1;round(n);}
+
+const toolState={"createdNodeIds":["5:26","5:27","5:28","5:31","5:32","5:33","5:37","5:38","5:41","5:42","5:43","5:44","5:45","5:46","5:47","5:48","5:50","5:52","5:54","5:55","5:59","5:60","5:63","5:64","5:65","5:66","5:67","5:68","5:69","5:70","5:72","5:74","5:76","5:77","5:81","5:82","5:85","5:86","5:87","5:88","5:89","5:90","5:91","5:92","5:94","5:96","5:98","5:99","5:103","5:104","5:107","5:108","5:109","5:110","5:111","5:112","5:113","5:114","5:116","5:118","5:120"],"components":{"checkbox":"5:31","tools":"5:120"},"properties":{"title":"Title#5:0","english":"English#5:5","description":"Description#5:10","icon":"Icon#5:15"},"counts":{"checkbox":2,"toolStates":4}}, overlayId="6:169";
+const page=await figma.getNodeByIdAsync(state.pages.review);await figma.setCurrentPageAsync(page);
+const toolSet=await figma.getNodeByIdAsync(toolState.components.tools), checkSet=await figma.getNodeByIdAsync(toolState.components.checkbox), overlay=await figma.getNodeByIdAsync(overlayId);
+function divider(w){return auto('Divider','HORIZONTAL',w,1,'PanelBorder',null);}
+function titleBar(title,w){const bar=auto('Window title bar','HORIZONTAL',w,40,'PanelBackground',null);bar.paddingLeft=16;bar.counterAxisAlignItems='CENTER';bar.primaryAxisAlignItems='SPACE_BETWEEN';
+ const brand=auto('Window identity','HORIZONTAL',w-180,40,null,'space8');brand.counterAxisAlignItems='CENTER';brand.appendChild(icon('brand',20));brand.appendChild(text(title,'Caption'));
+ bar.appendChild(brand);const controls=auto('Window controls','HORIZONTAL',132,40,null,null);for(const k of ['minus','maximize','close']){const cell=auto(k,'HORIZONTAL',44,40,null,null);cell.counterAxisAlignItems='CENTER';cell.primaryAxisAlignItems='CENTER';cell.appendChild(icon(k,12));controls.appendChild(cell);}bar.appendChild(controls);return bar;
+}
+function windowFrame(title,w,h){const f=auto(title,'VERTICAL',w,h,'PanelBackground',null);round(f);border(f);f.clipsContent=true;f.effectStyleId=state.effect;f.appendChild(titleBar(title,w));return f;}
+function footer(w,items){const f=auto('Persistent actions','HORIZONTAL',w,56,'PanelElevatedSurface','space8');f.paddingLeft=f.paddingRight=24;f.counterAxisAlignItems='CENTER';for(const x of items)f.appendChild(x);return f;}
+function stretch(parent){const s=auto('Flexible space','HORIZONTAL',1,1,null,null);parent.appendChild(s);s.layoutSizingHorizontal='FILL';return s;}
+function checkbox(checked=true){return keep(checkSet.children.find(n=>n.name==='Checked='+checked).createInstance());}
+function settingRow(label,value,subtitle){const r=auto(label,'HORIZONTAL',520,null,null,'space16');r.counterAxisAlignItems='CENTER';const labels=auto('Setting label','VERTICAL',310,null,null,'space4');add(labels,text(label,'Body'),true);if(subtitle)add(labels,text(subtitle,'Caption','PanelMutedForeground',300),true);add(r,labels,true);r.appendChild(field(value,160));return r;}
+function checkRow(label,on){const r=auto(label,'HORIZONTAL',520,36,null,'space12');r.counterAxisAlignItems='CENTER';r.appendChild(checkbox(on));r.appendChild(text(label,'Body'));return r;}
+function section(name,w){const f=auto(name,'VERTICAL',w,null,'PanelElevatedSurface','space16','space16');border(f);return f;}
+// Review canvas. Every screen below is made from text, vectors and component instances.
+const board=auto('A 原生 Fluent / 设计总览','VERTICAL',1604,null,'PanelSurfaceSoft','space32','space32');
+
+board.x=80;board.y=80;
+add(board,text('A / 原生 Fluent','Title'),true);
+add(board,text('清晰的层级、安静的表面，以及直接可见的操作。','Body','PanelMutedForeground'),true);
+add(board,text('可编辑设计稿 · 状态为示意 · Figma 预览字体 Noto Sans SC；Windows 使用项目原字体','Caption','PanelMutedForeground'),true);
+const firstRow=auto('助手首页与打开面板','HORIZONTAL',1540,750,null,'space32');
+const home=windowFrame('Eous 助手',1040,750);
+const homeBody=auto('工具概览','VERTICAL',1040,654,null,'space12','space16');
+const homeHeading=auto('Page heading','VERTICAL',1008,56,null,'space4');add(homeHeading,text('我的工具','Title'),true);add(homeHeading,text('勾选决定批量操作对象，启动后才运行。','Caption','PanelMutedForeground'),true);add(homeBody,homeHeading,true);
+const native=[['文件快开','EousFileHop','把文件拖到屏幕边缘，选择软件打开。','open'],['网页快开','EousWebHop','复制网页链接，从侧边提示快速打开。','web'],['文件夹快跳','EousFolderHop','在打开和保存对话框中快速切换目录。','folder']];
+const external=[['Ditto','外部工具','剪贴板管理。按需启动，状态自动同步。','list'],['Everything','外部工具','快速查找本地文件；不控制索引服务。','file'],['无线麦 Sayall','外部工具','语音输入工具。由你明确选择启动或停止。','web']];
+function group(label,data){const g=auto(label,'VERTICAL',1008,null,null,'space8');const h=auto('Section heading','HORIZONTAL',1008,24,null,null);h.counterAxisAlignItems='CENTER';h.primaryAxisAlignItems='SPACE_BETWEEN';h.appendChild(text(label,'Section'));h.appendChild(text('0 项运行中 · 3 项已勾选','Caption','PanelMutedForeground'));add(g,h,true);
+ for(const [title,english,description,key]of data){const r=keep(toolSet.children.find(n=>n.name==='State=Stopped').createInstance());r.setProperties({[toolState.properties.title]:title,[toolState.properties.english]:english,[toolState.properties.description]:description,[toolState.properties.icon]:iconNodes[key].id});r.resize(1008,68);add(g,r,true);}return g;}
+add(homeBody,group('Eous原生工具',native),true);add(homeBody,group('非Eous原生工具',external),true);add(home,homeBody,true);
+const homeFoot=footer(1040,[button('启动勾选','Primary','Default',104),button('关闭勾选','Secondary','Default',104),button('全部启动','Ghost','Default',88),button('全部关闭','Ghost','Default',88)]);stretch(homeFoot);homeFoot.appendChild(button('通用设置','Secondary','Default',104));home.appendChild(homeFoot);firstRow.appendChild(home);
+const panelSide=auto('临时打开面板说明','VERTICAL',468,750,null,'space16','space32');add(panelSide,text('打开面板','Section'),true);add(panelSide,text('拖拽时出现，完成后收起。','Body','PanelMutedForeground'),true);
+const opening=keep(overlay.createInstance());panelSide.appendChild(opening);add(panelSide,text('404 px · 四个软件选项 · 明确选中态','Caption','PanelMutedForeground',404),true);add(panelSide,text('不显示文件名和完整路径；Esc 取消不会产生打开动作。','Caption','PanelMutedForeground',404),true);firstRow.appendChild(panelSide);board.appendChild(firstRow);
+const secondRow=auto('设置与状态','HORIZONTAL',1540,800,null,'space32');
+const settings=windowFrame('Eous 助手 · 设置中心',1180,800);
+const body=auto('Settings workspace','HORIZONTAL',1180,704,null,null);
+const navigation=auto('设置导航','VERTICAL',188,704,'PanelBackground','space8','space12');navigation.paddingTop=24;add(navigation,text('偏好设置','Caption','PanelMutedForeground'),true);
+for(const [label,key]of [['面板外观','appearance'],['触发与接收','trigger'],['剪贴板链接','link'],['软件选项','apps'],['辅助与隐私','shield']]){const v=sets.nav.children.find(n=>n.name==='Selected='+(key==='appearance'));const n=keep(v.createInstance());n.setProperties({[compState.properties.navLabel]:label,[compState.properties.navIcon]:iconNodes[key].id});navigation.appendChild(n);}
+body.appendChild(navigation);
+const main=auto('Appearance content','VERTICAL',992,704,null,'space24','space24');const intro=auto('Appearance heading','VERTICAL',944,56,null,'space4');add(intro,text('面板外观','Title'),true);add(intro,text('选择你习惯的外观，预览后再应用。','Caption','PanelMutedForeground'),true);add(main,intro,true);
+const content=auto('Controls and preview','HORIZONTAL',944,576,null,'space24');
+const controls=auto('Appearance controls','VERTICAL',584,576,null,'space16');
+const skin=section('皮肤样式',584);add(skin,text('皮肤样式','Section'),true);const skinRow=auto('当前皮肤','HORIZONTAL',552,72,'PanelAccentSoft','space16','space12');round(skinRow);skinRow.counterAxisAlignItems='CENTER';skinRow.appendChild(icon('appearance',28));const skinLabels=auto('Skin text','VERTICAL',310,null,null,'space4');add(skinLabels,text('A · 原生 Fluent','BodyStrong'),true);add(skinLabels,text('清晰表面 · 克制蓝色 · 系统材质','Caption','PanelMutedForeground'),true);add(skinRow,skinLabels,true);skinRow.appendChild(field('A · 原生 Fluent',160));add(skin,skinRow,true);add(controls,skin,true);
+const preferences=section('主题与动效',584);add(preferences,text('主题与动效','Section'),true);add(preferences,settingRow('主题','跟随系统','也可手动选择浅色或深色。'),true);preferences.appendChild(divider(552));add(preferences,settingRow('动效时长','160 ms','调整面板出现与收起的节奏。'),true);add(controls,preferences,true);
+const readability=section('阅读与反馈',584);add(readability,text('阅读与反馈','Section'),true);add(readability,checkRow('使用较大的文字和图标',false),true);add(readability,checkRow('拖拽时显示边缘脉冲',true),true);add(controls,readability,true);
+content.appendChild(controls);
+const preview=auto('实时预览','VERTICAL',336,576,'PanelSurfaceSoft','space16','space16');round(preview);add(preview,text('实时预览','Section'),true);add(preview,text('2 个 TXT 文件 · 效果示意','Caption','PanelMutedForeground'),true);
+const previewPanel=keep(overlay.createInstance());previewPanel.resize(304,405);preview.appendChild(previewPanel);add(preview,text('点击应用或保存后，才更新运行中的界面。','Caption','PanelMutedForeground',304),true);content.appendChild(preview);main.appendChild(content);body.appendChild(main);settings.appendChild(body);
+const saveFoot=footer(1180,[button('恢复默认','Ghost','Default',104),button('帮助','Ghost','Default',72)]);stretch(saveFoot);saveFoot.appendChild(button('取消','Ghost','Default',88));saveFoot.appendChild(button('应用','Secondary','Default',88));saveFoot.appendChild(button('保存','Primary','Default',88));settings.appendChild(saveFoot);secondRow.appendChild(settings);
+const notes=auto('A 方案状态与交付说明','VERTICAL',328,800,'PanelElevatedSurface','space16','space24');border(notes);add(notes,text('控件状态','Section'),true);add(notes,text('同一控件，清楚表达操作反馈。','Caption','PanelMutedForeground',280),true);
+for(const [label,status]of [['默认','Default'],['悬停','Hover'],['键盘焦点','Focus'],['禁用','Disabled']]){const row=auto(label,'HORIZONTAL',280,40,null,'space16');row.counterAxisAlignItems='CENTER';add(row,text(label,'Body','PanelMutedForeground'),true);row.appendChild(button('保存','Primary',status,104));notes.appendChild(row);}
+notes.appendChild(divider(280));add(notes,text('设计重点','Section'),true);for(const line of ['统一 8 px 圆角与 4/8/16/24 px 间距。','减少大块说明区，让主要操作直接可见。','默认表面保持安静，焦点与选中态明确。','只精修 A；B 保留现有实现。'])add(notes,text(line,'Body','PanelMutedForeground',280),true);
+notes.appendChild(divider(280));add(notes,text('实现说明','Section'),true);add(notes,text('这是可编辑设计稿，不代表 WPF 已按本稿重新实现。预览字体与 Windows 系统字体存在度量差异。','Caption','PanelMutedForeground',280),true);secondRow.appendChild(notes);board.appendChild(secondRow);
+const screens={home:home.id,settings:settings.id,opening:opening.id,board:board.id};
+const all=[board,...board.findAll(()=>true)];const counts={};for(const n of all)counts[n.type]=(counts[n.type]||0)+1;
+const images=all.filter(n=>'fills'in n&&Array.isArray(n.fills)&&n.fills.some(p=>p.type==='IMAGE')).map(n=>({id:n.id,name:n.name,width:n.width,height:n.height}));
+const textFamilies=[...new Set(all.filter(n=>n.type==='TEXT').map(n=>typeof n.fontName==='object'?n.fontName.family:'mixed'))];
+return {createdNodeIds:[...new Set([...created,...all.map(n=>n.id)])],screens,bounds:{width:board.width,height:board.height},nodeTypeCounts:counts,imageFilledNodes:images,textFamilies};
+

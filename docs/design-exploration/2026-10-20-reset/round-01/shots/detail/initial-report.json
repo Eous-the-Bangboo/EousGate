@@ -1,0 +1,98 @@
+[
+  {
+    "file": "a.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-01\\a.html",
+    "name": "A · 工具清单",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": [
+      {
+        "rule": "contrastLow",
+        "label": "文字对比度不达标（正文低于 4.5:1，大字低于 3:1）",
+        "count": 17,
+        "examples": [
+          "span.english「EousFileHop」（3.37:1）",
+          "div.description「拖到屏幕边缘，选择软件打开」（4.48:1）",
+          "button.settings「设置」（4.36:1）"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "b.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-01\\b.html",
+    "name": "B · 三路操作台",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "c.png",
+    "target": "D:\\EousGate\\docs\\design-exploration\\2026-10-20-reset\\round-01\\c.html",
+    "name": "C · 紧凑命令面板",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": [
+      {
+        "rule": "contrastLow",
+        "label": "文字对比度不达标（正文低于 4.5:1，大字低于 3:1）",
+        "count": 2,
+        "examples": [
+          "div.tool-desc「拖到屏幕边缘，选择软件打开」（4.09:1）",
+          "span「关闭面板后，已启动的工具继续运行」（4.03:1）"
+        ]
+      }
+    ]
+  },
+  {
+    "file": "sheet.png",
+    "width": 2000,
+    "height": 700,
+    "columns": 3,
+    "items": [
+      {
+        "naturalWidth": 980,
+        "naturalHeight": 700,
+        "width": 640,
+        "height": 457,
+        "labelHeight": 32,
+        "x": 24,
+        "y": 24,
+        "label": "A · 工具清单",
+        "labelY": 489
+      },
+      {
+        "naturalWidth": 1000,
+        "naturalHeight": 720,
+        "width": 640,
+        "height": 461,
+        "labelHeight": 32,
+        "x": 680,
+        "y": 24,
+        "label": "B · 三路操作台",
+        "labelY": 493
+      },
+      {
+        "naturalWidth": 640,
+        "naturalHeight": 620,
+        "width": 640,
+        "height": 620,
+        "labelHeight": 32,
+        "x": 1336,
+        "y": 24,
+        "label": "C · 紧凑命令面板",
+        "labelY": 652
+      }
+    ],
+    "issues": []
+  }
+]

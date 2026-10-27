@@ -4,7 +4,7 @@
         WindowStyle="None" ShowInTaskbar="False"
         Background="Transparent" Topmost="True" AllowDrop="True"
         Width="8" ResizeMode="NoResize" Opacity="0.58" FontFamily="Segoe UI Variable Text">
-  <Border x:Name="Surface" Background="{DynamicResource EdgeBandBackground}" BorderBrush="#6693DFFF" BorderThickness="0,0,2,0" CornerRadius="2" RenderTransformOrigin="0.5,0.5" SnapsToDevicePixels="True">
+  <Border x:Name="Surface" Background="{DynamicResource EdgeBandBackground}" BorderBrush="#6693DFFF" BorderThickness="0,0,2,0" CornerRadius="12" RenderTransformOrigin="0.5,0.5" SnapsToDevicePixels="True">
     <Border.RenderTransform><ScaleTransform x:Name="BandScale" ScaleX="1" ScaleY="1" /></Border.RenderTransform>
   </Border>
 </Window>

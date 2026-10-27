@@ -6,9 +6,61 @@ if (args.FirstOrDefault() == "--photos-smoke")
     return PackagedAppSmoke.Run(args.Skip(1).ToArray());
 if (args.FirstOrDefault() == "--clipboard-smoke")
     return ClipboardSmoke.Run(args.Skip(1).ToArray());
+if (args.FirstOrDefault() == "--file-drop-permission-smoke")
+    return FileDropPermissionSmoke.Run();
+if (args.FirstOrDefault() == "--folder-dialog-smoke")
+    return FolderDialogSmoke.Run();
+if (args.FirstOrDefault() == "--launcher-inspect-smoke")
+    return LauncherProcessTests.InspectLive(args[1]);
+if (args.FirstOrDefault() == "--launcher-process-smoke")
+    return LauncherProcessSmoke.Run(args[1]);
+if (args.FirstOrDefault() == "--clipboard-real-smoke")
+    return ClipboardRealCopySmoke.Run();
+if (args.FirstOrDefault() == "--window-switching-smoke")
+    return WindowSwitchingSmoke.Run();
+if (args.FirstOrDefault() == "--assistant-smoke")
+    return AssistantVisualSmoke.Run(args.Skip(1).ToArray());
+if (args.FirstOrDefault() == "--assistant-host-smoke")
+    return AssistantHostSmoke.Run();
+if (args.FirstOrDefault() == "--external-process-smoke")
+    return ExternalProcessSmoke.Run(args.Skip(1).ToArray());
+if (args.FirstOrDefault() == "--external-inspect-smoke")
+    return ExternalProcessSmoke.InspectInstalled();
+if (args.FirstOrDefault() == "--external-monitor-smoke")
+    return ExternalProcessSmoke.MonitorHost();
+if (args.FirstOrDefault() == "--external-monitor-lifecycle-smoke")
+    return ExternalMonitorSmoke.Run();
+if (args.FirstOrDefault() == "--custom-program-smoke")
+    return CustomProgramSmoke.Run();
+if (args.FirstOrDefault() == "--file-hop-smoke")
+    return FileHopSettingsSmoke.Run(args.Skip(1).ToArray());
+if (args.FirstOrDefault() == "--workbench-smoke")
+    return WorkbenchSmoke.Run(args.Skip(1).ToArray());
 
 var tests = new (string Name, Action Run)[]
 {
+    ("Launcher handoff target boundaries exclude games, unrelated folders and publishers", LauncherProcessTests.TargetBoundaries),
+    ("Elevated stop request validates pinned identities and preserves explicit policy", LauncherProcessTests.StopRequests),
+    ("Edge ranges default, clone and map endpoints on all three sides", EdgeBandRangeTests.DefaultsAndBounds),
+    ("Edge ranges reject invalid endpoints and preserve legacy physical bounds", EdgeBandRangeTests.ValidationAndMigration),
+    ("Edge ranges persist and migrate old JSON without losing placement", EdgeBandRangeTests.Persistence),
+    ("File-hop categories browse, normalize and filter common suffixes", FileHopTests.Categories),
+    ("File-hop recommendations rank matching apps and retain unknown handlers", FileHopTests.Ranking),
+    ("File-hop recommendations respect manual order, hidden and custom apps", FileHopTests.Overrides),
+    ("Repeated copy opens every distinct URL at the configured threshold, once per streak", RepeatedCopyTests.ThresholdAndDistinctLinks),
+    ("Repeated copy honors defaults, text changes, timeouts, settings and lifecycle resets", RepeatedCopyTests.ResetAndSettings),
+    ("Repeated copy retains failed links without reopening successful URLs", RepeatedCopyTests.PartialFailure),
+    ("Custom programs clone, persist and recover legacy or invalid definitions", CustomProgramTests.Configuration),
+    ("Custom programs add, edit, reject duplicates, roll back save failures and remove without stopping", CustomProgramTests.Management),
+    ("Running custom programs can save only the stop policy and retry after a close timeout", CustomProgramTests.StopPolicyWhileRunning),
+    ("External monitoring tracks manual starts, exits and idempotent operations", ExternalProgramTests.MonitoringAndIdempotence),
+    ("External failures keep accurate state and recover", ExternalProgramTests.FailuresAndRecovery),
+    ("External launch handles elevation, cancellation and permission errors without changing arguments", ExternalProgramTests.PermissionAwareLaunch),
+    ("External explicit batch stop and assistant-exit policies differ", ExternalProgramTests.BatchAndExitPolicy),
+    ("External paths clone, persist and cannot change while running", ExternalProgramTests.Configuration),
+    ("Assistant lifecycle supports independent and all four batch operations", AssistantTests.Lifecycle),
+    ("Assistant migrates settings without modifying legacy data", AssistantTests.Migration),
+    ("Folder history import merges safely and preserves favorites", AssistantTests.FolderHistory),
     ("Clipboard links extract web URLs from prose", ClipboardLinkTests.ExtractsLinks),
     ("Clipboard links reject other protocols and bound input", ClipboardLinkTests.RejectsInvalidInput),
     ("Clipboard links preserve distinct paths and remove duplicates", ClipboardLinkTests.DeduplicatesWithinCopy),
@@ -44,9 +96,11 @@ var tests = new (string Name, Action Run)[]
     ,("UserSettings appearance defaults are bounded", SettingsAppearanceDefaultsAreBounded)
     ,("Panel design catalog keeps scheme one as the default", PanelDesignSchemeOneIsDefault)
     ,("JsonSettingsStore normalizes unknown design schemes", SettingsNormalizeUnknownDesignScheme)
-    ,("Skin catalog keeps three unique materials and normalizes ids", SkinCatalogNormalizesIds)
+    ,("Skin catalog exposes only A/B with stable ids", SkinCatalogNormalizesIds)
+    ,("A/B skins preserve selection and readable action contrast", SkinTests.PersistenceAndContrast)
+    ,("Removed appearance settings fall back without losing other preferences", SkinTests.RemovedAppearanceFallsBack)
     ,("ThemePalette creates distinct skin surfaces", SkinPalettesAreDistinct)
-    ,("DWM backdrop types match the three skin materials", SkinBackdropTypesAreDistinct)
+    ,("DWM backdrop uses Mica for supported and removed skins", SkinBackdropsUseMica)
     ,("JsonSettingsStore normalizes unknown skins", SettingsNormalizeUnknownSkin)
     ,("UserSettings clone deep-copies custom apps", SettingsCloneCopiesCustomApps)
     ,("Json settings round-trip custom apps", SettingsRoundTripCustomApps)
@@ -336,10 +390,10 @@ static void SettingsRoundTrip()
     try
     {
         var store = new JsonSettingsStore(path);
-        var settings = new UserSettings { CandidateCount = 7, Theme = "Dark", Paused = true, DesignSchemeId = "icon-grid", SkinId = "acrylic-glass" };
+        var settings = new UserSettings { CandidateCount = 7, Theme = "Dark", Paused = true, DesignSchemeId = PanelDesignCatalog.DefaultId, SkinId = SkinCatalog.FocusDarkId };
         store.Save(settings);
         var loaded = store.Load();
-        Assert(loaded.CandidateCount == 7 && loaded.Theme == "Dark" && loaded.Paused && loaded.DesignSchemeId == "icon-grid" && loaded.SkinId == "acrylic-glass", "saved values, design scheme, and skin must be restored");
+        Assert(loaded.CandidateCount == 7 && loaded.Theme == "Dark" && loaded.Paused && loaded.DesignSchemeId == PanelDesignCatalog.DefaultId && loaded.SkinId == SkinCatalog.FocusDarkId, "saved values, design scheme, and skin must be restored");
     }
     finally { Delete(path); }
 }
@@ -359,13 +413,13 @@ static void SettingsMalformedFallsBack()
 
 static void SettingsCloneIsIndependent()
 {
-    var source = new UserSettings { Theme = "Dark", SkinId = "clear-surface" };
+    var source = new UserSettings { Theme = "Dark", SkinId = SkinCatalog.FocusDarkId };
     source.FileTypes[".txt"] = new FileTypePreference { CandidateOrder = ["one"] };
     var clone = source.Clone();
     clone.Theme = "Light";
-    clone.SkinId = "acrylic-glass";
+    clone.SkinId = SkinCatalog.DefaultId;
     clone.FileTypes[".txt"].CandidateOrder.Add("two");
-    Assert(source.Theme == "Dark" && source.SkinId == "clear-surface" && source.FileTypes[".txt"].CandidateOrder.Count == 1, "editing a settings draft must not modify the active settings");
+    Assert(source.Theme == "Dark" && source.SkinId == SkinCatalog.FocusDarkId && source.FileTypes[".txt"].CandidateOrder.Count == 1, "editing a settings draft must not modify the active settings");
 }
 
 static void SettingsCloneCopiesCustomApps()
@@ -620,10 +674,10 @@ static void PanelDesignSchemeOneIsDefault()
 {
     var settings = new UserSettings();
     Assert(settings.DesignSchemeId == PanelDesignCatalog.DefaultId, "new settings must select the default design scheme");
-    Assert(PanelDesignCatalog.All.Count == 3, "design center must expose three schemes");
+    Assert(PanelDesignCatalog.All.Count == 1, "only the floating command panel must remain");
     Assert(PanelDesignCatalog.All[0].Sequence == "方案一" && PanelDesignCatalog.All[0].IsDefault, "scheme one must remain the first default entry");
-    Assert(PanelDesignCatalog.Normalize("compact-list") == "compact-list", "compact list scheme must normalize by stable id");
-    Assert(PanelDesignCatalog.Normalize("icon-grid") == "icon-grid", "icon grid scheme must normalize by stable id");
+    Assert(PanelDesignCatalog.Normalize("compact-list") == PanelDesignCatalog.DefaultId, "removed compact list must fall back safely");
+    Assert(PanelDesignCatalog.Normalize("icon-grid") == PanelDesignCatalog.DefaultId, "removed icon grid must fall back safely");
     Assert(PanelDesignCatalog.Normalize("unknown") == PanelDesignCatalog.DefaultId, "unknown saved schemes must fall back safely");
 }
 
@@ -643,28 +697,29 @@ static void SettingsNormalizeUnknownDesignScheme()
 static void SkinCatalogNormalizesIds()
 {
     var ids = SkinCatalog.All.Select(skin => skin.Id).ToArray();
-    Assert(ids.Length == 3 && ids.Distinct(StringComparer.OrdinalIgnoreCase).Count() == 3, "skin catalog must contain three unique ids");
+    Assert(ids.SequenceEqual(new[] { SkinCatalog.DefaultId, SkinCatalog.FocusDarkId }), "skin catalog must contain only A/B");
     Assert(SkinCatalog.All[0].Id == SkinCatalog.DefaultId && SkinCatalog.All[0].IsDefault, "Win11 Mica must remain the default skin");
-    Assert(SkinCatalog.Normalize("acrylic-glass") == "acrylic-glass", "acrylic skin must normalize by stable id");
-    Assert(SkinCatalog.Normalize("clear-surface") == "clear-surface", "clear skin must normalize by stable id");
+    Assert(SkinCatalog.Normalize("acrylic-glass") == SkinCatalog.DefaultId, "removed acrylic skin must fall back safely");
+    Assert(SkinCatalog.Normalize("clear-surface") == SkinCatalog.DefaultId, "removed clear skin must fall back safely");
+    Assert(SkinCatalog.Normalize("FOCUS-DARK") == SkinCatalog.FocusDarkId, "B must retain its stable id");
     Assert(SkinCatalog.Normalize("unknown") == SkinCatalog.DefaultId, "unknown skins must fall back safely");
 }
 
 static void SkinPalettesAreDistinct()
 {
     var mica = ThemePalette.Create("Light", false, false, "win11-mica");
-    var acrylic = ThemePalette.Create("Light", false, false, "acrylic-glass");
-    var clear = ThemePalette.Create("Light", false, false, "clear-surface");
-    Assert(mica.Background != acrylic.Background && acrylic.Background != clear.Background, "skin surfaces must have distinct backgrounds");
-    Assert(acrylic.Border != clear.Border && acrylic.SurfaceSoft != clear.SurfaceSoft, "glass and clear skins must differ in supporting surfaces");
-    Assert(!acrylic.Background.StartsWith("#FF", StringComparison.OrdinalIgnoreCase) && !clear.Background.StartsWith("#FF", StringComparison.OrdinalIgnoreCase), "glass skins must use transparent background layers");
+    var focus = ThemePalette.Create("Light", false, false, SkinCatalog.FocusDarkId);
+    Assert(mica.Background != focus.Background && mica.Accent != focus.Accent, "A/B must retain distinct surfaces and accents");
+    Assert(mica == ThemePalette.Create("Light", false, false, "acrylic-glass"), "removed acrylic skin must use A's palette");
+    Assert(mica == ThemePalette.Create("Light", false, false, "clear-surface"), "removed clear skin must use A's palette");
 }
 
-static void SkinBackdropTypesAreDistinct()
+static void SkinBackdropsUseMica()
 {
     Assert(MicaWindowHelper.GetBackdropTypeForSkin("win11-mica") == 2, "Mica must use DWMSBT_MAINWINDOW");
-    Assert(MicaWindowHelper.GetBackdropTypeForSkin("acrylic-glass") == 4, "Acrylic must use DWMSBT_TRANSIENTWINDOW");
-    Assert(MicaWindowHelper.GetBackdropTypeForSkin("clear-surface") == 1, "Clear must disable the DWM backdrop");
+    Assert(MicaWindowHelper.GetBackdropTypeForSkin(SkinCatalog.FocusDarkId) == 2, "B must use Mica");
+    Assert(MicaWindowHelper.GetBackdropTypeForSkin("acrylic-glass") == 2, "removed Acrylic must fall back to Mica");
+    Assert(MicaWindowHelper.GetBackdropTypeForSkin("clear-surface") == 2, "removed Clear must fall back to Mica");
     Assert(MicaWindowHelper.GetBackdropTypeForSkin("unknown") == 2, "unknown skins must use the safe Mica fallback");
 }
 

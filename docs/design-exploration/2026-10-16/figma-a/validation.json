@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"nodeTypeCounts\":{\"FRAME\":138,\"TEXT\":129,\"INSTANCE\":110,\"VECTOR\":54},\"textNodeCount\":129,\"fonts\":[\"Noto Sans SC\"],\"badText\":[],\"overflow\":[],\"imageFilledNodes\":[],\"screenBounds\":[{\"id\":\"7:7\",\"name\":\"Eous 助手\",\"width\":1040,\"height\":750},{\"id\":\"7:212\",\"name\":\"Eous/OpeningPanel\",\"width\":404,\"height\":405},{\"id\":\"7:297\",\"name\":\"Eous 助手 · 设置中心\",\"width\":1180,\"height\":800}]}"
+    }
+  ],
+  "isError": false
+}

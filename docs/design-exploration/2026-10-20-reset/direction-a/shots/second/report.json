@@ -1,0 +1,38 @@
+[
+  {
+    "file": "program.png",
+    "state": "program",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 112,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "open.png",
+    "state": "open",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 114,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "links.png",
+    "state": "links",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 129,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "folders.png",
+    "state": "folders",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 105,
+    "issues": [],
+    "lint": []
+  }
+]

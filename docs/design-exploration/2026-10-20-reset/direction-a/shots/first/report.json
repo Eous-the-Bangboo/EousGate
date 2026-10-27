@@ -1,0 +1,65 @@
+[
+  {
+    "file": "home.png",
+    "state": "home",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "file.png",
+    "state": "file",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 147,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "file-apps.png",
+    "state": "file-apps",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 111,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "web.png",
+    "state": "web",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 118,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "folder.png",
+    "state": "folder",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 108,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "program.png",
+    "state": "program",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 120,
+    "issues": [],
+    "lint": []
+  },
+  {
+    "file": "general.png",
+    "state": "general",
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 106,
+    "issues": [],
+    "lint": []
+  }
+]

@@ -1,0 +1,16 @@
+<Window x:Class="EousGate.FolderSettingsWindow"
+        Icon="pack://application:,,,/EousAssistant;component/Assets/EousGate.ico"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="文件夹快跳 · 设置" Width="580" Height="460" MinWidth="520" MinHeight="420"
+        Background="{DynamicResource PanelBackground}" Foreground="{DynamicResource PanelForeground}" WindowStartupLocation="CenterOwner" FontFamily="Microsoft YaHei UI">
+  <Window.Resources><Style TargetType="Button" BasedOn="{StaticResource ActionButtonBaseStyle}"><Setter Property="Height" Value="36"/><Setter Property="Margin" Value="0,0,10,10"/><Setter Property="Padding" Value="12,0"/><Setter Property="Background" Value="{DynamicResource PanelSurfaceSoft}"/><Setter Property="Foreground" Value="{DynamicResource PanelForeground}"/><Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}"/></Style></Window.Resources>
+  <StackPanel Margin="28">
+    <TextBlock Text="文件夹快跳" FontSize="23" FontWeight="SemiBold"/>
+    <TextBlock Text="EousFolderHop · 历史、收藏与对话框跳转" Foreground="{DynamicResource PanelMutedForeground}" Margin="0,6,0,22"/>
+    <CheckBox x:Name="Record" Content="记录资源管理器访问的文件夹" Foreground="{DynamicResource PanelForeground}" Margin="0,0,0,15" Click="OptionsChanged"/>
+    <CheckBox x:Name="Companion" Content="在文件对话框右下角显示“最近文件夹”按钮" Foreground="{DynamicResource PanelForeground}" Margin="0,0,0,20" Click="OptionsChanged"/>
+    <TextBlock Text="设置即时保存；仅在模块运行时采集目录和响应 Ctrl+Alt+J。" TextWrapping="Wrap" Foreground="{DynamicResource PanelMutedForeground}" Margin="0,0,0,20"/>
+    <WrapPanel><Button x:Name="OpenPickerButton" Content="打开文件夹快跳" Click="OpenPickerClick"/><Button Content="导入旧 FolderHop 数据" Click="ImportClick"/><Button Content="清空最近记录" Click="ClearClick"/></WrapPanel>
+    <TextBlock x:Name="Status" TextWrapping="Wrap" Foreground="{DynamicResource PanelMutedForeground}" Margin="0,8,0,0"/>
+  </StackPanel>
+</Window>

@@ -1,0 +1,164 @@
+[
+  {
+    "name": "abstract",
+    "viewport": [
+      980,
+      700
+    ],
+    "window": [
+      980,
+      700
+    ],
+    "controlRadii": [
+      "0px"
+    ],
+    "switches": [
+      {
+        "name": "文件快开启停",
+        "checked": "true",
+        "disabled": false,
+        "radius": "0px"
+      },
+      {
+        "name": "网页快开启停",
+        "checked": "false",
+        "disabled": false,
+        "radius": "0px"
+      },
+      {
+        "name": "文件夹快跳启停",
+        "checked": "true",
+        "disabled": false,
+        "radius": "0px"
+      },
+      {
+        "name": "Ditto启停",
+        "checked": "true",
+        "disabled": false,
+        "radius": "0px"
+      },
+      {
+        "name": "Everything启停，启动失败，请先修复路径",
+        "checked": "false",
+        "disabled": true,
+        "radius": "0px"
+      },
+      {
+        "name": "无线麦 Sayall启停",
+        "checked": "false",
+        "disabled": false,
+        "radius": "0px"
+      }
+    ],
+    "imageLoaded": true,
+    "overflow": false
+  },
+  {
+    "name": "gothic",
+    "viewport": [
+      980,
+      700
+    ],
+    "window": [
+      980,
+      700
+    ],
+    "controlRadii": [
+      "0px"
+    ],
+    "switches": [
+      {
+        "name": "文件快开启停",
+        "checked": "true",
+        "disabled": false,
+        "radius": "0px"
+      },
+      {
+        "name": "网页快开启停",
+        "checked": "false",
+        "disabled": false,
+        "radius": "0px"
+      },
+      {
+        "name": "文件夹快跳启停",
+        "checked": "true",
+        "disabled": false,
+        "radius": "0px"
+      },
+      {
+        "name": "Ditto启停",
+        "checked": "true",
+        "disabled": false,
+        "radius": "0px"
+      },
+      {
+        "name": "Everything启停",
+        "checked": "false",
+        "disabled": true,
+        "radius": "0px"
+      },
+      {
+        "name": "无线麦 Sayall启停",
+        "checked": "false",
+        "disabled": false,
+        "radius": "0px"
+      }
+    ],
+    "imageLoaded": true,
+    "overflow": false
+  },
+  {
+    "name": "soft",
+    "viewport": [
+      980,
+      700
+    ],
+    "window": [
+      980,
+      700
+    ],
+    "controlRadii": [
+      "12px"
+    ],
+    "switches": [
+      {
+        "name": "文件快开启停",
+        "checked": "true",
+        "disabled": false,
+        "radius": "12px"
+      },
+      {
+        "name": "网页快开启停",
+        "checked": "false",
+        "disabled": false,
+        "radius": "12px"
+      },
+      {
+        "name": "文件夹快跳启停",
+        "checked": "true",
+        "disabled": false,
+        "radius": "12px"
+      },
+      {
+        "name": "Ditto启停",
+        "checked": "true",
+        "disabled": false,
+        "radius": "12px"
+      },
+      {
+        "name": "Everything启停",
+        "checked": "false",
+        "disabled": true,
+        "radius": "12px"
+      },
+      {
+        "name": "无线麦 Sayall启停",
+        "checked": "false",
+        "disabled": false,
+        "radius": "12px"
+      }
+    ],
+    "imageLoaded": true,
+    "overflow": false
+  }
+]

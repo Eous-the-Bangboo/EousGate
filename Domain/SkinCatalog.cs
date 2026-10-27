@@ -4,17 +4,25 @@ public sealed record SkinDefinition(
     string Id,
     string Name,
     string Summary,
-    bool IsDefault);
+    bool IsDefault)
+{
+    // Actual colors make the chooser useful even when another skin is active.
+    private ThemePalette Preview => ThemePalette.Create("Light", false, false, Id);
+    public string PreviewBackground => Preview.Background;
+    public string PreviewSurface => Preview.ElevatedSurface;
+    public string PreviewAccent => Preview.Accent;
+    public string PreviewText => Preview.Foreground;
+}
 
 public static class SkinCatalog
 {
     public const string DefaultId = "win11-mica";
+    public const string FocusDarkId = "focus-dark";
 
     public static IReadOnlyList<SkinDefinition> All { get; } =
     [
-        new(DefaultId, "Win11 Mica", "系统材质、清晰表面与稳定对比度", true),
-        new("acrylic-glass", "玻璃质感", "柔和半透明表面与 Acrylic 背景", false),
-        new("clear-surface", "透明质感", "更轻的表面与更少的边框装饰", false)
+        new(DefaultId, "A · 暖白工具", "暖白与鼠尾草绿 · 跟随系统", true),
+        new(FocusDarkId, "B · 深色效率", "炭黑与薄荷色 · 固定深色", false)
     ];
 
     public static string Normalize(string? id)

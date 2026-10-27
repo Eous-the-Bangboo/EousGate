@@ -4,7 +4,7 @@ using System.Windows.Threading;
 
 namespace EousGate.Infrastructure;
 
-/// <summary>Listens to copy events, never compares clipboard text or stores history.</summary>
+/// <summary>Forwards separate clipboard updates without keeping clipboard history.</summary>
 public sealed class ClipboardMonitor : IDisposable
 {
     private const int ClipboardUpdate = 0x031D;
@@ -12,7 +12,8 @@ public sealed class ClipboardMonitor : IDisposable
     private readonly DispatcherTimer _retryTimer;
     private readonly Action<string?> _textCopied;
     private readonly DiagnosticsLogger _logger;
-    private readonly Func<(bool Success, string? Text)> _readText;
+    private readonly Func<(bool Success, string? Text, uint Sequence)> _readText;
+    private uint? _lastDeliveredSequence;
     internal IntPtr WindowHandle => _source.Handle;
     private int _attempts;
     private bool _enabled;
@@ -21,16 +22,19 @@ public sealed class ClipboardMonitor : IDisposable
     public ClipboardMonitor(Action<string?> textCopied, DiagnosticsLogger? logger = null)
         : this(textCopied, logger, null) { }
 
-    internal ClipboardMonitor(Action<string?> textCopied, DiagnosticsLogger? logger, Func<(bool Success, string? Text)>? readText)
+    internal ClipboardMonitor(Action<string?> textCopied, DiagnosticsLogger? logger, Func<(bool Success, string? Text)>? readText,
+        Func<uint>? sequenceNumber = null)
     {
         _textCopied = textCopied;
         _logger = logger ?? new DiagnosticsLogger();
-        _source = new HwndSource(new HwndSourceParameters("EousGate Clipboard Listener")
+        _source = new HwndSource(new HwndSourceParameters("EousWebHop Clipboard Listener")
         {
             ParentWindow = new IntPtr(-3), Width = 0, Height = 0, WindowStyle = 0
         });
         _source.AddHook(WindowProc);
-        _readText = readText ?? (() => { var success = TryReadText(_source.Handle, out var text); return (success, text); });
+        _readText = readText is null
+            ? () => { var success = TryReadText(_source.Handle, out var text, out var sequence); return (success, text, sequence); }
+            : () => { var (success, text) = readText(); return (success, text, sequenceNumber?.Invoke() ?? 0); };
         _retryTimer = new DispatcherTimer(DispatcherPriority.Background) { Interval = TimeSpan.FromMilliseconds(80) };
         _retryTimer.Tick += ReadClipboard;
     }
@@ -40,6 +44,7 @@ public sealed class ClipboardMonitor : IDisposable
         if (_disposed) return false;
         if (enabled == _enabled) return true;
         _retryTimer.Stop();
+        _lastDeliveredSequence = null;
         if (enabled)
         {
             if (!AddClipboardFormatListener(_source.Handle))
@@ -61,7 +66,10 @@ public sealed class ClipboardMonitor : IDisposable
             // pending reads as well so a newer copy supersedes an older retry.
             _attempts = 0;
             _retryTimer.Stop();
-            _retryTimer.Start();
+            // Read each notification immediately when possible: an 80ms debounce would
+            // coalesce the quick repeated copies used by the deliberate open gesture.
+            ReadClipboard(this, EventArgs.Empty);
+            if (_enabled && !_disposed && _attempts > 0 && _attempts < 6) _retryTimer.Start();
             handled = true;
         }
         return IntPtr.Zero;
@@ -70,10 +78,15 @@ public sealed class ClipboardMonitor : IDisposable
     private void ReadClipboard(object? sender, EventArgs e)
     {
         if (!_enabled || _disposed) { _retryTimer.Stop(); return; }
-        var (success, text) = _readText();
+        var (success, text, sequence) = _readText();
         if (success)
         {
             _retryTimer.Stop();
+            // Reading delayed clipboard formats can itself enqueue another update.
+            // Count the completed clipboard version once, while allowing a new
+            // version containing exactly the same text to count as another copy.
+            if (sequence != 0 && _lastDeliveredSequence == sequence) return;
+            _lastDeliveredSequence = sequence == 0 ? null : sequence;
             _textCopied(text);
         }
         else if (++_attempts >= 6)
@@ -83,9 +96,10 @@ public sealed class ClipboardMonitor : IDisposable
         }
     }
 
-    private static bool TryReadText(IntPtr owner, out string? text)
+    private static bool TryReadText(IntPtr owner, out string? text, out uint sequence)
     {
         text = null;
+        sequence = 0;
         if (!OpenClipboard(owner)) return false;
         try
         {
@@ -105,7 +119,12 @@ public sealed class ClipboardMonitor : IDisposable
             }
             finally { GlobalUnlock(data); }
         }
-        finally { CloseClipboard(); }
+        finally
+        {
+            // Snapshot after delayed rendering, while this clipboard is still locked.
+            sequence = GetClipboardSequenceNumber();
+            CloseClipboard();
+        }
     }
 
     public void Dispose()
@@ -124,6 +143,7 @@ public sealed class ClipboardMonitor : IDisposable
     [DllImport("user32.dll")] private static extern bool CloseClipboard();
     [DllImport("user32.dll")] private static extern bool IsClipboardFormatAvailable(uint format);
     [DllImport("user32.dll")] private static extern IntPtr GetClipboardData(uint format);
+    [DllImport("user32.dll")] private static extern uint GetClipboardSequenceNumber();
     [DllImport("kernel32.dll")] private static extern UIntPtr GlobalSize(IntPtr memory);
     [DllImport("kernel32.dll")] private static extern IntPtr GlobalLock(IntPtr memory);
     [DllImport("kernel32.dll")] private static extern bool GlobalUnlock(IntPtr memory);

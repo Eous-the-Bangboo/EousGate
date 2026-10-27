@@ -1,0 +1,60 @@
+const {chromium}=require('C:/Users/Eous/AppData/Local/npm-cache/_npx/31e32ef8478fbf80/node_modules/playwright');
+const fs=require('node:fs/promises');
+const path=require('node:path');
+const assert=require('node:assert/strict');
+const crypto=require('node:crypto');
+const root=__dirname;
+const base='http://127.0.0.1:8744/prototype.html';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+(async()=>{
+ const browser=await chromium.launch({channel:'msedge',headless:true});
+ const context=await browser.newContext({viewport:{width:1440,height:900}});
+ const p=await context.newPage();p.setDefaultTimeout(7000);const checks=[];
+ try{
+  await p.goto(base);await p.getByRole('switch').first().waitFor();
+  assert.equal(await p.getByRole('switch').count(),6);
+  assert.equal(await p.getByRole('switch',{checked:true}).count(),3);
+  assert.equal(await p.getByRole('switch',{name:'Everything启停'}).isDisabled(),true);
+  checks.push('六个滑动启停、三个初始开启、缺路径开关禁用');
+  const sw=p.getByRole('switch',{name:'网页快开启停'});
+  await sw.focus();await p.keyboard.press('Space');
+  await p.waitForFunction(()=>document.querySelector('[aria-label="网页快开启停"]').getAttribute('aria-busy')==='true');
+  assert.equal(await sw.getAttribute('aria-checked'),'false');
+  await p.waitForFunction(()=>document.querySelector('[aria-label="网页快开启停"]').getAttribute('aria-checked')==='true');
+  assert.equal(await sw.locator('.switch-thumb').evaluate(e=>getComputedStyle(e).transform),'matrix(1, 0, 0, 1, 20, 0)');
+  await p.keyboard.press('Enter');
+  await p.waitForFunction(()=>document.querySelector('[aria-label="网页快开启停"]').getAttribute('aria-checked')==='false');
+  checks.push('Space/Enter切换，处理中保持实际状态，完成后更新无障碍状态');
+  await p.getByRole('button',{name:'Everything设置'}).click();
+  await p.getByLabel('程序路径',{exact:true}).waitFor();
+  checks.push('禁用开关旁设置路径入口可达');
+  const radius=[];
+  for(const state of ['home','file-apps','web','folder','program','general','about','open','links','folders']){
+   await p.goto(base+'?state='+state);await p.locator('.app-window').waitFor();
+   const values=await p.locator('.app-window,button,input:not([type=file]),select,textarea,.drawer,.surface-card,.confirm-card,.notice,.segment,.brand-icon,.switch-thumb').evaluateAll(es=>es.filter(e=>e.getBoundingClientRect().width&&e.getBoundingClientRect().height&&getComputedStyle(e).visibility!=='hidden').map(e=>({element:e.tagName+'.'+e.className,radius:getComputedStyle(e).borderRadius})).filter(e=>e.radius!=='12px'));
+   assert.deepEqual(values,[],state+' corner mismatch');radius.push(state);
+  }
+  checks.push('十个页面状态可见控件、窗口和弹层统一12px圆角');
+  assert.equal(await p.locator('.surface-folder-list').evaluate(e=>e.scrollHeight>e.clientHeight),true);
+  await p.locator('.surface-folder-select').first().click();
+  await p.getByText('已选择：年度报告',{exact:true}).waitFor();
+  assert.equal(await p.getByRole('button',{name:'跳转到所选目录',exact:true}).isEnabled(),true);
+  await p.locator('.surface-folder-list').evaluate(e=>e.scrollTop=e.scrollHeight);
+  assert.equal(await p.locator('.surface-folder-select').last().evaluate(e=>{const a=e.getBoundingClientRect(),b=e.closest('.surface-folder-list').getBoundingClientRect();return a.top>=b.top&&a.bottom<=b.bottom}),true);
+  checks.push('目录列表可滚动至末项，选中名称与跳转动作对应');
+  const src=await p.locator('.eous-character').getAttribute('src');
+  assert.equal(hash(Buffer.from(src.split(',')[1],'base64')),hash(await fs.readFile(path.join(root,'assets/eous-original-full.png'))));
+  assert.equal(hash(await fs.readFile(path.join(root,'assets/eous-original-full.png'))),hash(await fs.readFile('C:/Users/Eous/Documents/Codex/2026-10-16/cha/work/eous-reference.png')));
+  const favicon=await p.locator('link[rel=icon]').getAttribute('href');
+  assert.equal(hash(Buffer.from(favicon.split(',')[1],'base64')),hash(await fs.readFile(path.join(root,'assets/eous-icon.png'))));
+  assert.equal(await p.locator('.avatar,.profile,.portrait').count(),0);
+  checks.push('原始全身PNG逐字节一致、Eous窗口及favicon图标，无头像组件');
+  await p.goto(base+'?state=general');await p.getByLabel('主题',{exact:true}).selectOption('dark');await p.waitForFunction(()=>getComputedStyle(document.querySelector('.app-window')).color==='rgb(242, 240, 231)');await p.waitForTimeout(200);
+  await p.screenshot({path:path.join(root,'shots/dark.png')});
+  await p.setViewportSize({width:720,height:450});await p.screenshot({path:path.join(root,'shots/compact-200.png')});
+  assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+  checks.push('深色主题及200%等效工作区无横向溢出');
+  await fs.writeFile(path.join(root,'output/playwright/selected-verification.json'),JSON.stringify({passed:checks.length,checks,radiusStates:radius},null,2));
+  console.log(JSON.stringify({passed:checks.length,checks}));
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1});

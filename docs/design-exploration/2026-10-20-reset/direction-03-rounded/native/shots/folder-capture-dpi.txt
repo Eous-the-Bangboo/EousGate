@@ -1,0 +1,1 @@
+Source DeviceDpi=144; source=997x881; normalized to 96 DPI logical units=665x587 for comparison with WPF RenderTargetBitmap.
