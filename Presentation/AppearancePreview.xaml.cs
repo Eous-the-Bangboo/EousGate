@@ -21,7 +21,7 @@ public partial class AppearancePreview : System.Windows.Controls.UserControl
 
     internal void Update(UserSettings settings)
     {
-        ThemeResources.Apply(Resources, ThemePalette.Create(settings.Theme, SystemColors.WindowColor.R < 128, SystemParameters.HighContrast, settings.SkinId), settings.SkinId);
+        ThemeResources.Apply(Resources, ThemePalette.Create(settings.Theme, Infrastructure.WindowsAppearance.IsSystemDark, SystemParameters.HighContrast, settings.SkinId), settings.SkinId);
         Resources["CandidateRowHeight"] = settings.LargeText ? 68d : SkinCatalog.Normalize(settings.SkinId) == SkinCatalog.FocusDarkId ? 52d : 60d;
         var fluent = SkinCatalog.Normalize(settings.SkinId) == SkinCatalog.DefaultId;
         Rows.ItemTemplate = fluent ? (DataTemplate)FindResource("FluentPreviewRow") : _legacyRows;

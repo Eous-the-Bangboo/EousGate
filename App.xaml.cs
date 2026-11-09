@@ -61,6 +61,13 @@ public partial class App : System.Windows.Application
         }
 #endif
         InitializeAssistant();
+        Microsoft.Win32.SystemEvents.UserPreferenceChanged += SystemAppearanceChanged;
+    }
+
+    private void SystemAppearanceChanged(object sender, Microsoft.Win32.UserPreferenceChangedEventArgs e)
+    {
+        if (!Dispatcher.HasShutdownStarted)
+            Dispatcher.BeginInvoke(new Action(() => { if (!_exiting) ApplyTheme(_settings); }));
     }
 
 #if DEBUG
@@ -162,7 +169,7 @@ public partial class App : System.Windows.Application
 
     internal void ApplyTheme(UserSettings settings)
     {
-        var systemIsDark = System.Windows.SystemColors.WindowColor.R < 128;
+        var systemIsDark = WindowsAppearance.IsSystemDark;
         // A/B use opaque fallback surfaces, so their identity is independent of DWM support.
         var effectiveSkin = MicaWindowHelper.IsBackdropSupported || settings.SkinId == SkinCatalog.FocusDarkId ? settings.SkinId : SkinCatalog.DefaultId;
         var palette = ThemePalette.Create(settings.Theme, systemIsDark, SystemParameters.HighContrast, effectiveSkin);
@@ -170,6 +177,8 @@ public partial class App : System.Windows.Application
         foreach (Window window in Windows)
         {
             if (window is AssistantWindow assistant) assistant.ApplyAppearance(settings.SkinId, settings.AnimationDurationMs, settings.LargeText, settings.Theme);
+            if (window is SettingsWindow editor) editor.RefreshSystemAppearance();
+            WorkbenchDialog.RefreshAppearance(window);
             if (window is SettingsWindow or CustomAppWindow or AssistantWindow or FolderSettingsWindow or ExternalProgramSettingsWindow or CustomProgramWindow)
                 MicaWindowHelper.Apply(window, settings.SkinId);
         }
@@ -184,6 +193,7 @@ public partial class App : System.Windows.Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        Microsoft.Win32.SystemEvents.UserPreferenceChanged -= SystemAppearanceChanged;
         ReleaseAssistantHost();
         _clipboardMonitor?.Dispose();
         _clipboardWindow?.Shutdown();

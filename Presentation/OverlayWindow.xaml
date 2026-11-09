@@ -7,10 +7,10 @@
         Width="404" MinHeight="0" MaxHeight="640" SizeToContent="Height" ResizeMode="NoResize"
         WindowStartupLocation="Manual" FontFamily="Segoe UI Variable Text, Microsoft YaHei UI">
   <Border x:Name="PanelCard"
-          Background="{DynamicResource PanelElevatedSurface}"
-          BorderBrush="{DynamicResource PanelBorder}"
+          Background="{DynamicResource GlassPanelSurface}"
+          BorderBrush="{DynamicResource GlassRim}"
           BorderThickness="1"
-          CornerRadius="12"
+          CornerRadius="18"
           Effect="{DynamicResource PanelShadow}"
           ClipToBounds="True"
           RenderTransformOrigin="0,0.5">

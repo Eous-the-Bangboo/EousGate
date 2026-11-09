@@ -20,6 +20,8 @@ internal static class MicaWindowHelper
 
     public static void Apply(Window window, string? skinId = null)
     {
+        if (window is AssistantWindow assistant) { assistant.RefreshBackdrop(); return; }
+        if (window.AllowsTransparency) return;
         if (!IsBackdropSupported) return;
 
         void ApplyBackdrop(object? sender, EventArgs args)

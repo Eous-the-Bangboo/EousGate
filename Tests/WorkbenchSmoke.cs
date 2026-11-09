@@ -49,12 +49,18 @@ internal static class WorkbenchSmoke
             { WindowStartupLocation = WindowStartupLocation.Manual, Left = -16000, Top = -16000, ShowActivated = false };
         owner.Show();
         await Settled(owner);
+        GlassTests.NativeBackdrop(owner, output);
         Check(!Descendants<CheckBox>(owner).Any(), "home must hide batch selection controls");
         var natives = (ItemsControl)owner.FindName("ToolList");
         var nativeRects = natives.Items.Cast<object>().Select(item => (FrameworkElement)natives.ItemContainerGenerator.ContainerFromItem(item)).Select(item => item.TransformToAncestor(owner).Transform(new Point())).ToArray();
         Check(nativeRects.Length == 3 && nativeRects.Select(p => p.X).Distinct().Count() == 1 && nativeRects[0].Y < nativeRects[1].Y && nativeRects[1].Y < nativeRects[2].Y, "native tools must form one aligned vertical list");
         Capture(owner, null, Path.Combine(output, "workbench-home.png"));
         Capture(owner, null, Path.Combine(output, "workbench-home-200.png"), 2);
+        owner.ApplyAppearance(SkinCatalog.DefaultId, 160, theme: "Dark");
+        await Settled(owner); Capture(owner, null, Path.Combine(output, "glass-home-dark.png"));
+        GlassTests.NativeBackdrop(owner, output);
+        owner.ApplyAppearance(SkinCatalog.DefaultId, 160, theme: "Light");
+        await Settled(owner);
         Check(((ScrollViewer)owner.FindName("ToolArea")).ScrollableHeight < 1, "all six standard tools must fit at the default workbench size");
         var switches = Descendants<ToolSwitch>(owner).ToArray();
         Check(switches.Length == 6 && switches.All(s => ((Border)s.Template.FindName("Track", s)).CornerRadius == new CornerRadius(12)), "all six switches must use the chosen rounded shape");

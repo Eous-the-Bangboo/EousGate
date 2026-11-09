@@ -167,6 +167,8 @@ public partial class SettingsWindow : Window
         AcceptSavedDraft();
     }
 
+    internal void RefreshSystemAppearance() => RefreshAppearancePreview();
+
     private void RefreshAppearancePreview()
     {
         var draft = _settings.Clone();
@@ -177,7 +179,7 @@ public partial class SettingsWindow : Window
         Theme.IsEnabled = !fixedDark;
         ThemeHint.Text = fixedDark ? "B 固定使用深色；切回 A 后保留原来的主题选择。" : "A 支持跟随系统，也可手动选择浅色或深色。";
         // Preview locally: cancel never changes the running tools or the persisted settings.
-        ThemeResources.Apply(Resources, ThemePalette.Create(draft.Theme, SystemColors.WindowColor.R < 128, SystemParameters.HighContrast, draft.SkinId), draft.SkinId);
+        ThemeResources.Apply(Resources, ThemePalette.Create(draft.Theme, WindowsAppearance.IsSystemDark, SystemParameters.HighContrast, draft.SkinId), draft.SkinId);
         LivePreview.Update(draft);
         ApplyAppearanceLayout(!fixedDark);
         WorkbenchTheme.Apply(Resources, draft.Theme);

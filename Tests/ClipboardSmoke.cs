@@ -177,8 +177,7 @@ internal static class ClipboardSmoke
 
     private static void ApplyPalette(EousGate.App app, ThemePalette palette)
     {
-        foreach (var (key, color) in new[] { ("PanelElevatedSurface", palette.ElevatedSurface), ("PanelForeground", palette.Foreground), ("PanelMutedForeground", palette.MutedForeground), ("PanelBorder", palette.Border), ("PanelSurfaceSoft", palette.SurfaceSoft), ("PanelAccent", palette.Accent), ("PanelAccentSoft", palette.AccentSoft) })
-            app.Resources[key] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
+        ThemeResources.Apply(app.Resources, palette, SkinCatalog.DefaultId);
     }
 
     private static void Capture(Window window, string path, double scale = 1)

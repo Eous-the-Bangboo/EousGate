@@ -44,6 +44,15 @@ internal sealed class WorkbenchDialog
         if (Instances.TryGetValue(window, out var dialog)) dialog.Position();
     }
 
+    internal static void RefreshAppearance(Window window)
+    {
+        if (!Instances.TryGetValue(window, out var dialog)) return;
+        if (window is not SettingsWindow) WorkbenchTheme.Apply(window.Resources, dialog._owner.CurrentTheme);
+        dialog._card.Effect = SystemParameters.HighContrast ? null : new System.Windows.Media.Effects.DropShadowEffect
+            { BlurRadius = 28, ShadowDepth = 4, Opacity = .12, Color = Color.FromRgb(24, 40, 29) };
+        dialog.UpdateSelection();
+    }
+
     private WorkbenchDialog(Window window, AssistantWindow owner, int duration)
     {
         _window = window; _owner = owner; _duration = Math.Clamp(duration, 80, 400);
@@ -66,13 +75,14 @@ internal sealed class WorkbenchDialog
         window.Background = Brushes.Transparent;
         window.MinWidth = window.MinHeight = 0;
         window.SizeToContent = SizeToContent.Manual;
-        _backdrop = new Grid { Background = new SolidColorBrush(Color.FromArgb(38, 34, 37, 41)) };
+        _backdrop = new Grid { Background = new SolidColorBrush(Color.FromArgb(45, 30, 43, 34)) };
         KeyboardNavigation.SetTabNavigation(_backdrop, KeyboardNavigationMode.Cycle);
-        _card = new Border { CornerRadius = new CornerRadius(12), BorderThickness = new Thickness(1),
+        _card = new Border { CornerRadius = new CornerRadius(18), BorderThickness = new Thickness(1), Margin = new Thickness(10),
             HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Stretch,
             RenderTransformOrigin = new Point(.5, .5), RenderTransform = new TransformGroup { Children = { _scale, _shift } }, ClipToBounds = true };
-        _card.SetResourceReference(Border.BackgroundProperty, "PanelElevatedSurface");
-        _card.SetResourceReference(Border.BorderBrushProperty, "PanelBorder");
+        _card.SetResourceReference(Border.BackgroundProperty, "GlassPanelSurface");
+        _card.SetResourceReference(Border.BorderBrushProperty, "GlassRim");
+        _card.Effect = SystemParameters.HighContrast ? null : new System.Windows.Media.Effects.DropShadowEffect { BlurRadius = 28, ShadowDepth = 4, Opacity = .12, Color = Color.FromRgb(24, 40, 29) };
         var layout = new Grid();
         layout.RowDefinitions.Add(new() { Height = new GridLength(68) });
         layout.RowDefinitions.Add(new() { Height = new GridLength(1, GridUnitType.Star) });
@@ -116,8 +126,8 @@ internal sealed class WorkbenchDialog
         _window.Left = position.X; _window.Top = position.Y + 40;
         _window.Width = _owner.ActualWidth > 0 ? _owner.ActualWidth : _owner.Width;
         _window.Height = Math.Max(1, (_owner.ActualHeight > 0 ? _owner.ActualHeight : _owner.Height) - 40);
-        _card.Width = Math.Min(_preferredWidth, Math.Max(1, _window.Width - 184));
-        _card.Height = _window.Height;
+        _card.Width = Math.Min(_preferredWidth, Math.Max(1, _window.Width - 190));
+        _card.Height = Math.Max(1, _window.Height - 20);
     }
     private void OwnerMoved(object? sender, EventArgs e) => Position();
     private void OwnerSized(object sender, SizeChangedEventArgs e) => Position();

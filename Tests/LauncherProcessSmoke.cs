@@ -1,6 +1,7 @@
 using EousGate;
 using EousGate.Infrastructure;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 internal static class LauncherProcessSmoke
 {
@@ -32,6 +33,9 @@ internal static class LauncherProcessSmoke
             await tool.RefreshAsync();
             var snapshot = controller.Inspect(def, launcher);
             Check(tool.State == ToolState.Running && snapshot.Processes.Any(p => p.ExecutablePath == target) && snapshot.Processes.All(p => p.ExecutablePath != excluded), "handoff target must stay running after bootstrap exits, excluding games");
+            // Process discovery may precede CreateWindowEx in the newly started fixture.
+            await WaitForWindow(snapshot.Processes.Single(p => p.ExecutablePath == target).Id);
+            await WaitForWindow(peer.Id);
             var ids = snapshot.Processes.Select(p => p.Id).Order().ToArray();
             await tool.StartAsync();
             Check(controller.Inspect(def, launcher).Processes.Select(p => p.Id).Order().SequenceEqual(ids), "handoff start must remain idempotent");
@@ -59,4 +63,19 @@ internal static class LauncherProcessSmoke
         }
     }
     private static void Check(bool value, string message) { if (!value) throw new Exception(message); }
+    private static async Task WaitForWindow(int processId)
+    {
+        var timeout = Stopwatch.StartNew();
+        while (timeout.Elapsed < TimeSpan.FromSeconds(5))
+        {
+            var found = false;
+            EnumWindows((window, _) => { GetWindowThreadProcessId(window, out var pid); if (pid == processId) found = true; return true; }, IntPtr.Zero);
+            if (found) return;
+            await Task.Delay(50);
+        }
+        throw new Exception("The isolated close fixture did not create its native window.");
+    }
+    private delegate bool EnumWindowCallback(IntPtr window, IntPtr parameter);
+    [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowCallback callback, IntPtr parameter);
+    [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr window, out int processId);
 }

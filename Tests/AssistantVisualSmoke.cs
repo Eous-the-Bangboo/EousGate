@@ -46,7 +46,7 @@ internal static class AssistantVisualSmoke
                 VerifyMotion();
                 ToolSwitchSmoke.Verify();
                 Check(((ItemsControl)panel.FindName("ToolList")).Items.Count == 3 && ((ItemsControl)panel.FindName("ExternalToolList")).Items.Count == 3, "three native and three external tools must be grouped separately");
-                Check(Descendants<TextBlock>(root).Any(t => t.Text == "Eous原生工具") && Descendants<TextBlock>(root).Any(t => t.Text == "非Eous原生工具"), "both requested section headings must be visible in the document");
+                Check(Descendants<TextBlock>(root).Any(t => t.Text == "快捷工具") && Descendants<TextBlock>(root).Any(t => t.Text == "常用程序"), "both tool groups must be visible in the document");
                 Check(manager.Tools.All(t => t.State == ToolState.Stopped), "panel must not auto-start tools");
                 var buttons = Descendants<Button>(root).ToArray();
                 void Click(string text) => buttons.Single(b => Equals(b.Content, text)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

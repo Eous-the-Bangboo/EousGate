@@ -21,7 +21,7 @@ public static class SkinCatalog
 
     public static IReadOnlyList<SkinDefinition> All { get; } =
     [
-        new(DefaultId, "A · 暖白工具", "暖白与鼠尾草绿 · 跟随系统", true),
+        new(DefaultId, "A · 轻透玻璃", "暖白／烟灰玻璃 · 跟随系统", true),
         new(FocusDarkId, "B · 深色效率", "炭黑与薄荷色 · 固定深色", false)
     ];
 

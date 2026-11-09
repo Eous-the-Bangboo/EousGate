@@ -7,12 +7,12 @@
         Width="380" SizeToContent="Height" FontFamily="Microsoft YaHei UI, Segoe UI Variable Text"
         Foreground="{DynamicResource PanelForeground}" PreviewKeyDown="WindowKeyDown">
   <Window.Resources><Style TargetType="Button" BasedOn="{StaticResource FluentAButton}"><Setter Property="MinWidth" Value="0"/><Setter Property="FontSize" Value="13"/><Setter Property="Height" Value="Auto"/></Style></Window.Resources>
-  <Border x:Name="Card" Margin="12" Padding="0" CornerRadius="12"
-          Background="{DynamicResource PanelElevatedSurface}" BorderBrush="{DynamicResource PanelBorder}"
+  <Border x:Name="Card" Margin="12" Padding="0" CornerRadius="18"
+          Background="{DynamicResource GlassPanelSurface}" BorderBrush="{DynamicResource GlassRim}"
           BorderThickness="1" Effect="{DynamicResource PanelShadow}">
     <Border.RenderTransform><TranslateTransform x:Name="Slide"/></Border.RenderTransform>
     <StackPanel KeyboardNavigation.TabNavigation="Cycle">
-      <Border Height="3" Background="{DynamicResource PanelAccent}" CornerRadius="12"/>
+      <Border Height="1" Background="{DynamicResource GlassRim}" CornerRadius="18"/>
       <Grid Margin="16,12,10,8">
         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <StackPanel VerticalAlignment="Center">

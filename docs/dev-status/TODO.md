@@ -4,6 +4,7 @@
 
 | 编号 | 优先级 | 状态 | 事项 | 验收条件 | 关联标准 |
 | --- | --- | --- | --- | --- | --- |
+| TODO-047 | P0 | 实现／完整回归／beta 包已完成，桌面观感待验收 | 轻透玻璃视觉升级 | 用户确认稿原生落地；82 项基础及完整 Release 通过，深浅主题真实 HWND 返回 DWM=3；系统开关回退测试通过。发布 EXE／ZIP 版本与内容核对完成，computer-use 应用访问超时，真实桌面检查未完成 | [v0.3 beta.1](../releases/v0.3.0-beta.1.md) |
 | TODO-001 | P0 | 已完成 | 建立稳定构建基线 | Debug 构建成功并记录运行环境 | [`test-standards.md`](../standards/testing/test-standards.md) |
 | TODO-002 | P0 | 已完成 | 建立领域与适配层测试边界 | DragSession、软件发现、打开动作和设置存储有可验证行为 | [`technical-standards.md`](../standards/architecture/technical-standards.md) |
 | TODO-003 | P0 | 已完成 | 收敛单文件拖拽会话 | 单文件可触发；文件夹和多文件不会执行打开动作 | [`v1-requirements.md`](../standards/requirements/v1-requirements.md) |

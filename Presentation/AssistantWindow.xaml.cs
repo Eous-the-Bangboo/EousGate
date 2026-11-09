@@ -19,6 +19,8 @@ public partial class AssistantWindow : Window
     private readonly FluentMotion _motion = new();
     private bool _fluent;
     private int _duration;
+    private string _activeSection = "overview";
+    internal bool HasDesktopGlass { get; private set; }
     internal AssistantWindow(ToolManager manager, Action generalSettings, string skin, int animationDuration = 320, Action? addProgram = null, bool largeText = false, string theme = "Light", Action? about = null)
     {
         InitializeComponent(); _manager = manager; _generalSettings = generalSettings; _addProgram = addProgram; _about = about;
@@ -27,8 +29,9 @@ public partial class AssistantWindow : Window
         RefreshTools(this, EventArgs.Empty);
         Closed += (_, _) => { _motion.Dispose(); manager.CollectionChanged -= RefreshTools; foreach (var tool in _observed) tool.PropertyChanged -= ToolChanged; _observed.Clear(); };
         ApplyAppearance(skin, animationDuration, largeText, theme);
-        SetActiveSection("overview");
+        SetActiveSection(_activeSection);
         Loaded += (_, _) => AnimateEntrance();
+        SourceInitialized += (_, _) => RefreshBackdrop();
         IsVisibleChanged += (_, _) => { if (!IsVisible) _motion.StopAll(); };
         UpdateSummary();
     }
@@ -53,7 +56,14 @@ public partial class AssistantWindow : Window
         CurrentTheme = theme;
         WorkbenchTheme.Apply(Resources, theme);
         Resources["ToolSwitchAnimationDuration"] = Math.Clamp(animationDuration, 80, 180);
-        Resources["WorkbenchBodySize"] = largeText ? 15d : 13d;
+        Resources["WorkbenchBodySize"] = largeText ? 15d : 12d;
+        RefreshBackdrop();
+        SetActiveSection(_activeSection);
+    }
+    internal void RefreshBackdrop()
+    {
+        HasDesktopGlass = DesktopGlassHelper.Apply(this);
+        GlassShell.SetResourceReference(Border.BackgroundProperty, HasDesktopGlass ? "GlassWindowSurface" : "GlassPanelSurface");
     }
     private void FluentRowLoaded(object sender, RoutedEventArgs e)
     {
@@ -75,6 +85,7 @@ public partial class AssistantWindow : Window
     {
         NativeCount.Text = $"{_manager.Tools.Count(t => t.Descriptor.Kind == ToolKind.BuiltIn)}";
         ExternalCount.Text = $"{_manager.Tools.Count(t => t.Descriptor.Kind == ToolKind.External)}";
+        FooterStatus.Text = $"{_manager.Tools.Count(t => t.State == ToolState.Running)} 个工具运行中";
     }
     internal void Report(string text)
     {
@@ -115,11 +126,14 @@ public partial class AssistantWindow : Window
     }
     internal void SetActiveSection(string id)
     {
-        foreach (var button in new[] { NavOverview, NavFile, NavWeb, NavFolder, NavGeneral, NavAbout })
+        _activeSection = id;
+        if (id is "file-hop" or "web-hop" or "folder-hop") id = "overview";
+        foreach (var button in new[] { NavOverview, NavGeneral, NavAbout })
         {
             var active = Equals(button.Tag, id);
-            button.SetResourceReference(BackgroundProperty, active ? "PanelSelection" : "PanelBackground");
-            button.SetResourceReference(ForegroundProperty, active ? "PanelForeground" : "PanelMutedForeground");
+            button.SetResourceReference(BackgroundProperty, active ? "GlassSelectedSurface" : "GlassTransparent");
+            button.SetResourceReference(ForegroundProperty, active ? "GlassSelectedForeground" : "PanelMutedForeground");
+            button.SetResourceReference(BorderBrushProperty, active ? "GlassRim" : "GlassTransparent");
             button.FontWeight = active ? FontWeights.SemiBold : FontWeights.Normal;
         }
     }

@@ -39,6 +39,7 @@ if (args.FirstOrDefault() == "--workbench-smoke")
 
 var tests = new (string Name, Action Run)[]
 {
+    ("Glass respects system transparency, high contrast, composition and layered window fallbacks", GlassTests.FallbackAndContrast),
     ("Launcher handoff target boundaries exclude games, unrelated folders and publishers", LauncherProcessTests.TargetBoundaries),
     ("Elevated stop request validates pinned identities and preserves explicit policy", LauncherProcessTests.StopRequests),
     ("Edge ranges default, clone and map endpoints on all three sides", EdgeBandRangeTests.DefaultsAndBounds),

@@ -30,7 +30,7 @@ public sealed record ThemePalette(
         if (skin == SkinCatalog.FocusDarkId)
             return new("#FF17191D", "#FFF0F2F4", "#FFB3BDC8", "#FF48515C", "#FF80D8C4", "#FFA1E8D8", "#FF29423E", "#FF202429", "#FFFFA6A0", "#FF482B2B", "#FF80D8C4", "#FF29423E", "#FF22262C", "#FF80D8C4", "#FF29423E") { OnAccent = "#FF132B25" };
         return dark
-            ? new("#FF29342E", "#FFF2F0E7", "#FFBAC4B7", "#FF4E5B4E", "#FFEBAD86", "#FFF2B995", "#FF3D503C", "#FF29342E", "#FFF0A093", "#FF492F2A", "#FFF2B995", "#FF3D503C", "#FF222B26", "#FFA4C198", "#FF3D503C") { OnAccent = "#FF222B26" }
-            : new("#FFF6F2EA", "#FF344C43", "#FF647166", "#FFD7DCD0", "#FFAE4C25", "#FF913C1D", "#FFF4E8DD", "#FFF6F2EA", "#FFA8392F", "#FFF9E9E5", "#FFAE4C25", "#FFE7ECDD", "#FFFFFDF8", "#FF55775B", "#FFE7ECDD");
+            ? new("#FF18251E", "#FFECF1EB", "#FFAFBEB4", "#FF405449", "#FFF0B18B", "#FFF5BE9E", "#FF3D3228", "#FF24332B", "#FFF0A093", "#FF492F2A", "#FFF2B995", "#FF314A3C", "#FF202B26", "#FFB3D4AE", "#FF314A3C") { OnAccent = "#FF202B26" }
+            : new("#FFF3F5EE", "#FF26332D", "#FF59675E", "#FFD3DCD0", "#FFA94C28", "#FF944021", "#FFF7E8DD", "#FFE9EFE5", "#FFA8392F", "#FFF9E9E5", "#FFA94C28", "#FFE4EDE0", "#FFFFFEF9", "#FF416452", "#FFE4EDE0");
     }
 }

@@ -40,7 +40,9 @@ internal static class ToolSwitchSmoke
         provider.Toggle(); Layout();
         Check(tool.State == ToolState.Starting && control.IsBusy && !control.IsEnabled && provider.ToggleState == ToggleState.On && starts == 1,
             "start must immediately request on while the model is still starting");
-        Check(Equals(Descendants<System.Windows.Controls.Button>(root).Single(b => ReferenceEquals(b.Tag, tool)).Content, "设置"), "pending external tool must retain its settings label instead of offering path repair");
+        var settingsAction = Descendants<System.Windows.Controls.Button>(root).Single(b => ReferenceEquals(b.Tag, tool));
+        Check(AutomationProperties.GetName(settingsAction) == "设置开关测试" && Equals(settingsAction.ToolTip, "工具设置"),
+            $"pending external tool must retain its accessible settings action; name={AutomationProperties.GetName(settingsAction)}, tooltip={settingsAction.ToolTip}");
         try { provider.Toggle(); throw new Exception("busy UIA control accepted repeated input"); } catch (ElementNotEnabledException) { }
         Check(starts == 1, "repeated input must not start twice");
         startGate.SetResult(); Pump(); Layout();

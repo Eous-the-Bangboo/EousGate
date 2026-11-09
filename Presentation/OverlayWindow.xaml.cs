@@ -95,7 +95,6 @@ public partial class OverlayWindow : Window
             : extension.Length > 0 ? $"{extension} 文件 · 本机应用" : "本机应用";
         CandidateCountLabel.Text = $"{candidates.Count} 个";
         AccentSegments.Visibility = Visibility.Collapsed;
-        AccentRail.SetResourceReference(Border.BackgroundProperty, "PanelAccent");
         ResetCandidateSurface();
         Actions.Children.Clear();
         if (candidates.Count == 0)
@@ -123,6 +122,11 @@ public partial class OverlayWindow : Window
     private void ApplyPanelLayout()
     {
         var fluent = IsFluent;
+        PanelCard.SetResourceReference(System.Windows.Controls.Border.BackgroundProperty, fluent ? "GlassPanelSurface" : "PanelElevatedSurface");
+        PanelCard.SetResourceReference(System.Windows.Controls.Border.BorderBrushProperty, fluent ? "GlassRim" : "PanelBorder");
+        PanelCard.CornerRadius = new CornerRadius(fluent ? 18 : 12);
+        AccentRail.Height = fluent ? 1 : 3;
+        AccentRail.SetResourceReference(System.Windows.Controls.Border.BackgroundProperty, fluent ? "GlassRim" : "PanelAccent");
         PanelHeader.Margin = fluent ? new Thickness(16, 0, 16, 0) : new Thickness(18, 16, 18, 14);
         PanelHeader.Height = fluent ? 80 : double.NaN;
         PanelHeader.ColumnDefinitions[0].Width = new GridLength(fluent ? 36 : 42);

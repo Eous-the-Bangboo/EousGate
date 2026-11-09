@@ -37,6 +37,7 @@ internal static class ThemeResources
         resources["ToolCardMargin"] = new Thickness(0, 0, 0, compact ? 8 : 12);
         resources["ToolDescriptionMargin"] = new Thickness(0, compact ? 4 : 8, 0, 0);
         resources["CandidateRowHeight"] = compact ? 52d : 60d;
+        GlassResources.Apply(resources, palette, skinId);
     }
 
     private static SolidColorBrush Brush(string value) => new(value switch
